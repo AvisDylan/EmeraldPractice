@@ -1,0 +1,133 @@
+package com.emeraldnetwork.emeraldPractice.commands;
+
+import com.emeraldnetwork.emeraldPractice.kit.Kit;
+import com.emeraldnetwork.emeraldPractice.kit.KitManager;
+import com.emeraldnetwork.emeraldPractice.map.Map;
+import org.apache.commons.lang.math.NumberUtils;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
+public class MapCommand implements CommandExecutor{
+    
+    @Override
+    public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings){
+        if(commandSender.hasPermission("emerald.practice")){
+            Player player = (Player) commandSender;
+            
+            switch(strings[0]){
+                case "create":
+                    for(Kit kit : KitManager.KITS){
+                        if(kit.getName().equalsIgnoreCase(strings[1])){
+                            Map map = new Map(strings[2], strings[3]);
+                            
+                            if(player.getItemInHand() != null)
+                                map.setIcon(player.getItemInHand());
+                            
+                            kit.addMap(map);
+                            commandSender.sendMessage("§aCreated map " + strings[2] + "!");
+                            return false;
+                        }
+                    }
+                    commandSender.sendMessage("§c" + strings[1] + " is not a valid kit!");
+                    break;
+                case "delete":
+                    for(Kit kit : KitManager.KITS){
+                        if(kit.getName().equalsIgnoreCase(strings[1])){
+                            for(Map map : kit.getMaps()){
+                                if(map.getName().equalsIgnoreCase(strings[2])){
+                                    kit.removeMap(map);
+                                    commandSender.sendMessage("§aDeleted map " + strings[2] + "!");
+                                    return false;
+                                }
+                            }
+                            commandSender.sendMessage("§c" + strings[2] + " is not a map kit!");
+                            return false;
+                        }
+                    }
+                    commandSender.sendMessage("§c" + strings[1] + " is not a valid kit!");
+                    break;
+                case "setspawn":
+                    for(Kit kit : KitManager.KITS){
+                        if(kit.getName().equalsIgnoreCase(strings[1])){
+                            for(Map map : kit.getMaps()){
+                                commandSender.sendMessage(kit.getMaps() + " " + map.getName() + " " + strings[2]);
+                                
+                                if(map.getName().equalsIgnoreCase(strings[2])){
+                                    if(strings[3].equalsIgnoreCase("player1")){
+                                        map.setPlayerOneSpawn(player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ());
+                                        commandSender.sendMessage("§aSet player one spawn on " + strings[1] + " on map" + strings[2] + " to your position!");
+                                    }else if(strings[3].equalsIgnoreCase("player2")){
+                                        map.setPlayerOneSpawn(player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ());
+                                        commandSender.sendMessage("§aSet player one spawn on " + strings[1] + " on map" + strings[2] + " to your position!");
+                                    }else{
+                                        commandSender.sendMessage("§c" + strings[1] + " is not a valid option!");
+                                    }
+                                    return false;
+                                }
+                            }
+                            commandSender.sendMessage("§c" + strings[2] + " is not a map kit!");
+                            return false;
+                        }
+                    }
+                    break;
+                case "seticon":
+                    for(Kit kit : KitManager.KITS){
+                        if(kit.getName().equalsIgnoreCase(strings[1])){
+                            for(Map map : kit.getMaps()){
+                                if(map.getName().equalsIgnoreCase(strings[2])){
+                                    if(player.getItemInHand() != null){
+                                        map.setIcon(player.getItemInHand());
+                                        commandSender.sendMessage("§aSet icon on " + strings[1] + " on map" + strings[2] + " to the item in your hand!");
+                                        return false;
+                                    }
+                                    commandSender.sendMessage("§cYou have no items in your hand!");
+                                    return false;
+                                }
+                            }
+                            commandSender.sendMessage("§c" + strings[2] + " is not a map kit!");
+                            return false;
+                        }
+                    }
+                    commandSender.sendMessage("§c" + strings[1] + " is not a valid kit!");
+                    break;
+                case "setname":
+                    for(Kit kit : KitManager.KITS){
+                        if(kit.getName().equalsIgnoreCase(strings[1])){
+                            for(Map map : kit.getMaps()){
+                                if(map.getName().equalsIgnoreCase(strings[2])){
+                                    map.setName(strings[3]);
+                                    commandSender.sendMessage("§aSet name on " + strings[1] + " on map" + strings[2] + " to" + strings[3] + "!");
+                                    return false;
+                                }
+                            }
+                            commandSender.sendMessage("§c" + strings[2] + " is not a map kit!");
+                            return false;
+                        }
+                    }
+                    commandSender.sendMessage("§c" + strings[1] + " is not a valid kit!");
+                    break;
+                case "setdisplayname":
+                    for(Kit kit : KitManager.KITS){
+                        if(kit.getName().equalsIgnoreCase(strings[1])){
+                            for(Map map : kit.getMaps()){
+                                if(map.getName().equalsIgnoreCase(strings[2])){
+                                    map.setDisplayName(strings[3]);
+                                    commandSender.sendMessage("§aSet name on " + strings[1] + " on map" + strings[2] + " to" + strings[3] + "!");
+                                    return false;
+                                }
+                            }
+                            commandSender.sendMessage("§c" + strings[2] + " is not a map kit!");
+                            return false;
+                        }
+                    }
+                    break;
+                default:
+                    commandSender.sendMessage("§c" + strings[0] + " is not a valid option!");
+            }
+        }else
+            commandSender.sendMessage("§cYou don't have permission to run this command!");
+        return true;
+    }
+}

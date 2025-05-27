@@ -1,0 +1,21 @@
+name: EmeraldPractice
+version: '1.0-SNAPSHOT'
+main: com.emeraldnetwork.emeraldPractice.EmeraldPractice
+api-version: '1.8.8'
+prefix: Emerald
+authors: [Avis]
+description: uhh ye
+website: emerald-network.com
+commands:
+  kit:
+    description: edit kits
+  map:
+    description: edit maps
+  queue:
+    description: queue for gamemodes
+  edit:
+    description: allows you to place blocks
+  setspawn:
+    description: set a custom spawnpoint
+  leave:
+    description: lets you leave games
