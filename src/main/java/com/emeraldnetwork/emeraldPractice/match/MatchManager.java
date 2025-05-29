@@ -14,7 +14,7 @@ public class MatchManager{
     
     public static void startMatch(PlayerData playerData1, PlayerData playerData2, Kit kit){
         Map map = (Map) kit.getMaps().toArray()[0];
-        ONGOING_MATCHES.add(new Match(kit, map, playerData1, playerData2));
+        new Match(kit, map, playerData1, playerData2);
     }
     
     public static void startMatch(PlayerData playerData1, PlayerData playerData2, Kit kit, Map map){

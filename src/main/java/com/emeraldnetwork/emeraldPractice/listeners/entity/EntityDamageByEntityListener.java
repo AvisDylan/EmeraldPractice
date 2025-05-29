@@ -1,11 +1,13 @@
 package com.emeraldnetwork.emeraldPractice.listeners.entity;
 
+import com.emeraldnetwork.emeraldPractice.events.EmeraldPlayerDeathEvent;
 import com.emeraldnetwork.emeraldPractice.match.Match;
 import com.emeraldnetwork.emeraldPractice.match.MatchManager;
 import com.emeraldnetwork.emeraldPractice.player.PlayerData;
 import com.emeraldnetwork.emeraldPractice.player.PlayerManager;
 import com.emeraldnetwork.emeraldPractice.player.PlayerState;
 import com.emeraldnetwork.emeraldPractice.utils.MultithreadedUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -21,9 +23,10 @@ public class EntityDamageByEntityListener implements Listener{
         PlayerData playerData = PlayerManager.getPlayerData(player);
         PlayerData attackerData = PlayerManager.getPlayerData(attacker);
         
+        
         switch(playerData.getPlayerState()){
             case QUEUE, SPAWN, SPECTATING -> {
-                event.setCancelled(true);
+                    event.setCancelled(true);
             }
             case DUEL -> {
                 Match match = MatchManager.getPlayerMatch(playerData);
@@ -42,6 +45,9 @@ public class EntityDamageByEntityListener implements Listener{
                         else if(match.getTeamTwo().contains(attackerData))
                             match.incrementTeamTwoHits();
                     }
+                    
+                    if(player.isDead() || player.getHealth() <= 0)
+                        Bukkit.getServer().getPluginManager().callEvent(new EmeraldPlayerDeathEvent(player, attacker, match));
                 }
             }
         }

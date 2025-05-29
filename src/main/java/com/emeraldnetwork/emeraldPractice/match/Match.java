@@ -6,47 +6,50 @@ import com.emeraldnetwork.emeraldPractice.map.Map;
 import com.emeraldnetwork.emeraldPractice.player.PlayerData;
 import com.emeraldnetwork.emeraldPractice.player.PlayerManager;
 import com.emeraldnetwork.emeraldPractice.player.PlayerState;
+import com.emeraldnetwork.emeraldPractice.team.Team;
 import com.emeraldnetwork.emeraldPractice.utils.MultithreadedUtils;
 import com.emeraldnetwork.emeraldPractice.utils.SpawnPointUtils;
 import com.emeraldnetwork.emeraldPractice.utils.WorldUtils;
 import com.emeraldnetwork.emeraldPractice.utils.WorldEditUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.world.WorldLoadEvent;
 
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Match implements Listener{
     
-    private final Set<PlayerData> players = new HashSet<>(), teamOne = new HashSet<>(), teamTwo = new HashSet<>();
+    private final List<PlayerData> players = new CopyOnWriteArrayList<>();
     private final Set<Block> playerPlacedBlocks = new HashSet<>();
     private final Kit kit;
     private final Map map;
     private final World world;
     private final long startTime;
     private int teamOneHits = 0, teamTwoHits = 0;
+    private Team teamOne, teamTwo;
     
     public Match(Kit kit, Map map, PlayerData... players){
+        world = WorldUtils.createVoidWorld();
         this.kit = kit;
         this.map = map;
-        world = WorldUtils.createVoidWorld();
         
         WorldEditUtils.loadMap(map.getMapSchematic(), world);
-        
         this.players.addAll(List.of(players));
-        this.players.forEach(playerData -> {
+        for(PlayerData playerData : players){
             Player player = Bukkit.getPlayer(playerData.getUuid());
             
             playerData.setPlayerState(PlayerState.DUEL);
             player.sendMessage("§aFound match!");
             player.sendTitle("§aStarting Game!", "§cHave fun!");
             kit.applyKit(player);
-        });
+        }
+        
+        for(int i = 0; i < this.players.size(); i++){
+        
+        }
         
         Iterator iterator = this.players.iterator();
         int i = 0;
@@ -62,19 +65,21 @@ public class Match implements Listener{
             i++;
         }
         
-        this.teamOne.forEach(playerData -> {
+        for(PlayerData playerData : teamOne){
             Player player = Bukkit.getPlayer(playerData.getUuid());
             
-            player.teleport(new Location(world, map.getPlayerOneX(), map.getPlayerOneY(), map.getPlayerOneZ()));
-        });
+            //player.teleport(new Location(world, map.getPlayerOneX(), map.getPlayerOneY(), map.getPlayerOneZ()));
+        }
         
-        this.teamTwo.forEach(playerData -> {
+        for(PlayerData playerData : teamTwo){
             Player player = Bukkit.getPlayer(playerData.getUuid());
             
-            player.teleport(new Location(world, map.getPlayerTwoX(), map.getPlayerTwoY(), map.getPlayerTwoZ()));
-        });
+            //player.teleport(new Location(world, map.getPlayerTwoX(), map.getPlayerTwoY(), map.getPlayerTwoZ()));
+        }
         
         startTime = System.currentTimeMillis();
+        
+        MatchManager.ONGOING_MATCHES.add(this);
         
         if(kit.getMaxDurationInSeconds() != 0){
             Bukkit.getScheduler().runTaskTimerAsynchronously(EmeraldPractice.getPlugin(), () -> {
@@ -86,8 +91,9 @@ public class Match implements Listener{
         }
     }
     
-    public void onDeath(PlayerData playerData){
-    
+    public void onDeath(PlayerData playerData, PlayerData killData){
+        playerData.getProfile().getStats(kit).incrementDeaths();
+        killData.getProfile().getStats(kit).incrementKills();
     }
     
     public void onLeave(PlayerData playerData){
@@ -151,5 +157,15 @@ public class Match implements Listener{
     
     public int getTeamTwoHits(){
         return teamTwoHits;
+    }
+    
+    public Set<PlayerData> getTeam(PlayerData playerData){
+        for(PlayerData teamOnePlayer : teamOne){
+            if(teamOnePlayer.equals(playerData)){
+                return teamOne;
+            }
+        }
+        
+        return null;
     }
 }

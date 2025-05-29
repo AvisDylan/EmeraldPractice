@@ -83,10 +83,10 @@ public class Kit{
         player.getInventory().setContents(items);
         player.getInventory().setArmorContents(armourItems);
         
-        for(PotionEffect potionEffect : potionEffects){
+        /*for(PotionEffect potionEffect : potionEffects){
             if(potionEffect != null)
                 player.addPotionEffect(potionEffect);
-        }
+        }*/
     }
     
     public String getName(){

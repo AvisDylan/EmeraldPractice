@@ -1,5 +1,6 @@
 package com.emeraldnetwork.emeraldPractice.listeners.entity;
 
+import com.emeraldnetwork.emeraldPractice.events.EmeraldPlayerDeathEvent;
 import com.emeraldnetwork.emeraldPractice.match.Match;
 import com.emeraldnetwork.emeraldPractice.match.MatchManager;
 import com.emeraldnetwork.emeraldPractice.player.PlayerData;
@@ -16,13 +17,12 @@ public class PlayerDeathListener implements Listener{
         
         PlayerData playerData = PlayerManager.getPlayerData(event.getEntity());
         
+        
         switch(playerData.getPlayerState()){
             case DUEL -> {
                 Match match = MatchManager.getPlayerMatch(playerData);
                 
                 if(match != null){
-                    match.onDeath(playerData);
-                    
                     if(match.getKit().isDeathDrops())
                         event.getDrops().clear();
                 }
@@ -32,5 +32,10 @@ public class PlayerDeathListener implements Listener{
             }
             default -> event.getDrops().clear();
         }
+    }
+    
+    @EventHandler
+    public void onEmeraldPlayerDeath(EmeraldPlayerDeathEvent event){
+        event.getMatch().onDeath(PlayerManager.getPlayerData(event.getPlayer()), PlayerManager.getPlayerData(event.getKiller()));
     }
 }

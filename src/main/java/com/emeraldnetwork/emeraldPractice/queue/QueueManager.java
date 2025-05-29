@@ -6,6 +6,7 @@ import com.emeraldnetwork.emeraldPractice.player.PlayerData;
 import com.emeraldnetwork.emeraldPractice.player.PlayerManager;
 import com.emeraldnetwork.emeraldPractice.player.PlayerState;
 import com.emeraldnetwork.emeraldPractice.utils.MultithreadedUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -41,6 +42,10 @@ public class QueueManager{
         if(entry1 != null && entry2 != null){
             QUEUE.remove(entry1);
             QUEUE.remove(entry2);
+            
+            Bukkit.getPlayer(entry2.getPlayerData().getUuid()).sendMessage("In game");
+            Bukkit.getPlayer(entry1.getPlayerData().getUuid()).sendMessage("In game");
+            
             MatchManager.startMatch(entry1.getPlayerData(), entry2.getPlayerData(), kit);
         }
     }
