@@ -12,7 +12,7 @@ public class PlayerDropItemListener implements Listener{
     
     @EventHandler
     public void onPlayerDropItem(PlayerDropItemEvent event){
-        PlayerData playerData = PlayerManager.getPlayerData(event.getPlayer());
+        PlayerData playerData = PlayerManager.getPlayerData(event.getPlayer().getUniqueId());
         
         switch(playerData.getPlayerState()){
             case QUEUE, SPAWN, SPECTATING -> {

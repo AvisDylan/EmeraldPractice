@@ -14,13 +14,10 @@ public class PlayerKitProfile{
                 deaths = 0,
                 kills = 0;
     
-    public void incrementElo(double score, double opponentElo){
-        if(score == 0)
-            return;
-        
+    public void increaseElo(double score, double opponentElo){
         double expectedElo = 1 / (1 + Math.pow(10, (opponentElo - elo) / 400));
         
-        elo = elo + 20 * (score - expectedElo);
+        elo = elo + 32 * (score - expectedElo);
     }
     
     public void incrementRankedWins(){
@@ -49,5 +46,33 @@ public class PlayerKitProfile{
     
     public int getKd(){
         return kills / deaths;
+    }
+    
+    public double getElo(){
+        return elo;
+    }
+    
+    public int getRankedWins(){
+        return rankedWins;
+    }
+    
+    public int getRankedLosses(){
+        return rankedLosses;
+    }
+    
+    public int getUnrankedWins(){
+        return unrankedWins;
+    }
+    
+    public int getUnrankedLosses(){
+        return unrankedLosses;
+    }
+    
+    public int getDeaths(){
+        return deaths;
+    }
+    
+    public int getKills(){
+        return kills;
     }
 }

@@ -144,6 +144,24 @@ public class KitCommand implements CommandExecutor{
                                     kit1.setFallDamage(!kit1.isFallDamage());
                                     commandSender.sendMessage(kit1.isFallDamage() ? "§aEnabled fall damage on " + strings[1] + "!" : "§aDisabled fall damage on " + strings[1] + "!");
                                 }
+                                case "maxheight" -> {
+                                    if(!NumberUtils.isNumber(strings[3])){
+                                        commandSender.sendMessage("§c" + strings[3] + " is not a valid number!");
+                                        return false;
+                                    }
+                                    
+                                    kit1.setMaxBuildHeight(Integer.parseInt(strings[3]));
+                                    commandSender.sendMessage("§aSet " + strings[1] + "'s max height to" + strings[3] + "! For no rounds put 0!");
+                                }
+                                case "minheight" -> {
+                                    if(!NumberUtils.isNumber(strings[3])){
+                                        commandSender.sendMessage("§c" + strings[3] + " is not a valid number!");
+                                        return false;
+                                    }
+                                    
+                                    kit1.setMinBuildHeight(Integer.parseInt(strings[3]));
+                                    commandSender.sendMessage("§aSet " + strings[1] + "'s min height to" + strings[3] + "! For no rounds put 0!");
+                                }
                                 default -> commandSender.sendMessage("§c" + strings[0] + " is not a valid option!");
                             }
                             return false;
@@ -163,7 +181,7 @@ public class KitCommand implements CommandExecutor{
                 case "info" -> {
                     for(Kit kit1 : KitManager.KITS){
                         if(kit1.getName().equalsIgnoreCase(strings[1])){
-                            commandSender.sendMessage("§aKit: " + kit1.toString() + "!");
+                            commandSender.sendMessage("§aKit: " + kit1 + "!");
                             return false;
                         }
                     }

@@ -1,46 +1,40 @@
 package com.emeraldnetwork.emeraldPractice.adapter;
 
-import com.google.gson.annotations.Expose;
+import com.google.gson.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
 
-public class LocationAdapter{
+import java.lang.reflect.Type;
+
+public class LocationAdapter implements JsonSerializer<Location>, JsonDeserializer<Location>{
     
-    @Expose
-    private String worldName;
-    @Expose
-    private double x, y, z;
-    @Expose
-    private float pitch, yaw;
-    
-    public LocationAdapter(String worldName, double x, double y, double z, float pitch, float yaw){
-        this.worldName = worldName;
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        this.pitch = pitch;
-        this.yaw = yaw;
+    @Override
+    public JsonElement serialize(Location src, Type typeOfSrc, JsonSerializationContext context){
+        JsonObject object = new JsonObject();
+        
+        object.addProperty("world", src.getWorld().getName());
+        object.addProperty("x", src.getX());
+        object.addProperty("y", src.getY());
+        object.addProperty("z", src.getZ());
+        object.addProperty("yaw", src.getYaw());
+        object.addProperty("pitch", src.getPitch());
+        
+        return object;
     }
     
-    public String getWorldName(){
-        return worldName;
+    @Override
+    public Location deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException{
+        JsonObject object = json.getAsJsonObject();
+        
+        World world = Bukkit.getWorld(object.get("world").getAsString());
+        double x = object.get("x").getAsDouble();
+        double y = object.get("y").getAsDouble();
+        double z = object.get("z").getAsDouble();
+        float yaw = object.get("yaw").getAsFloat();
+        float pitch = object.get("pitch").getAsFloat();
+        
+        return new Location(world, x, y, z, yaw, pitch);
     }
     
-    public double getX(){
-        return x;
-    }
-    
-    public double getY(){
-        return y;
-    }
-    
-    public double getZ(){
-        return z;
-    }
-    
-    public float getPitch(){
-        return pitch;
-    }
-    
-    public float getYaw(){
-        return yaw;
-    }
 }

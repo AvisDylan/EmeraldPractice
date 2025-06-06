@@ -13,7 +13,7 @@ public class LeaveListener implements Listener{
 
     @EventHandler
     public void onLeave(PlayerQuitEvent event){
-        PlayerData playerData = PlayerManager.getPlayerData(event.getPlayer());
+        PlayerData playerData = PlayerManager.getPlayerData(event.getPlayer().getUniqueId());
         
         if(playerData.getPlayerState() == PlayerState.DUEL){
             Match match = MatchManager.getPlayerMatch(playerData);
@@ -22,6 +22,6 @@ public class LeaveListener implements Listener{
                 match.onLeave(playerData);
         }
         
-        PlayerManager.removePlayer(event.getPlayer());
+        PlayerManager.removePlayer(event.getPlayer().getUniqueId());
     }
 }

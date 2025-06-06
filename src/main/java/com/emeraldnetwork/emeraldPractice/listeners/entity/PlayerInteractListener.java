@@ -2,6 +2,7 @@ package com.emeraldnetwork.emeraldPractice.listeners.entity;
 
 import com.emeraldnetwork.emeraldPractice.player.PlayerData;
 import com.emeraldnetwork.emeraldPractice.player.PlayerManager;
+import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -14,7 +15,7 @@ public class PlayerInteractListener implements Listener{
         if(event.getPlayer().getItemInHand() == null || event.getAction() != Action.RIGHT_CLICK_AIR)
             return;
         
-        PlayerData playerData = PlayerManager.getPlayerData(event.getPlayer());
+        PlayerData playerData = PlayerManager.getPlayerData(event.getPlayer().getUniqueId());
         
         switch(playerData.getPlayerState()){
             case SPAWN -> {
@@ -22,7 +23,7 @@ public class PlayerInteractListener implements Listener{
                     case "§7Unranked Queue (right click)" -> event.getPlayer().chat("/queuegui unranked");
                     case "§2Ranked Queue §7(right click)" -> event.getPlayer().chat("/queuegui ranked");
                     case "§7FFA (right click)" -> event.getPlayer().chat("/ffagui");
-                    case "§7Bot Queue (right click)" -> event.getPlayer().chat("/queuegui bot");
+                    case "§7Bot Queue (right click)" -> event.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', "&7Feature coming soon!")); //event.getPlayer().chat("/queuegui bot")
                     case "§7Create a party (right click)" -> event.getPlayer().chat("/partygui");
                     case "§7Kit editor (right click)" -> event.getPlayer().chat("/kiteditor");
                     case "§7Tournament (right click)" -> event.getPlayer().chat("/tournamentgui");

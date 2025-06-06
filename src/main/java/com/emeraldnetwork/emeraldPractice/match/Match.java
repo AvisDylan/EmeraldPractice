@@ -2,20 +2,24 @@ package com.emeraldnetwork.emeraldPractice.match;
 
 import com.emeraldnetwork.emeraldPractice.EmeraldPractice;
 import com.emeraldnetwork.emeraldPractice.kit.Kit;
+import com.emeraldnetwork.emeraldPractice.map.ActiveMap;
 import com.emeraldnetwork.emeraldPractice.map.Map;
+import com.emeraldnetwork.emeraldPractice.npc.NpcManager;
 import com.emeraldnetwork.emeraldPractice.player.PlayerData;
 import com.emeraldnetwork.emeraldPractice.player.PlayerManager;
 import com.emeraldnetwork.emeraldPractice.player.PlayerState;
 import com.emeraldnetwork.emeraldPractice.team.Team;
+import com.emeraldnetwork.emeraldPractice.team.TeamAssigner;
 import com.emeraldnetwork.emeraldPractice.utils.MultithreadedUtils;
 import com.emeraldnetwork.emeraldPractice.utils.SpawnPointUtils;
-import com.emeraldnetwork.emeraldPractice.utils.WorldUtils;
-import com.emeraldnetwork.emeraldPractice.utils.WorldEditUtils;
+import com.emeraldnetwork.emeraldPractice.utils.WebhookUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.World;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import org.bukkit.potion.PotionEffect;
 
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -24,19 +28,23 @@ public class Match implements Listener{
     
     private final List<PlayerData> players = new CopyOnWriteArrayList<>();
     private final Set<Block> playerPlacedBlocks = new HashSet<>();
+    private final Team teamOne, teamTwo;
     private final Kit kit;
-    private final Map map;
-    private final World world;
+    private final ActiveMap activeMap;
+    private final boolean ranked;
     private final long startTime;
-    private int teamOneHits = 0, teamTwoHits = 0;
-    private Team teamOne, teamTwo;
+    private int teamOneHits = 0, teamTwoHits = 0, schedulerId;
     
-    public Match(Kit kit, Map map, PlayerData... players){
-        world = WorldUtils.createVoidWorld();
+    public Match(Kit kit, Map map, boolean ranked, PlayerData... players){
         this.kit = kit;
-        this.map = map;
+        this.ranked = ranked;
         
-        WorldEditUtils.loadMap(map.getMapSchematic(), world);
+        Bukkit.getLogger().info(ranked ? "true" : "false");
+        activeMap = new ActiveMap(map);
+        
+        if(!activeMap.load())
+            Bukkit.getLogger().severe("Failed to load map!");
+        
         this.players.addAll(List.of(players));
         for(PlayerData playerData : players){
             Player player = Bukkit.getPlayer(playerData.getUuid());
@@ -47,96 +55,151 @@ public class Match implements Listener{
             kit.applyKit(player);
         }
         
-        for(int i = 0; i < this.players.size(); i++){
+        TeamAssigner teamAssigner = new TeamAssigner(players);
         
-        }
+        teamAssigner.assignTeams();
         
-        Iterator iterator = this.players.iterator();
-        int i = 0;
+        teamOne = new Team(teamAssigner.getTeamOne());
+        teamTwo = new Team(teamAssigner.getTeamTwo());
         
-        while(iterator.hasNext()){
-            PlayerData playerData = (PlayerData) iterator.next();
-            
-            if(i % 2 == 0)
-                teamOne.add(playerData);
-            else
-                teamTwo.add(playerData);
-            
-            i++;
-        }
-        
-        for(PlayerData playerData : teamOne){
+        for(PlayerData playerData : teamOne.getPlayers()){
             Player player = Bukkit.getPlayer(playerData.getUuid());
             
-            //player.teleport(new Location(world, map.getPlayerOneX(), map.getPlayerOneY(), map.getPlayerOneZ()));
+            Bukkit.getLogger().info(activeMap.getWorld().getName());
+            
+            player.teleport(new Location(activeMap.getWorld(), map.getPlayerOneX(), map.getPlayerOneY(), map.getPlayerOneZ()));
         }
         
-        for(PlayerData playerData : teamTwo){
+        for(PlayerData playerData : teamTwo.getPlayers()){
             Player player = Bukkit.getPlayer(playerData.getUuid());
             
-            //player.teleport(new Location(world, map.getPlayerTwoX(), map.getPlayerTwoY(), map.getPlayerTwoZ()));
+            player.teleport(new Location(activeMap.getWorld(), map.getPlayerTwoX(), map.getPlayerTwoY(), map.getPlayerTwoZ()));
         }
         
         startTime = System.currentTimeMillis();
         
         MatchManager.ONGOING_MATCHES.add(this);
         
-        if(kit.getMaxDurationInSeconds() != 0){
-            Bukkit.getScheduler().runTaskTimerAsynchronously(EmeraldPractice.getPlugin(), () -> {
-                MultithreadedUtils.EXECUTOR_SERVICE.submit(() -> {
-                    if(System.currentTimeMillis() - startTime * 1000 >= kit.getMaxDurationInSeconds())
-                        endMatch();
-                });
-            }, 0L, 10L);
+        schedulerId = Bukkit.getScheduler().runTaskTimer(EmeraldPractice.getPlugin(), () -> {
+            if(teamOne.getAlivePlayers().isEmpty() || (kit.isBoxing() && teamTwoHits >= 100))
+                handleGameEnd(teamTwo, teamOne);
+            else if(teamTwo.getAlivePlayers().isEmpty() || (kit.isBoxing() && teamOneHits >= 100))
+                handleGameEnd(teamOne, teamTwo);
+            
+            if((System.currentTimeMillis() - startTime) / 1000 >= kit.getMaxDurationInSeconds() && kit.getMaxDurationInSeconds() > 0)
+                handleGameEnd(null, null);
+        }, 0L, 10L).getTaskId();
+    }
+    
+    public void handleGameEnd(Team winningTeam, Team losingTeam){
+        if(winningTeam == null && losingTeam == null){
+            this.players.forEach(playerData -> {
+                Player player = Bukkit.getPlayer(playerData.getUuid());
+                
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7The game ended in a tie as time ran up!"));
+                player.sendTitle(ChatColor.translateAlternateColorCodes('&', "&7Tie!"), ChatColor.translateAlternateColorCodes('&', "&7The game ended in a tie as time ran up!"));
+                
+                WebhookUtils.sendEmbed("Game ended in a tie!", "Player/s: " + teamTwo.getPlayerNames() + ", " + teamTwo.getPlayerNames(), "919191");
+            });
+        }else{
+            winningTeam.getPlayers().forEach(playerData -> {
+                Player player = Bukkit.getPlayer(playerData.getUuid());
+                
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&aYour team has won the game, GGs!"));
+                player.sendTitle(ChatColor.translateAlternateColorCodes('&', "&aWin!"), ChatColor.translateAlternateColorCodes('&', "&aYour team has won the game, GGs!"));
+                
+                if(ranked){
+                    playerData.getProfile().getStats(kit).increaseElo(1, losingTeam.getAverageElo(kit));
+                    playerData.getProfile().getStats(kit).incrementRankedWins();
+                }else{
+                    playerData.getProfile().getStats(kit).incrementUnrankedWins();
+                }
+            });
+            
+            losingTeam.getPlayers().forEach(playerData -> {
+                Player player = Bukkit.getPlayer(playerData.getUuid());
+                
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cYour team has lost the game, better luck next time!"));
+                player.sendTitle(ChatColor.translateAlternateColorCodes('&', "&cLost!"), ChatColor.translateAlternateColorCodes('&', "&cYour team has lost the game, better luck next time!"));
+                
+                if(ranked){
+                    playerData.getProfile().getStats(kit).increaseElo(0, winningTeam.getAverageElo(kit));
+                    playerData.getProfile().getStats(kit).incrementRankedLosses();
+                }else{
+                    playerData.getProfile().getStats(kit).incrementUnrankedLosses();
+                }
+            });
+            
+            WebhookUtils.sendEmbed(
+                    ranked ? "Ranked game ended" : "Unranked game ended",
+                    "**Kit:** " + kit.getDisplayName() + "\n" +
+                            "**Map:** " + activeMap.getMap().getName() + "\n" +
+                            "**Winning player/s:** " + winningTeam.getPlayerNames() + "\n" +
+                            "**Losing player/s:** " + losingTeam.getPlayerNames(),
+                    "2bad4e"
+            );
+            
         }
+        
+        cleanUpMatch();
+    }
+    
+    public void cleanUpMatch(){
+        players.forEach(playerData -> {
+            Player player = Bukkit.getPlayer(playerData.getUuid());
+            
+            for(PotionEffect potionEffect : player.getActivePotionEffects()){
+                player.removePotionEffect(potionEffect.getType());
+            }
+            
+            player.setFoodLevel(20);
+            player.setHealth(player.getMaxHealth());
+            playerData.setPlayerState(PlayerState.SPAWN);
+            PlayerManager.giveSpawnItems(Bukkit.getPlayer(playerData.getUuid()));
+            player.teleport(SpawnPointUtils.getSpawnPoint());
+        });
+        
+        Bukkit.getScheduler().cancelTask(schedulerId);
+        activeMap.cleanUp();
+        MatchManager.ONGOING_MATCHES.remove(this);
     }
     
     public void onDeath(PlayerData playerData, PlayerData killData){
         playerData.getProfile().getStats(kit).incrementDeaths();
         killData.getProfile().getStats(kit).incrementKills();
+        
+        getTeam(playerData).getAlivePlayers().remove(playerData);
+        getTeam(playerData).getDeadPlayer().add(playerData);
+    }
+    
+    public void onForfeit(PlayerData playerData){
+        playerData.getProfile().getStats(kit).incrementDeaths();
+        
+        getTeam(playerData).getAlivePlayers().remove(playerData);
+        getTeam(playerData).getDeadPlayer().add(playerData);
     }
     
     public void onLeave(PlayerData playerData){
-    
-    }
-    
-    public void endMatch(){
-        players.forEach(playerData -> {
-            playerData.setPlayerState(PlayerState.SPAWN);
-            PlayerManager.giveSpawnItems(Bukkit.getPlayer(playerData.getUuid()));
-            Bukkit.getPlayer(playerData.getUuid()).teleport(SpawnPointUtils.getSpawnPoint());
-        });
+        playerData.getProfile().getStats(kit).incrementDeaths();
         
-        Bukkit.unloadWorld(world, false);
-        MatchManager.ONGOING_MATCHES.remove(this);
+        getTeam(playerData).getAlivePlayers().remove(playerData);
+        getTeam(playerData).getDeadPlayer().add(playerData);
     }
     
-    public Set<PlayerData> getPlayers(){
+    public List<PlayerData> getPlayers(){
         return players;
     }
     
-    public Set<PlayerData> getTeamOne(){
+    public Team getTeamOne(){
         return teamOne;
     }
     
-    public Set<PlayerData> getTeamTwo(){
+    public Team getTeamTwo(){
         return teamTwo;
     }
     
     public Kit getKit(){
         return kit;
-    }
-    
-    public Map getMap(){
-        return map;
-    }
-    
-    public World getWorld(){
-        return world;
-    }
-    
-    public long getStartTime(){
-        return startTime;
     }
     
     public Set<Block> getPlayerPlacedBlocks(){
@@ -148,7 +211,7 @@ public class Match implements Listener{
     }
     
     public void incrementTeamTwoHits(){
-        teamOneHits++;
+        teamTwoHits++;
     }
     
     public int getTeamOneHits(){
@@ -159,13 +222,69 @@ public class Match implements Listener{
         return teamTwoHits;
     }
     
-    public Set<PlayerData> getTeam(PlayerData playerData){
-        for(PlayerData teamOnePlayer : teamOne){
-            if(teamOnePlayer.equals(playerData)){
+    public ActiveMap getActiveMap(){
+        return activeMap;
+    }
+    
+    public boolean isRanked(){
+        return ranked;
+    }
+    
+    public long getStartTime(){
+        return startTime;
+    }
+    
+    public void setTeamOneHits(int teamOneHits){
+        this.teamOneHits = teamOneHits;
+    }
+    
+    public void setTeamTwoHits(int teamTwoHits){
+        this.teamTwoHits = teamTwoHits;
+    }
+    
+    public int getSchedulerId(){
+        return schedulerId;
+    }
+    
+    public void setSchedulerId(int schedulerId){
+        this.schedulerId = schedulerId;
+    }
+    
+    public Team getTeam(PlayerData playerData){
+        for(PlayerData teamOnePlayer : teamOne.getPlayers()){
+            if(teamOnePlayer.equals(playerData))
                 return teamOne;
-            }
+        }
+        
+        for(PlayerData teamTwoPlayer : teamTwo.getPlayers()){
+            if(teamTwoPlayer.equals(playerData))
+                return teamTwo;
         }
         
         return null;
+    }
+    
+    public int getTeamHits(PlayerData playerData){
+        int teamHits = 0;
+        Team playerTeam = getTeam(playerData);
+        
+        if(playerTeam.equals(teamOne))
+            teamHits = teamOneHits;
+        else if(playerTeam.equals(teamTwo))
+            teamHits = teamTwoHits;
+        
+        return teamHits;
+    }
+    
+    public int getOtherTeamHits(PlayerData playerData){
+        int teamHits = 0;
+        Team playerTeam = getTeam(playerData);
+        
+        if(playerTeam.equals(teamOne))
+            teamHits = teamTwoHits;
+        else if(playerTeam.equals(teamTwo))
+            teamHits = teamOneHits;
+        
+        return teamHits;
     }
 }

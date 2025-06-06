@@ -5,57 +5,60 @@ import com.emeraldnetwork.emeraldPractice.match.MatchManager;
 import com.emeraldnetwork.emeraldPractice.player.PlayerData;
 import com.emeraldnetwork.emeraldPractice.player.PlayerManager;
 import com.emeraldnetwork.emeraldPractice.player.PlayerState;
-import com.emeraldnetwork.emeraldPractice.utils.MultithreadedUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class QueueManager{
 
     public static final ConcurrentLinkedQueue<QueueEntry> QUEUE = new ConcurrentLinkedQueue<>();
     
-    public static void joinQueue(Player player, Kit kit, boolean ranked){
-        PlayerData playerData = PlayerManager.getPlayerData(player);
+    public static void joinQueue(Player player, Kit kit, boolean ranked, int teamSize){
+        PlayerData playerData = PlayerManager.getPlayerData(player.getUniqueId());
         
         playerData.setPlayerState(PlayerState.QUEUE);
-        QUEUE.offer(new QueueEntry(playerData, kit, ranked));
+        QUEUE.offer(new QueueEntry(playerData, kit, ranked, teamSize));
         PlayerManager.giveQueueItems(player);
     }
     
-    public static void leaveQueue(Player player){
-        PlayerData playerData = PlayerManager.getPlayerData(player);
+    public static boolean leaveQueue(Player player){
+        PlayerData playerData = PlayerManager.getPlayerData(player.getUniqueId());
         
         for(QueueEntry queueEntry : QUEUE){
             if(queueEntry.getPlayerData().equals(playerData)){
                 playerData.setPlayerState(PlayerState.SPAWN);
                 QUEUE.remove(queueEntry);
-                break;
+                
+                return true;
             }
         }
-    }
-    
-    public static void matchPlayers(Kit kit){
-        QueueEntry entry1 = QUEUE.stream().filter(entry -> entry.getKit().equals(kit)).findFirst().orElse(null);
-        QueueEntry entry2 = QUEUE.stream().filter(entry -> entry.getKit().equals(kit) && !entry.equals(entry1)).findFirst().orElse(null);
         
-        if(entry1 != null && entry2 != null){
-            QUEUE.remove(entry1);
-            QUEUE.remove(entry2);
-            
-            Bukkit.getPlayer(entry2.getPlayerData().getUuid()).sendMessage("In game");
-            Bukkit.getPlayer(entry1.getPlayerData().getUuid()).sendMessage("In game");
-            
-            MatchManager.startMatch(entry1.getPlayerData(), entry2.getPlayerData(), kit);
-        }
+        return false;
     }
     
     public static void handleQueue(Kit kit){
-        MultithreadedUtils.EXECUTOR_SERVICE.submit(() -> {
-            long playersInKitQueue = QUEUE.stream().filter(entry -> entry.getKit().equals(kit)).count();
+        List<QueueEntry> unrankedEntries = QUEUE.stream().filter(entry -> entry.getKit().equals(kit) && !entry.isRanked()).limit(2).toList();
+        List<QueueEntry> rankedEntries = QUEUE.stream().filter(entry -> entry.getKit().equals(kit) && entry.isRanked()).limit(2).toList();
+        
+        if(unrankedEntries.size() >= 2){
+            PlayerData playerData1 = unrankedEntries.get(0).getPlayerData(),
+                    playerData2 = unrankedEntries.get(1).getPlayerData();
             
-            if(playersInKitQueue >= 2)
-                matchPlayers(kit);
-        });
+            QUEUE.remove(unrankedEntries.get(0));
+            QUEUE.remove(unrankedEntries.get(1));
+            
+            MatchManager.startMatch(kit, false, playerData1, playerData2);
+        }
+        
+        if(rankedEntries.size() >= 2){
+            PlayerData playerData1 = rankedEntries.get(0).getPlayerData(),
+                    playerData2 = rankedEntries.get(1).getPlayerData();
+            
+            QUEUE.remove(rankedEntries.get(0));
+            QUEUE.remove(rankedEntries.get(1));
+            
+            MatchManager.startMatch(kit, true, playerData1, playerData2);
+        }
     }
 }

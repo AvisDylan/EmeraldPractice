@@ -1,6 +1,13 @@
 package com.emeraldnetwork.emeraldPractice.player;
 
+import com.emeraldnetwork.emeraldPractice.database.DatabaseManager;
+import com.emeraldnetwork.emeraldPractice.kit.Kit;
+import com.emeraldnetwork.emeraldPractice.kit.KitManager;
+import com.emeraldnetwork.emeraldPractice.profile.PlayerKitProfile;
 import com.emeraldnetwork.emeraldPractice.profile.PlayerProfile;
+import fr.mrmicky.fastboard.FastBoard;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.util.Objects;
@@ -11,10 +18,21 @@ public class PlayerData{
     private final UUID uuid;
     private final PlayerProfile profile;
     private PlayerState playerState;
+    private final FastBoard fastBoard;
     
-    public PlayerData(Player player){
-        uuid = player.getUniqueId();
-        profile = new PlayerProfile(player);
+    public PlayerData(UUID uuid){
+        this.uuid = uuid;
+        this.fastBoard = new FastBoard(Bukkit.getPlayer(uuid));
+        PlayerProfile loadedProfile = DatabaseManager.loadPlayerProfile(uuid);
+        
+        fastBoard.updateTitle(ChatColor.RESET + "" + ChatColor.DARK_GREEN + ChatColor.BOLD + "Emerald " + ChatColor.GREEN + ChatColor.BOLD + "Network");
+        
+        if(loadedProfile == null){
+            profile = new PlayerProfile(uuid);
+            
+            KitManager.KITS.forEach(kit -> profile.getKitDataList().put(kit.getName(), new PlayerKitProfile()));
+        }else
+            profile = loadedProfile;
     }
     
     public UUID getUuid(){
@@ -31,6 +49,10 @@ public class PlayerData{
     
     public void setPlayerState(PlayerState playerState){
         this.playerState = playerState;
+    }
+    
+    public FastBoard getFastBoard(){
+        return fastBoard;
     }
     
     @Override

@@ -6,6 +6,7 @@ prefix: Emerald
 authors: [Avis]
 description: uhh ye
 website: emerald-network.com
+soft-depend: [Citizens]
 commands:
   kit:
     description: edit kits
@@ -19,3 +20,5 @@ commands:
     description: set a custom spawnpoint
   leave:
     description: lets you leave games
+  world:
+    description: create new world

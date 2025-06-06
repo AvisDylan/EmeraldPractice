@@ -1,8 +1,7 @@
 package com.emeraldnetwork.emeraldPractice.map;
 
-import com.emeraldnetwork.emeraldPractice.EmeraldPractice;
 import com.google.gson.annotations.Expose;
-import org.bukkit.Location;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -17,13 +16,26 @@ public class Map{
     @Expose
     private double playerOneX, playerOneY, playerOneZ, playerTwoX, playerTwoY, playerTwoZ;
     @Expose
-    private final File mapSchematic;
+    private final File worldFolder;
     
-    public Map(String name, String schematic){
+    public Map(File sourceWorldFolder, double playerTwoZ, double playerTwoY, double playerTwoX, double playerOneZ, double playerOneY, double playerOneX, ItemStack icon, String displayName, String name){
+        this.worldFolder = sourceWorldFolder;
+        this.playerTwoZ = playerTwoZ;
+        this.playerTwoY = playerTwoY;
+        this.playerTwoX = playerTwoX;
+        this.playerOneZ = playerOneZ;
+        this.playerOneY = playerOneY;
+        this.playerOneX = playerOneX;
+        this.icon = icon;
+        this.displayName = displayName;
+        this.name = name;
+    }
+    
+    public Map(String name, String map){
         this.name = name;
         displayName = name;
-        mapSchematic = new File("plugins/WorldEdit/schematics/" + schematic + ".schematic");
         icon = new ItemStack(Material.COBBLESTONE, 1);
+        worldFolder = new File(Bukkit.getWorldContainer().getParentFile(), map);
     }
     
     public String getName(){
@@ -50,59 +62,55 @@ public class Map{
         this.icon = icon;
     }
     
-    public void setPlayerOneSpawn(double x, double y, double z){
-        this.playerOneX = x;
-        this.playerOneY = y;
-        this.playerOneZ = z;
-    }
-    
-    public void setPlayerTwoSpawn(double x, double y, double z){
-        this.playerTwoX = x;
-        this.playerTwoY = y;
-        this.playerTwoZ = z;
-    }
-    
     public double getPlayerOneX(){
         return playerOneX;
+    }
+    
+    public void setPlayerOneX(double playerOneX){
+        this.playerOneX = playerOneX;
     }
     
     public double getPlayerOneY(){
         return playerOneY;
     }
     
+    public void setPlayerOneY(double playerOneY){
+        this.playerOneY = playerOneY;
+    }
+    
     public double getPlayerOneZ(){
         return playerOneZ;
+    }
+    
+    public void setPlayerOneZ(double playerOneZ){
+        this.playerOneZ = playerOneZ;
     }
     
     public double getPlayerTwoX(){
         return playerTwoX;
     }
     
+    public void setPlayerTwoX(double playerTwoX){
+        this.playerTwoX = playerTwoX;
+    }
+    
     public double getPlayerTwoY(){
         return playerTwoY;
+    }
+    
+    public void setPlayerTwoY(double playerTwoY){
+        this.playerTwoY = playerTwoY;
     }
     
     public double getPlayerTwoZ(){
         return playerTwoZ;
     }
     
-    public File getMapSchematic(){
-        return mapSchematic;
+    public void setPlayerTwoZ(double playerTwoZ){
+        this.playerTwoZ = playerTwoZ;
     }
     
-    @Override
-    public String toString(){
-        return "Map{" +
-                "name='" + name + '\'' +
-                ", displayName='" + displayName + '\'' +
-                ", icon=" + icon +
-                ", playerOneX=" + playerOneX +
-                ", playerOneY=" + playerOneY +
-                ", playerOneZ=" + playerOneZ +
-                ", playerTwoX=" + playerTwoX +
-                ", playerTwoY=" + playerTwoY +
-                ", playerTwoZ=" + playerTwoZ +
-                ", mapSchematic=" + mapSchematic +
-                '}';
+    public File getWorldFolder(){
+        return worldFolder;
     }
 }

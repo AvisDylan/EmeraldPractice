@@ -12,7 +12,7 @@ public class BlockBreakListener implements Listener{
     
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event){
-        PlayerData playerData = PlayerManager.getPlayerData(event.getPlayer());
+        PlayerData playerData = PlayerManager.getPlayerData(event.getPlayer().getUniqueId());
         
         switch(playerData.getPlayerState()){
             case QUEUE, SPAWN, SPECTATING -> {

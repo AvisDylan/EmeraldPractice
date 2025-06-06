@@ -56,10 +56,14 @@ public class MapCommand implements CommandExecutor{
                                 
                                 if(map.getName().equalsIgnoreCase(strings[2])){
                                     if(strings[3].equalsIgnoreCase("player1")){
-                                        map.setPlayerOneSpawn(player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ());
+                                        map.setPlayerOneX(player.getLocation().getX());
+                                        map.setPlayerOneY(player.getLocation().getY());
+                                        map.setPlayerOneZ(player.getLocation().getZ());
                                         commandSender.sendMessage("§aSet player one spawn on " + strings[1] + " on map" + strings[2] + " to your position!");
                                     }else if(strings[3].equalsIgnoreCase("player2")){
-                                        map.setPlayerOneSpawn(player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ());
+                                        map.setPlayerTwoX(player.getLocation().getX());
+                                        map.setPlayerTwoY(player.getLocation().getY());
+                                        map.setPlayerTwoZ(player.getLocation().getZ());
                                         commandSender.sendMessage("§aSet player one spawn on " + strings[1] + " on map" + strings[2] + " to your position!");
                                     }else{
                                         commandSender.sendMessage("§c" + strings[1] + " is not a valid option!");

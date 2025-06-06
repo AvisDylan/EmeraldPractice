@@ -1,6 +1,7 @@
 package com.emeraldnetwork.emeraldPractice.kit;
 
 import com.emeraldnetwork.emeraldPractice.map.Map;
+import com.emeraldnetwork.emeraldPractice.math.BoundingBox;
 import com.google.gson.annotations.Expose;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -15,27 +16,31 @@ public class Kit{
     private String name, displayName;
     @Expose
     private ItemStack[] editorItems, items, armourItems;
+    @Expose
     private PotionEffect[] potionEffects;
     @Expose
     private ItemStack icon;
     @Expose
-    private boolean ranked, enabled, editable, bedwars, boxing, noHitDelay, blocks, ffa, hunger, deathDrops, drop, fallDamage;
+    private BoundingBox buildableArea;
     @Expose
-    private int rounds;
+    private boolean ranked, enabled, editable, bedwars, boxing, noHitDelay, blocks, ffa, hunger, deathDrops, drop, fallDamage, voidInstaKill;
+    @Expose
+    private int rounds, maxBuildHeight, minBuildHeight;
     @Expose
     private long maxDurationInSeconds;
     @Expose
-    private final List<String> startCommand = new ArrayList<>();
+    private final Set<String> startCommand = new HashSet<>();
     @Expose
     private final Set<Map> maps = new HashSet<>();
     
-    public Kit(String name, String displayName, PotionEffect[] potionEffects, ItemStack[] editorItems, ItemStack[] items, ItemStack[] armourItems, ItemStack icon, boolean ranked, boolean enabled, boolean editable, boolean bedwars, boolean boxing, boolean noHitDelay, boolean blocks, int rounds, long maxDurationInSeconds, boolean ffa, boolean hunger, boolean deathDrops, boolean drop, boolean fallDamage){
+    public Kit(String name, String displayName, PotionEffect[] potionEffects, ItemStack[] editorItems, ItemStack[] items, ItemStack[] armourItems, ItemStack icon, BoundingBox buildableArea, boolean ranked, boolean enabled, boolean editable, boolean bedwars, boolean boxing, boolean noHitDelay, boolean blocks, int rounds, int maxBuildHeight, int minBuildHeight, long maxDurationInSeconds, boolean ffa, boolean hunger, boolean deathDrops, boolean drop, boolean fallDamage, boolean voidInstaKill){
         this.name = name;
         this.displayName = displayName;
         this.editorItems = editorItems;
         this.items = items;
         this.armourItems = armourItems;
         this.icon = icon;
+        this.buildableArea = buildableArea;
         this.ranked = ranked;
         this.enabled = enabled;
         this.editable = editable;
@@ -44,6 +49,8 @@ public class Kit{
         this.noHitDelay = noHitDelay;
         this.blocks = blocks;
         this.rounds = rounds;
+        this.maxBuildHeight = maxBuildHeight;
+        this.minBuildHeight = minBuildHeight;
         this.maxDurationInSeconds = maxDurationInSeconds;
         this.ffa = ffa;
         this.hunger = hunger;
@@ -51,12 +58,14 @@ public class Kit{
         this.drop = drop;
         this.fallDamage = fallDamage;
         this.potionEffects = potionEffects;
+        this.voidInstaKill = voidInstaKill;
     }
     
     public Kit(String name){
         this.name = name;
         displayName = name;
         icon = new ItemStack(Material.COBBLESTONE, 1);
+        buildableArea = null;
         potionEffects = new PotionEffect[13];
         editorItems = new ItemStack[36];
         items = new ItemStack[36];
@@ -69,12 +78,15 @@ public class Kit{
         noHitDelay = false;
         blocks = false;
         rounds = 0;
+        maxBuildHeight = 12;
+        minBuildHeight = 12;
         maxDurationInSeconds = 600;
         ffa = false;
         hunger = false;
         drop = false;
         deathDrops = false;
         fallDamage = false;
+        voidInstaKill = true;
     }
     
     public void applyKit(Player player){
@@ -221,7 +233,7 @@ public class Kit{
         this.rounds = rounds;
     }
     
-    public List<String> getStartCommand(){
+    public Set<String> getStartCommand(){
         return startCommand;
     }
     
@@ -273,6 +285,49 @@ public class Kit{
         this.fallDamage = fallDamage;
     }
     
+    public BoundingBox getBuildableArea(){
+        return buildableArea;
+    }
+    
+    public void setBuildableArea(BoundingBox buildableArea){
+        this.buildableArea = buildableArea;
+    }
+    
+    public boolean isVoidInstaKill(){
+        return voidInstaKill;
+    }
+    
+    public void setVoidInstaKill(boolean voidInstaKill){
+        this.voidInstaKill = voidInstaKill;
+    }
+    
+    public int getMaxBuildHeight(){
+        return maxBuildHeight;
+    }
+    
+    public void setMaxBuildHeight(int maxBuildHeight){
+        this.maxBuildHeight = maxBuildHeight;
+    }
+    
+    public int getMinBuildHeight(){
+        return minBuildHeight;
+    }
+    
+    public void setMinBuildHeight(int minBuildHeight){
+        this.minBuildHeight = minBuildHeight;
+    }
+    
+    @Override
+    public boolean equals(Object o){
+        if(!(o instanceof Kit kit)) return false;
+        return isRanked() == kit.isRanked() && isEnabled() == kit.isEnabled() && isEditable() == kit.isEditable() && isBedwars() == kit.isBedwars() && isBoxing() == kit.isBoxing() && isNoHitDelay() == kit.isNoHitDelay() && isBlocks() == kit.isBlocks() && isFfa() == kit.isFfa() && isHunger() == kit.isHunger() && isDeathDrops() == kit.isDeathDrops() && isDrop() == kit.isDrop() && isFallDamage() == kit.isFallDamage() && isVoidInstaKill() == kit.isVoidInstaKill() && getRounds() == kit.getRounds() && getMaxBuildHeight() == kit.getMaxBuildHeight() && getMinBuildHeight() == kit.getMinBuildHeight() && getMaxDurationInSeconds() == kit.getMaxDurationInSeconds() && Objects.equals(getName(), kit.getName()) && Objects.equals(getDisplayName(), kit.getDisplayName()) && Objects.deepEquals(getEditorItems(), kit.getEditorItems()) && Objects.deepEquals(getItems(), kit.getItems()) && Objects.deepEquals(getArmourItems(), kit.getArmourItems()) && Objects.deepEquals(getPotionEffects(), kit.getPotionEffects()) && Objects.equals(getIcon(), kit.getIcon()) && Objects.equals(getBuildableArea(), kit.getBuildableArea()) && Objects.equals(getStartCommand(), kit.getStartCommand()) && Objects.equals(getMaps(), kit.getMaps());
+    }
+    
+    @Override
+    public int hashCode(){
+        return Objects.hash(getName(), getDisplayName(), Arrays.hashCode(getEditorItems()), Arrays.hashCode(getItems()), Arrays.hashCode(getArmourItems()), Arrays.hashCode(getPotionEffects()), getIcon(), getBuildableArea(), isRanked(), isEnabled(), isEditable(), isBedwars(), isBoxing(), isNoHitDelay(), isBlocks(), isFfa(), isHunger(), isDeathDrops(), isDrop(), isFallDamage(), isVoidInstaKill(), getRounds(), getMaxBuildHeight(), getMinBuildHeight(), getMaxDurationInSeconds(), getStartCommand(), getMaps());
+    }
+    
     @Override
     public String toString(){
         return "Kit{" +
@@ -281,28 +336,28 @@ public class Kit{
                 ", editorItems=" + Arrays.toString(editorItems) +
                 ", items=" + Arrays.toString(items) +
                 ", armourItems=" + Arrays.toString(armourItems) +
+                ", potionEffects=" + Arrays.toString(potionEffects) +
                 ", icon=" + icon +
+                ", buildableArea=" + buildableArea +
                 ", ranked=" + ranked +
                 ", enabled=" + enabled +
                 ", editable=" + editable +
                 ", bedwars=" + bedwars +
                 ", boxing=" + boxing +
                 ", noHitDelay=" + noHitDelay +
-                ", breakBlocks=" + blocks +
+                ", blocks=" + blocks +
+                ", ffa=" + ffa +
+                ", hunger=" + hunger +
+                ", deathDrops=" + deathDrops +
+                ", drop=" + drop +
+                ", fallDamage=" + fallDamage +
+                ", voidInstaKill=" + voidInstaKill +
                 ", rounds=" + rounds +
+                ", maxBuildHeight=" + maxBuildHeight +
+                ", minBuildHeight=" + minBuildHeight +
+                ", maxDurationInSeconds=" + maxDurationInSeconds +
                 ", startCommand=" + startCommand +
                 ", maps=" + maps +
                 '}';
-    }
-    
-    @Override
-    public boolean equals(Object o){
-        if(!(o instanceof Kit kit)) return false;
-        return isRanked() == kit.isRanked() && isEnabled() == kit.isEnabled() && isEditable() == kit.isEditable() && isBedwars() == kit.isBedwars() && isBoxing() == kit.isBoxing() && isNoHitDelay() == kit.isNoHitDelay() && isBlocks() == kit.isBlocks() && getRounds() == kit.getRounds() && Objects.equals(getName(), kit.getName()) && Objects.equals(getDisplayName(), kit.getDisplayName()) && Objects.deepEquals(getEditorItems(), kit.getEditorItems()) && Objects.deepEquals(getItems(), kit.getItems()) && Objects.deepEquals(getArmourItems(), kit.getArmourItems()) && Objects.equals(getIcon(), kit.getIcon()) && Objects.equals(getStartCommand(), kit.getStartCommand()) && Objects.equals(getMaps(), kit.getMaps());
-    }
-    
-    @Override
-    public int hashCode(){
-        return Objects.hash(getName(), getDisplayName(), Arrays.hashCode(getEditorItems()), Arrays.hashCode(getItems()), Arrays.hashCode(getArmourItems()), getIcon(), isRanked(), isEnabled(), isEditable(), isBedwars(), isBoxing(), isNoHitDelay(), isBlocks(), getRounds(), getStartCommand(), getMaps());
     }
 }

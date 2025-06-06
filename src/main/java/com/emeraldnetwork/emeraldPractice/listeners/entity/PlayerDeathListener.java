@@ -1,6 +1,5 @@
 package com.emeraldnetwork.emeraldPractice.listeners.entity;
 
-import com.emeraldnetwork.emeraldPractice.events.EmeraldPlayerDeathEvent;
 import com.emeraldnetwork.emeraldPractice.match.Match;
 import com.emeraldnetwork.emeraldPractice.match.MatchManager;
 import com.emeraldnetwork.emeraldPractice.player.PlayerData;
@@ -15,7 +14,7 @@ public class PlayerDeathListener implements Listener{
     public void onPlayerDeath(PlayerDeathEvent event){
         event.getEntity().spigot().respawn();
         
-        PlayerData playerData = PlayerManager.getPlayerData(event.getEntity());
+        PlayerData playerData = PlayerManager.getPlayerData(event.getEntity().getUniqueId());
         
         
         switch(playerData.getPlayerState()){
@@ -25,6 +24,8 @@ public class PlayerDeathListener implements Listener{
                 if(match != null){
                     if(match.getKit().isDeathDrops())
                         event.getDrops().clear();
+                    
+                    match.onDeath(playerData, PlayerManager.getPlayerData(event.getEntity().getKiller().getUniqueId()));
                 }
             }
             case FFA -> {
@@ -32,10 +33,5 @@ public class PlayerDeathListener implements Listener{
             }
             default -> event.getDrops().clear();
         }
-    }
-    
-    @EventHandler
-    public void onEmeraldPlayerDeath(EmeraldPlayerDeathEvent event){
-        event.getMatch().onDeath(PlayerManager.getPlayerData(event.getPlayer()), PlayerManager.getPlayerData(event.getKiller()));
     }
 }

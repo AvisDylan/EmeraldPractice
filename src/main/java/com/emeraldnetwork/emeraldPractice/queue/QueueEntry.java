@@ -10,11 +10,13 @@ public class QueueEntry{
     private PlayerData playerData;
     private Kit kit;
     private boolean ranked;
+    private int teamSize;
     
-    public QueueEntry(PlayerData playerData, Kit kit, boolean ranked){
+    public QueueEntry(PlayerData playerData, Kit kit, boolean ranked, int teamSize){
         this.playerData = playerData;
         this.kit = kit;
         this.ranked = ranked;
+        this.teamSize = teamSize;
     }
     
     public PlayerData getPlayerData(){
@@ -39,6 +41,14 @@ public class QueueEntry{
     
     public void setRanked(boolean ranked){
         this.ranked = ranked;
+    }
+    
+    public int getTeamSize(){
+        return teamSize;
+    }
+    
+    public void setTeamSize(int teamSize){
+        this.teamSize = teamSize;
     }
     
     @Override

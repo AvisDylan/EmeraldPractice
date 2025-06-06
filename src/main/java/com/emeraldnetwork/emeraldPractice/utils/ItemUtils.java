@@ -6,7 +6,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.Arrays;
 
-public class ItemUtils{
+public final class ItemUtils{
 
     public static final ItemStack[] SPAWN_ITEMS = { createItem(Material.IRON_SWORD, 1, "§7Unranked Queue (right click)", true),
                                                         createItem(Material.DIAMOND_SWORD, 1, "§2Ranked Queue §7(right click)", true),

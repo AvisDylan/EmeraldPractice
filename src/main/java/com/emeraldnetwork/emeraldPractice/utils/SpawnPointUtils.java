@@ -3,7 +3,7 @@ package com.emeraldnetwork.emeraldPractice.utils;
 import com.google.gson.annotations.Expose;
 import org.bukkit.Location;
 
-public class SpawnPointUtils{
+public final class SpawnPointUtils{
     
     @Expose
     private static Location spawnPoint;

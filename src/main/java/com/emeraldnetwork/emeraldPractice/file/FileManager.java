@@ -1,7 +1,10 @@
 package com.emeraldnetwork.emeraldPractice.file;
 
 import com.emeraldnetwork.emeraldPractice.EmeraldPractice;
+import com.emeraldnetwork.emeraldPractice.adapter.FileAdapter;
+import com.emeraldnetwork.emeraldPractice.adapter.ItemStackAdapter;
 import com.emeraldnetwork.emeraldPractice.adapter.LocationAdapter;
+import com.emeraldnetwork.emeraldPractice.adapter.PotionEffectAdapter;
 import com.emeraldnetwork.emeraldPractice.kit.Kit;
 import com.emeraldnetwork.emeraldPractice.kit.KitManager;
 import com.emeraldnetwork.emeraldPractice.utils.SpawnPointUtils;
@@ -10,17 +13,18 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
 
 import java.io.*;
 import java.lang.reflect.Type;
 import java.util.List;
-import java.util.UUID;
 
 public class FileManager{
     
     private static final File KITS_FILE = new File(EmeraldPractice.getPlugin().getDataFolder().getAbsoluteFile() + "/kits.json");
     private static final File SPAWN_POINT_FILE = new File(EmeraldPractice.getPlugin().getDataFolder().getAbsoluteFile() + "/spawnpoint.json");
-    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().excludeFieldsWithoutExposeAnnotation().create();
+    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().excludeFieldsWithoutExposeAnnotation().registerTypeAdapter(Location.class, new LocationAdapter()).registerTypeAdapter(ItemStack.class, new ItemStackAdapter()).registerTypeAdapter(PotionEffect.class, new PotionEffectAdapter()).registerTypeAdapter(File.class, new FileAdapter()).create();
     
     public static void saveSpawnPoint(){
         try{
@@ -29,10 +33,10 @@ public class FileManager{
             
             Writer writer = new BufferedWriter(new FileWriter(SPAWN_POINT_FILE, false));
             
-            GSON.toJson(new LocationAdapter(SpawnPointUtils.getSpawnPoint().getWorld().getName(), SpawnPointUtils.getSpawnPoint().getX(), SpawnPointUtils.getSpawnPoint().getY(), SpawnPointUtils.getSpawnPoint().getZ(), SpawnPointUtils.getSpawnPoint().getYaw(), SpawnPointUtils.getSpawnPoint().getPitch()), writer);
+            GSON.toJson(SpawnPointUtils.getSpawnPoint(), writer);
             writer.flush();
             writer.close();
-            Bukkit.getLogger().fine("Saved spawn point!");
+            Bukkit.getLogger().info("Saved spawn point!");
         }catch(FileNotFoundException fnfe){
             Bukkit.getLogger().severe("File not found!");
         }catch(IOException ie){
@@ -46,11 +50,10 @@ public class FileManager{
             SPAWN_POINT_FILE.createNewFile();
             
             Reader reader = new BufferedReader(new FileReader(SPAWN_POINT_FILE));
-            Type type = new TypeToken<LocationAdapter>(){}.getType();
-            LocationAdapter locationAdapter = GSON.fromJson(reader, type);
+            Type type = new TypeToken<Location>(){}.getType();
             
-            SpawnPointUtils.setSpawnPoint(new Location(Bukkit.getWorld(locationAdapter.getWorldName()), locationAdapter.getX(), locationAdapter.getY(), locationAdapter.getZ(), locationAdapter.getYaw(), locationAdapter.getPitch()));
-            Bukkit.getLogger().fine("Loaded spawn point!");
+            SpawnPointUtils.setSpawnPoint(GSON.fromJson(reader, type));
+            Bukkit.getLogger().info("Loaded spawn point!");
             reader.close();
         }catch(FileNotFoundException fnfe){
             Bukkit.getLogger().severe("File not found!");
@@ -71,7 +74,7 @@ public class FileManager{
             GSON.toJson(KitManager.KITS, writer);
             writer.flush();
             writer.close();
-            Bukkit.getLogger().fine("Saved kits!");
+            Bukkit.getLogger().info("Saved kits!");
         }catch(FileNotFoundException fnfe){
             Bukkit.getLogger().severe("File not found!");
         }catch(IOException ie){
@@ -88,7 +91,7 @@ public class FileManager{
             Type type = new TypeToken<List<Kit>>(){}.getType();
             
             KitManager.KITS.addAll(GSON.fromJson(reader, type));
-            Bukkit.getLogger().fine("Loaded kits!");
+            Bukkit.getLogger().info("Loaded kits!");
             reader.close();
         }catch(FileNotFoundException fnfe){
             Bukkit.getLogger().severe("File not found!");

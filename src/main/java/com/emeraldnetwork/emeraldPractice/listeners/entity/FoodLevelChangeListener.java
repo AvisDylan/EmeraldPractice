@@ -13,12 +13,11 @@ public class FoodLevelChangeListener implements Listener{
     
     @EventHandler
     public void onFoodLevelChange(FoodLevelChangeEvent event){
-        PlayerData playerData = PlayerManager.getPlayerData((Player) event.getEntity());
+        PlayerData playerData = PlayerManager.getPlayerData(event.getEntity().getUniqueId());
         
         switch(playerData.getPlayerState()){
             case QUEUE, SPAWN, SPECTATING -> {
-                if(!playerData.getProfile().isEditMode())
-                    event.setCancelled(true);
+                event.setCancelled(true);
             }
             case DUEL -> {
                 Match match = MatchManager.getPlayerMatch(playerData);

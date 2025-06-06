@@ -12,7 +12,7 @@ public class EditModeCommand implements CommandExecutor{
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings){
         if(commandSender.hasPermission("emerald.practice")){
-            PlayerProfile playerProfile = PlayerManager.getPlayerData((Player) commandSender).getProfile();
+            PlayerProfile playerProfile = PlayerManager.getPlayerData(((Player) commandSender).getUniqueId()).getProfile();
             
             playerProfile.setEditMode(!playerProfile.isEditMode());
             commandSender.sendMessage(playerProfile.isEditMode() ? "§aYou have enabled edit mode!" : "§aYou have disabled edit mode!");

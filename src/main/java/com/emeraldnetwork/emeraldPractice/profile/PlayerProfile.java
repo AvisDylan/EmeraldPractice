@@ -2,35 +2,25 @@ package com.emeraldnetwork.emeraldPractice.profile;
 
 import com.emeraldnetwork.emeraldPractice.kit.Kit;
 import com.emeraldnetwork.emeraldPractice.kit.KitManager;
-import com.google.gson.annotations.Expose;
-import org.bukkit.Bukkit;
+import com.emeraldnetwork.emeraldPractice.utils.MathUtils;
 import org.bukkit.WeatherType;
-import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class PlayerProfile{
     
-    @Expose
     private final UUID uuid;
-    @Expose
     private boolean receiveMessages = true, messageSounds = true, duelRequests = true, scoreBoard = true, globalChat = true, editMode = false;
-    @Expose
     private WeatherType playerWeather = WeatherType.CLEAR;
-    @Expose
     private int pingRange = 200;
-    @Expose
-    private long playerTime = 0;
-    @Expose
-    private final Map<Kit, PlayerKitProfile> kitDataList = new HashMap<>();
+    private int playerTime = 0;
+    private final Map<String, PlayerKitProfile> kitDataList = new HashMap<>();
     
-    public PlayerProfile(Player player){
-        uuid = player.getUniqueId();
-        for(Kit kit : KitManager.KITS){
-            kitDataList.put(kit, new PlayerKitProfile());
-        }
+    public PlayerProfile(UUID uuid){
+        this.uuid = uuid;
     }
     
     public UUID getUuid(){
@@ -101,15 +91,45 @@ public class PlayerProfile{
         this.pingRange = pingRange;
     }
     
-    public long getPlayerTime(){
+    public int getPlayerTime(){
         return playerTime;
     }
     
-    public void setPlayerTime(long playerTime){
+    public void setPlayerTime(int playerTime){
         this.playerTime = playerTime;
     }
     
+    public Map<String, PlayerKitProfile> getKitDataList(){
+        return kitDataList;
+    }
+    
     public PlayerKitProfile getStats(Kit kit){
-        return kitDataList.get(kit);
+        return kitDataList.get(kit.getName());
+    }
+    
+    public int getTotalUnrankedWins(){
+        AtomicInteger totalWins = new AtomicInteger();
+        
+        KitManager.KITS.forEach(kit -> totalWins.addAndGet(getStats(kit).getUnrankedWins()));
+        
+        return totalWins.get();
+    }
+    
+    public int getTotalRankedWins(){
+        AtomicInteger totalWins = new AtomicInteger();
+        
+        KitManager.KITS.forEach(kit -> totalWins.addAndGet(getStats(kit).getRankedWins()));
+        
+        return totalWins.get();
+    }
+    
+    public double getAverageKd(){
+        double[] kds = new double[KitManager.KITS.size()];
+        
+        for(int i = 0; i < KitManager.KITS.size(); i++){
+            kds[i] = getStats(KitManager.KITS.get(i)).getKd();
+        }
+        
+        return MathUtils.getMean(kds);
     }
 }

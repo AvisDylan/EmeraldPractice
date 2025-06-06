@@ -1,16 +1,26 @@
 package com.emeraldnetwork.emeraldPractice;
 
 import com.emeraldnetwork.emeraldPractice.commands.*;
+import com.emeraldnetwork.emeraldPractice.database.DatabaseManager;
 import com.emeraldnetwork.emeraldPractice.file.FileManager;
 import com.emeraldnetwork.emeraldPractice.kit.KitManager;
 import com.emeraldnetwork.emeraldPractice.listeners.entity.*;
 import com.emeraldnetwork.emeraldPractice.listeners.world.MobSpawnListener;
 import com.emeraldnetwork.emeraldPractice.listeners.world.WeatherChangeListener;
+import com.emeraldnetwork.emeraldPractice.player.PlayerData;
+import com.emeraldnetwork.emeraldPractice.player.PlayerManager;
 import com.emeraldnetwork.emeraldPractice.queue.QueueManager;
+import com.emeraldnetwork.emeraldPractice.scoreboard.ScoreboardManager;
+import com.emeraldnetwork.emeraldPractice.utils.MultithreadedUtils;
+import com.emeraldnetwork.emeraldPractice.utils.SpawnPointUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.reflections.Reflections;
+
+import java.lang.reflect.InvocationTargetException;
 
 public final class EmeraldPractice extends JavaPlugin{
     
@@ -22,22 +32,21 @@ public final class EmeraldPractice extends JavaPlugin{
             getLogger().warning("Your java version is too low consider updating to java version 17+");
         
         plugin = this;
+        String packageName = getClass().getPackage().getName();
         
         FileManager.loadKits();
         FileManager.loadSpawnPoint();
+        DatabaseManager.init();
         
-        getServer().getPluginManager().registerEvents(new JoinListener(), this);
-        getServer().getPluginManager().registerEvents(new PlayerInteractListener(), this);
-        getServer().getPluginManager().registerEvents(new BlockPlaceListener(), this);
-        getServer().getPluginManager().registerEvents(new BlockBreakListener(), this);
-        getServer().getPluginManager().registerEvents(new EntityDamageByEntityListener(), this);
-        getServer().getPluginManager().registerEvents(new LeaveListener(), this);
-        getServer().getPluginManager().registerEvents(new MobSpawnListener(), this);
-        getServer().getPluginManager().registerEvents(new WeatherChangeListener(), this);
-        getServer().getPluginManager().registerEvents(new FoodLevelChangeListener(), this);
-        getServer().getPluginManager().registerEvents(new PlayerDeathListener(), this);
-        getServer().getPluginManager().registerEvents(new PlayerDropItemListener(), this);
-        getServer().getPluginManager().registerEvents(new EntityDamageListener(), this);
+        for(Class<?> clazz : new Reflections(packageName + ".listeners").getSubTypesOf(Listener.class)){
+            try{
+                Listener listener = (Listener) clazz.getDeclaredConstructor().newInstance();
+                
+                getServer().getPluginManager().registerEvents(listener, this);
+            }catch(InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e){
+                throw new RuntimeException(e);
+            }
+        }
         
         getCommand("kit").setExecutor(new KitCommand());
         getCommand("map").setExecutor(new MapCommand());
@@ -45,18 +54,26 @@ public final class EmeraldPractice extends JavaPlugin{
         getCommand("edit").setExecutor(new EditModeCommand());
         getCommand("setspawn").setExecutor(new SpawnPointCommand());
         getCommand("leave").setExecutor(new LeaveCommand());
+        getCommand("world").setExecutor(new WorldCommand());
         
-        KitManager.KITS.forEach(kit -> {
-            Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, () -> {
-                QueueManager.handleQueue(kit);
-            }, 0L, 10L);
-        });
+        KitManager.KITS.forEach(kit -> Bukkit.getScheduler().runTaskTimer(this, () -> QueueManager.handleQueue(kit), 0L, 10L));
+        
+        Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> MultithreadedUtils.EXECUTOR_SERVICE.submit(() -> {
+            for(PlayerData playerData : PlayerManager.PLAYERS.values()){
+                ScoreboardManager.updateBoard(playerData);
+            }
+        }), 0L, 10L);
+        
+        Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> MultithreadedUtils.EXECUTOR_SERVICE.submit(() -> PlayerManager.PLAYERS.forEach((uuid, playerData) -> DatabaseManager.savePlayerProfile(playerData.getProfile()))), 12000L, 12000L);
     }
     
     @Override
     public void onDisable(){
-        FileManager.saveKits();
-        FileManager.saveSpawnPoint();
+        if(!KitManager.KITS.isEmpty())
+            FileManager.saveKits();
+        
+        if(SpawnPointUtils.getSpawnPoint() != null)
+            FileManager.saveSpawnPoint();
     }
     
     public static Plugin getPlugin(){
