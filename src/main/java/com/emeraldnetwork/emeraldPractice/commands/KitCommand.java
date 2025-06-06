@@ -102,7 +102,7 @@ public class KitCommand implements CommandExecutor{
                                     kit1.setNoHitDelay(!kit1.isNoHitDelay());
                                     commandSender.sendMessage(kit1.isNoHitDelay() ? "§aEnabled no hit delay on " + strings[1] + "!" : "§aDisabled no hit delay on " + strings[1] + "!");
                                 }
-                                case "breakblocks" -> {
+                                case "blocks" -> {
                                     kit1.setBlocks(!kit1.isBlocks());
                                     commandSender.sendMessage(kit1.isBlocks() ? "§aEnabled break blocks on " + strings[1] + "!" : "§aDisabled break blocks on " + strings[1] + "!");
                                 }

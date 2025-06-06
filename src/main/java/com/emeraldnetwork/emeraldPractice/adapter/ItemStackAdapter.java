@@ -47,7 +47,7 @@ public class ItemStackAdapter implements JsonSerializer<ItemStack>, JsonDeserial
                 JsonObject enchantObject = new JsonObject();
                 
                 itemMeta.getEnchants().forEach((enchantment, level) -> enchantObject.addProperty(enchantment.getName(), level));
-                enchantObject.add("enchants", enchantObject);
+                metaObject.add("enchants", enchantObject);
             }
             
             if(!itemMeta.getItemFlags().isEmpty()){
@@ -98,6 +98,7 @@ public class ItemStackAdapter implements JsonSerializer<ItemStack>, JsonDeserial
         
         if(object.has("meta")){
             JsonObject metaObject = object.getAsJsonObject("meta");
+            Bukkit.getLogger().info(material.name());
             ItemMeta itemMeta = Bukkit.getItemFactory().getItemMeta(material);
             
             if(metaObject.has("display-name"))
@@ -147,7 +148,6 @@ public class ItemStackAdapter implements JsonSerializer<ItemStack>, JsonDeserial
                         potionMeta.addCustomEffect(new PotionEffect(potionEffectType, amplifier, duration), true);
                 });
             }
-            
             itemStack.setItemMeta(itemMeta);
         }
         

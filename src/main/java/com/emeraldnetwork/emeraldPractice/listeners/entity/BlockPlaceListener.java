@@ -23,7 +23,7 @@ public class BlockPlaceListener implements Listener{
                 Match match = MatchManager.getPlayerMatch(playerData);
                 
                 if(match != null){
-                    if(event.getBlockPlaced().getLocation().getY() >= (match.getActiveMap().getMap().getPlayerOneY() + match.getKit().getMaxBuildHeight())){
+                    /*if(event.getBlockPlaced().getLocation().getY() >= (match.getActiveMap().getMap().getPlayerOneY() + match.getKit().getMaxBuildHeight())){
                         event.setCancelled(true);
                         return;
                     }
@@ -32,7 +32,7 @@ public class BlockPlaceListener implements Listener{
                         event.setCancelled(true);
                         return;
                     }
-                    
+                    */
                     if(match.getKit().isBlocks())
                         match.getPlayerPlacedBlocks().add(event.getBlockPlaced());
                     else

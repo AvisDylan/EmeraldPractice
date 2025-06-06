@@ -43,6 +43,9 @@ public class EntityDamageByEntityListener implements Listener{
                         else if(match.getTeamTwo().getPlayers().contains(attackerData))
                             match.incrementTeamTwoHits();
                     }
+                    
+                    if(player.getHealth() <= 0 || player.isDead() || (player.getHealth() - event.getFinalDamage()) <= 0)
+                        match.onDeath(playerData, attackerData);
                 }
             }
         }

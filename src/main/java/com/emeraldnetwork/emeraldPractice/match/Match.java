@@ -152,6 +152,7 @@ public class Match implements Listener{
                 player.removePotionEffect(potionEffect.getType());
             }
             
+            player.setFireTicks(0);
             player.setFoodLevel(20);
             player.setHealth(player.getMaxHealth());
             playerData.setPlayerState(PlayerState.SPAWN);
@@ -264,6 +265,20 @@ public class Match implements Listener{
         return null;
     }
     
+    public Team getOtherTeam(PlayerData playerData){
+        for(PlayerData teamOnePlayer : teamOne.getPlayers()){
+            if(teamOnePlayer.equals(playerData))
+                return teamTwo;
+        }
+        
+        for(PlayerData teamTwoPlayer : teamTwo.getPlayers()){
+            if(teamTwoPlayer.equals(playerData))
+                return teamOne;
+        }
+        
+        return null;
+    }
+    
     public int getTeamHits(PlayerData playerData){
         int teamHits = 0;
         Team playerTeam = getTeam(playerData);
@@ -278,12 +293,12 @@ public class Match implements Listener{
     
     public int getOtherTeamHits(PlayerData playerData){
         int teamHits = 0;
-        Team playerTeam = getTeam(playerData);
+        Team playerTeam = getOtherTeam(playerData);
         
         if(playerTeam.equals(teamOne))
-            teamHits = teamTwoHits;
-        else if(playerTeam.equals(teamTwo))
             teamHits = teamOneHits;
+        else if(playerTeam.equals(teamTwo))
+            teamHits = teamTwoHits;
         
         return teamHits;
     }

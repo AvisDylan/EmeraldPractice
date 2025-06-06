@@ -1,9 +1,11 @@
 package com.emeraldnetwork.emeraldPractice.listeners.entity;
 
+import com.emeraldnetwork.emeraldPractice.EmeraldPractice;
 import com.emeraldnetwork.emeraldPractice.match.Match;
 import com.emeraldnetwork.emeraldPractice.match.MatchManager;
 import com.emeraldnetwork.emeraldPractice.player.PlayerData;
 import com.emeraldnetwork.emeraldPractice.player.PlayerManager;
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -24,8 +26,6 @@ public class PlayerDeathListener implements Listener{
                 if(match != null){
                     if(match.getKit().isDeathDrops())
                         event.getDrops().clear();
-                    
-                    match.onDeath(playerData, PlayerManager.getPlayerData(event.getEntity().getKiller().getUniqueId()));
                 }
             }
             case FFA -> {

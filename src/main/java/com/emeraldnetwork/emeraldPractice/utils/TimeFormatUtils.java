@@ -8,7 +8,7 @@ public class TimeFormatUtils{
         Duration duration = Duration.ofMillis(time);
         
         long minutes = duration.toMinutes();
-        long seconds = duration.minusSeconds(minutes).getSeconds();
+        long seconds = duration.minusSeconds(minutes * 60).getSeconds();
         
         return String.format("%02d:%02d", minutes, seconds);
     }

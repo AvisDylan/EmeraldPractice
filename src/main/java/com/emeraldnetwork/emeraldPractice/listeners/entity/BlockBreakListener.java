@@ -23,7 +23,9 @@ public class BlockBreakListener implements Listener{
                 Match match = MatchManager.getPlayerMatch(playerData);
                 
                 if(match != null){
-                    if(!(match.getKit().isBlocks() || match.getPlayerPlacedBlocks().contains(event.getBlock())))
+                    if(!match.getKit().isBlocks())
+                        event.setCancelled(true);
+                    else if(!match.getPlayerPlacedBlocks().contains(event.getBlock()))
                         event.setCancelled(true);
                 }
             }

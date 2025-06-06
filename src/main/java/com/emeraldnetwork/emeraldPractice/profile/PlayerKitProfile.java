@@ -11,6 +11,7 @@ public class PlayerKitProfile{
                 rankedLosses = 0,
                 unrankedWins = 0,
                 unrankedLosses = 0,
+                winstreak = 0,
                 deaths = 0,
                 kills = 0;
     
@@ -34,6 +35,10 @@ public class PlayerKitProfile{
     
     public void incrementUnrankedLosses(){
         unrankedLosses++;
+    }
+    
+    public void incrementWinStreak(){
+        winstreak++;
     }
     
     public void incrementDeaths(){

@@ -1,7 +1,6 @@
 package com.emeraldnetwork.emeraldPractice.player;
 
 import com.emeraldnetwork.emeraldPractice.database.DatabaseManager;
-import com.emeraldnetwork.emeraldPractice.kit.Kit;
 import com.emeraldnetwork.emeraldPractice.kit.KitManager;
 import com.emeraldnetwork.emeraldPractice.profile.PlayerKitProfile;
 import com.emeraldnetwork.emeraldPractice.profile.PlayerProfile;
@@ -53,6 +52,19 @@ public class PlayerData{
     
     public FastBoard getFastBoard(){
         return fastBoard;
+    }
+    
+    public int getPing(){
+        Player player = Bukkit.getPlayer(uuid);
+        
+        try{
+            Object craftPlayer = player.getClass().getMethod("getHandle").invoke(player);
+            
+            return (int) craftPlayer.getClass().getField("ping").get(craftPlayer);
+        }catch(Exception e){
+            e.printStackTrace();
+            return -1;
+        }
     }
     
     @Override
