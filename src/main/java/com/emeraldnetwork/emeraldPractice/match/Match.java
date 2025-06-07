@@ -108,6 +108,9 @@ public class Match implements Listener{
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&aYour team has won the game, GGs!"));
                 player.sendTitle(ChatColor.translateAlternateColorCodes('&', "&aWin!"), ChatColor.translateAlternateColorCodes('&', "&aYour team has won the game, GGs!"));
                 
+                playerData.getProfile().incrementWinStreak();
+                playerData.getProfile().getStats(kit).incrementWinStreak();
+                
                 if(ranked){
                     playerData.getProfile().getStats(kit).increaseElo(1, losingTeam.getAverageElo(kit));
                     playerData.getProfile().getStats(kit).incrementRankedWins();
@@ -121,6 +124,9 @@ public class Match implements Listener{
                 
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cYour team has lost the game, better luck next time!"));
                 player.sendTitle(ChatColor.translateAlternateColorCodes('&', "&cLost!"), ChatColor.translateAlternateColorCodes('&', "&cYour team has lost the game, better luck next time!"));
+                
+                playerData.getProfile().resetWinStreak();
+                playerData.getProfile().getStats(kit).resetWinStreak();
                 
                 if(ranked){
                     playerData.getProfile().getStats(kit).increaseElo(0, winningTeam.getAverageElo(kit));

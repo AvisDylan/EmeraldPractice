@@ -1,7 +1,11 @@
 package com.emeraldnetwork.emeraldPractice.queue;
 
+import com.emeraldnetwork.emeraldPractice.EmeraldPractice;
 import com.emeraldnetwork.emeraldPractice.kit.Kit;
 import com.emeraldnetwork.emeraldPractice.player.PlayerData;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 
 import java.util.Objects;
 
@@ -10,13 +14,31 @@ public class QueueEntry{
     private PlayerData playerData;
     private Kit kit;
     private boolean ranked;
-    private int teamSize;
+    private int teamSize, minPing, maxPing, pingIncrement;
+    private final int schedulerId;
+    private final long startTime;
     
     public QueueEntry(PlayerData playerData, Kit kit, boolean ranked, int teamSize){
         this.playerData = playerData;
         this.kit = kit;
         this.ranked = ranked;
         this.teamSize = teamSize;
+        startTime = System.currentTimeMillis();
+        pingIncrement = 0;
+        schedulerId = Bukkit.getScheduler().runTaskTimer(EmeraldPractice.getPlugin(), () -> {
+            Player player = Bukkit.getPlayer(playerData.getUuid());
+            
+            minPing = Math.max(playerData.getPing() - (playerData.getProfile().getPingRange() / 2) - pingIncrement, 0);
+            maxPing = playerData.getPing() + (playerData.getProfile().getPingRange() / 2) + pingIncrement;
+            pingIncrement += 5;
+            
+            player.sendMessage(ChatColor.GRAY + "Finding " + ChatColor.DARK_GREEN + kit.getDisplayName() + ChatColor.GRAY +" match...");
+            player.sendMessage(ChatColor.GRAY + "Ping range: " + minPing + " - " + maxPing);
+        }, 0L, 200L).getTaskId();
+    }
+    
+    public void cancelTask(){
+        Bukkit.getScheduler().cancelTask(schedulerId);
     }
     
     public PlayerData getPlayerData(){
@@ -49,6 +71,34 @@ public class QueueEntry{
     
     public void setTeamSize(int teamSize){
         this.teamSize = teamSize;
+    }
+    
+    public int getMinPing(){
+        return minPing;
+    }
+    
+    public void setMinPing(int minPing){
+        this.minPing = minPing;
+    }
+    
+    public int getMaxPing(){
+        return maxPing;
+    }
+    
+    public void setMaxPing(int maxPing){
+        this.maxPing = maxPing;
+    }
+    
+    public int getSchedulerId(){
+        return schedulerId;
+    }
+    
+    public long getStartTime(){
+        return startTime;
+    }
+    
+    public boolean isWithinPingRange(PlayerData playerData){
+        return playerData.getPing() >= minPing && playerData.getPing() <= maxPing;
     }
     
     @Override

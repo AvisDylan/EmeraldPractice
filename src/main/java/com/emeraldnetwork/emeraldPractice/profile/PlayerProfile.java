@@ -17,6 +17,7 @@ public class PlayerProfile{
     private WeatherType playerWeather = WeatherType.CLEAR;
     private int pingRange = 200;
     private int playerTime = 0;
+    private int winstreak = 0;
     private final Map<String, PlayerKitProfile> kitDataList = new HashMap<>();
     
     public PlayerProfile(UUID uuid){
@@ -131,5 +132,17 @@ public class PlayerProfile{
         }
         
         return MathUtils.getMean(kds);
+    }
+    
+    public void incrementWinStreak(){
+        winstreak++;
+    }
+    
+    public void resetWinStreak(){
+        winstreak = 0;
+    }
+    
+    public int getWinstreak(){
+        return winstreak;
     }
 }

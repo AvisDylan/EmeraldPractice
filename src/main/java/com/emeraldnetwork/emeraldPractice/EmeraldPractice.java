@@ -34,9 +34,9 @@ public final class EmeraldPractice extends JavaPlugin{
         plugin = this;
         String packageName = getClass().getPackage().getName();
         
+        DatabaseManager.init();
         FileManager.loadKits();
         FileManager.loadSpawnPoint();
-        DatabaseManager.init();
         
         for(Class<?> clazz : new Reflections(packageName + ".listeners").getSubTypesOf(Listener.class)){
             try{
@@ -74,6 +74,9 @@ public final class EmeraldPractice extends JavaPlugin{
         
         if(SpawnPointUtils.getSpawnPoint() != null)
             FileManager.saveSpawnPoint();
+        
+        if(!PlayerManager.PLAYERS.isEmpty())
+            DatabaseManager.savePlayerProfiles();
     }
     
     public static Plugin getPlugin(){

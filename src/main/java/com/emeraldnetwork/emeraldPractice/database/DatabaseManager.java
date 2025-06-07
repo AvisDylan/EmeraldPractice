@@ -2,6 +2,7 @@ package com.emeraldnetwork.emeraldPractice.database;
 
 import com.emeraldnetwork.emeraldPractice.kit.Kit;
 import com.emeraldnetwork.emeraldPractice.kit.KitManager;
+import com.emeraldnetwork.emeraldPractice.player.PlayerManager;
 import com.emeraldnetwork.emeraldPractice.profile.PlayerKitProfile;
 import com.emeraldnetwork.emeraldPractice.profile.PlayerProfile;
 import com.google.gson.Gson;
@@ -28,6 +29,12 @@ public class DatabaseManager{
         }catch(SQLException se){
             se.printStackTrace();
         }
+    }
+    
+    public static void savePlayerProfiles(){
+        PlayerManager.PLAYERS.forEach((uuid, playerData) -> {
+            savePlayerProfile(playerData.getProfile());
+        });
     }
     
     public static void savePlayerProfile(PlayerProfile playerProfile){

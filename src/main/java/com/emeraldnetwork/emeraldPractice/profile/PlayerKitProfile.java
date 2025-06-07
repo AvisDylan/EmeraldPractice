@@ -49,6 +49,10 @@ public class PlayerKitProfile{
         kills++;
     }
     
+    public void resetWinStreak(){
+        winstreak = 0;
+    }
+    
     public int getKd(){
         return kills / deaths;
     }

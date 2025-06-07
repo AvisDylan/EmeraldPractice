@@ -28,6 +28,7 @@ public class QueueManager{
         for(QueueEntry queueEntry : QUEUE){
             if(queueEntry.getPlayerData().equals(playerData)){
                 playerData.setPlayerState(PlayerState.SPAWN);
+                queueEntry.cancelTask();
                 QUEUE.remove(queueEntry);
                 
                 return true;
@@ -38,12 +39,29 @@ public class QueueManager{
     }
     
     public static void handleQueue(Kit kit){
-        List<QueueEntry> unrankedEntries = QUEUE.stream().filter(entry -> entry.getKit().equals(kit) && !entry.isRanked()).limit(2).toList();
-        List<QueueEntry> rankedEntries = QUEUE.stream().filter(entry -> entry.getKit().equals(kit) && entry.isRanked()).limit(2).toList();
+        List<QueueEntry> unrankedEntries = QUEUE.stream()
+                .filter(entry -> entry.getKit().equals(kit) && !entry.isRanked())
+                .filter(entry -> QUEUE.stream()
+                        .filter(entry1 -> entry1.getKit().equals(kit) && !entry1.isRanked())
+                        .anyMatch(entry1 -> entry.isWithinPingRange(entry1.getPlayerData())
+                                && entry1.isWithinPingRange(entry.getPlayerData())))
+                .limit(2)
+                .toList();
+        List<QueueEntry> rankedEntries = QUEUE.stream()
+                .filter(entry -> entry.getKit().equals(kit) && entry.isRanked())
+                .filter(entry -> QUEUE.stream()
+                        .filter(entry1 -> entry1.getKit().equals(kit) && entry1.isRanked())
+                        .anyMatch(entry1 -> entry.isWithinPingRange(entry1.getPlayerData())
+                                && entry1.isWithinPingRange(entry.getPlayerData())))
+                .limit(2)
+                .toList();
         
         if(unrankedEntries.size() >= 2){
             PlayerData playerData1 = unrankedEntries.get(0).getPlayerData(),
                     playerData2 = unrankedEntries.get(1).getPlayerData();
+            
+            unrankedEntries.get(0).cancelTask();
+            unrankedEntries.get(1).cancelTask();
             
             QUEUE.remove(unrankedEntries.get(0));
             QUEUE.remove(unrankedEntries.get(1));
@@ -55,10 +73,42 @@ public class QueueManager{
             PlayerData playerData1 = rankedEntries.get(0).getPlayerData(),
                     playerData2 = rankedEntries.get(1).getPlayerData();
             
+            rankedEntries.get(0).cancelTask();
+            rankedEntries.get(1).cancelTask();
+            
             QUEUE.remove(rankedEntries.get(0));
             QUEUE.remove(rankedEntries.get(1));
             
             MatchManager.startMatch(kit, true, playerData1, playerData2);
         }
+    }
+    
+    public static QueueEntry getQueueEntry(PlayerData playerData){
+        QueueEntry queueEntry = null;
+        
+        for(QueueEntry queueEntry1 : QUEUE){
+            if(queueEntry1.getPlayerData().equals(playerData)){
+                queueEntry = queueEntry1;
+                break;
+            }
+        }
+        
+        return queueEntry;
+    }
+    
+    public static int getPlaceInQueue(QueueEntry queueEntry){
+        int placeInQueue = 0;
+        ConcurrentLinkedQueue<QueueEntry> tempQueue = new ConcurrentLinkedQueue<>(QUEUE);
+        
+        for(int i = 0; i < tempQueue.size(); i++){
+            QueueEntry queueEntry1 = tempQueue.poll();
+            
+            if(queueEntry1.equals(queueEntry)){
+                placeInQueue = i;
+                break;
+            }
+        }
+        
+        return placeInQueue + 1;
     }
 }

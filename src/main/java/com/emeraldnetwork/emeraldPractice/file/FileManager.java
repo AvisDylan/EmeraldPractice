@@ -24,7 +24,12 @@ public class FileManager{
     
     private static final File KITS_FILE = new File(EmeraldPractice.getPlugin().getDataFolder().getAbsoluteFile() + "/kits.json");
     private static final File SPAWN_POINT_FILE = new File(EmeraldPractice.getPlugin().getDataFolder().getAbsoluteFile() + "/spawnpoint.json");
-    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().excludeFieldsWithoutExposeAnnotation().registerTypeAdapter(Location.class, new LocationAdapter()).registerTypeAdapter(ItemStack.class, new ItemStackAdapter()).registerTypeAdapter(PotionEffect.class, new PotionEffectAdapter()).registerTypeAdapter(File.class, new FileAdapter()).create();
+    private static final Gson GSON = new GsonBuilder().setPrettyPrinting()
+                                                        .excludeFieldsWithoutExposeAnnotation()
+                                                        .registerTypeAdapter(Location.class, new LocationAdapter())
+                                                        .registerTypeAdapter(ItemStack.class, new ItemStackAdapter())
+                                                        .registerTypeAdapter(PotionEffect.class, new PotionEffectAdapter())
+                                                        .registerTypeAdapter(File.class, new FileAdapter()).create();
     
     public static void saveSpawnPoint(){
         try{
