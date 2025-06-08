@@ -11,7 +11,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
 public class ScoreboardManager{
-
+    
     public static void updateBoard(PlayerData playerData){
         FastBoard board = playerData.getFastBoard();
         

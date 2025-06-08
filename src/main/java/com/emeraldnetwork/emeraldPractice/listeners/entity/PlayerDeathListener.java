@@ -1,11 +1,9 @@
 package com.emeraldnetwork.emeraldPractice.listeners.entity;
 
-import com.emeraldnetwork.emeraldPractice.EmeraldPractice;
 import com.emeraldnetwork.emeraldPractice.match.Match;
 import com.emeraldnetwork.emeraldPractice.match.MatchManager;
 import com.emeraldnetwork.emeraldPractice.player.PlayerData;
 import com.emeraldnetwork.emeraldPractice.player.PlayerManager;
-import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -14,6 +12,7 @@ public class PlayerDeathListener implements Listener{
     
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event){
+        event.setDeathMessage(null);
         event.getEntity().spigot().respawn();
         
         PlayerData playerData = PlayerManager.getPlayerData(event.getEntity().getUniqueId());
