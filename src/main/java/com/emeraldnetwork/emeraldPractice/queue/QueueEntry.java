@@ -32,9 +32,11 @@ public class QueueEntry{
             maxPing = playerData.getPing() + (playerData.getProfile().getPingRange() / 2) + pingIncrement;
             pingIncrement += 5;
             
+            player.sendMessage(ChatColor.RESET + "");
             player.sendMessage(ChatColor.RESET + "" + ChatColor.DARK_GREEN + ChatColor.BOLD + kit.getDisplayName());
             player.sendMessage(ChatColor.GRAY + "Ping range: " + ChatColor.DARK_GREEN + minPing + ChatColor.GRAY + " - " + ChatColor.DARK_GREEN + maxPing);
             player.sendMessage(ChatColor.GRAY + "Searching for players...");
+            player.sendMessage(ChatColor.RESET + "");
         }, 0L, 200L).getTaskId();
     }
     

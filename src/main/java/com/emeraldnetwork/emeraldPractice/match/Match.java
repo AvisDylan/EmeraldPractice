@@ -159,6 +159,7 @@ public class Match implements Listener{
             
             MatchManager.INVENTORY_MAP.put(playerData.getUuid(), ArrayUtils.reverseArray(player.getInventory().getContents()));
             
+            player.sendMessage(ChatColor.RESET + "");
             player.sendMessage(ChatColor.RESET + "" + ChatColor.DARK_GREEN + ChatColor.BOLD +  "Match Results: " + net.md_5.bungee.api.ChatColor.GRAY + "(click name to view inventory)");
             player.sendMessage(ChatColor.RESET + "");
             player.spigot().sendMessage(teamOne.getClickablePlayerNames(true));
@@ -178,6 +179,7 @@ public class Match implements Listener{
             
             playAgainComponent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/queue join " + (ranked ? "ranked" : "unranked") + " " + kit.getName()));
             player.spigot().sendMessage(playAgainComponent);
+            player.sendMessage(ChatColor.RESET + "");
             
             for(PotionEffect potionEffect : player.getActivePotionEffects()){
                 player.removePotionEffect(potionEffect.getType());
