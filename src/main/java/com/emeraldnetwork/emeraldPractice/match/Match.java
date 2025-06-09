@@ -98,7 +98,6 @@ public class Match implements Listener{
             this.players.forEach(playerData -> {
                 Player player = Bukkit.getPlayer(playerData.getUuid());
                 
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7The game ended in a tie as time ran up!"));
                 player.sendTitle(ChatColor.translateAlternateColorCodes('&', "&7Tie!"), ChatColor.translateAlternateColorCodes('&', "&7The game ended in a tie as time ran up!"));
                 
                 WebhookUtils.sendEmbed("Game ended in a tie!", "Player/s: " + teamTwo.getPlayerNames() + ", " + teamTwo.getPlayerNames(), "919191");
@@ -107,7 +106,6 @@ public class Match implements Listener{
             winningTeam.getPlayers().forEach(playerData -> {
                 Player player = Bukkit.getPlayer(playerData.getUuid());
                 
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&aYour team has won the game, GGs!"));
                 player.sendTitle(ChatColor.translateAlternateColorCodes('&', "&aWin!"), ChatColor.translateAlternateColorCodes('&', "&aYour team has won the game, GGs!"));
                 
                 playerData.getProfile().incrementWinStreak();
@@ -124,7 +122,6 @@ public class Match implements Listener{
             losingTeam.getPlayers().forEach(playerData -> {
                 Player player = Bukkit.getPlayer(playerData.getUuid());
                 
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cYour team has lost the game, better luck next time!"));
                 player.sendTitle(ChatColor.translateAlternateColorCodes('&', "&cLost!"), ChatColor.translateAlternateColorCodes('&', "&cYour team has lost the game, better luck next time!"));
                 
                 playerData.getProfile().resetWinStreak();
@@ -155,6 +152,8 @@ public class Match implements Listener{
     public void cleanUpMatch(){
         players.forEach(playerData -> {
             Player player = Bukkit.getPlayer(playerData.getUuid());
+            
+            MatchManager.INVENTORY_MAP.put(playerData.getUuid(), player.getInventory());
             
             for(PotionEffect potionEffect : player.getActivePotionEffects()){
                 player.removePotionEffect(potionEffect.getType());

@@ -118,7 +118,7 @@ public class MapCommand implements CommandExecutor{
                             for(Map map : kit.getMaps()){
                                 if(map.getName().equalsIgnoreCase(strings[2])){
                                     map.setDisplayName(strings[3]);
-                                    commandSender.sendMessage("§aSet name on " + strings[1] + " on map" + strings[2] + " to" + strings[3] + "!");
+                                    commandSender.sendMessage("§aSet displayname on " + strings[1] + " on map " + strings[2] + " to " + strings[3] + "!");
                                     return false;
                                 }
                             }
