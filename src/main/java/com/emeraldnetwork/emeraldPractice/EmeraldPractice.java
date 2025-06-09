@@ -64,7 +64,7 @@ public final class EmeraldPractice extends JavaPlugin{
             }
         }), 0L, 10L);
         
-        Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> MultithreadedUtils.EXECUTOR_SERVICE.submit(() -> PlayerManager.PLAYERS.forEach((uuid, playerData) -> DatabaseManager.savePlayerProfile(playerData.getProfile()))), 12000L, 12000L);
+        Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> MultithreadedUtils.EXECUTOR_SERVICE.submit(DatabaseManager::savePlayerProfiles), 12000L, 12000L);
     }
     
     @Override

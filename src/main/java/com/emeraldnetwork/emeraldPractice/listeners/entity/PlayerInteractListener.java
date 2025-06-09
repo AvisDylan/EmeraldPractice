@@ -1,39 +1,84 @@
 package com.emeraldnetwork.emeraldPractice.listeners.entity;
 
+import com.emeraldnetwork.emeraldPractice.EmeraldPractice;
+import com.emeraldnetwork.emeraldPractice.misc.PearlCooldown;
 import com.emeraldnetwork.emeraldPractice.player.PlayerData;
 import com.emeraldnetwork.emeraldPractice.player.PlayerManager;
+import com.emeraldnetwork.emeraldPractice.utils.MultithreadedUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class PlayerInteractListener implements Listener{
+    
+    private final Map<PlayerData, PearlCooldown> playerPearlCooldowns = new HashMap<>();
     
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event){
-        if(event.getPlayer().getItemInHand() == null || event.getAction() != Action.RIGHT_CLICK_AIR)
+        if(event.getPlayer().getItemInHand() == null || event.getItem() == null)
             return;
         
         PlayerData playerData = PlayerManager.getPlayerData(event.getPlayer().getUniqueId());
         
         switch(playerData.getPlayerState()){
             case SPAWN -> {
-                switch(event.getItem().getItemMeta().getDisplayName()){
-                    case "§7Unranked Queue (right click)" -> event.getPlayer().chat("/queuegui unranked");
-                    case "§2Ranked Queue §7(right click)" -> event.getPlayer().chat("/queuegui ranked");
-                    case "§7FFA (right click)" -> event.getPlayer().chat("/ffagui");
-                    case "§7Bot Queue (right click)" -> event.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', "&7Feature coming soon!")); //event.getPlayer().chat("/queuegui bot")
-                    case "§7Create a party (right click)" -> event.getPlayer().chat("/partygui");
-                    case "§7Kit editor (right click)" -> event.getPlayer().chat("/kiteditor");
-                    case "§7Tournament (right click)" -> event.getPlayer().chat("/tournamentgui");
-                    case "§7Leaderboards (right click)" -> event.getPlayer().chat("/leaderboards");
-                    case "§7Settings (right click)" -> event.getPlayer().chat("/settings");
+                if(event.getAction() == Action.RIGHT_CLICK_AIR && event.getItem().hasItemMeta()){
+                    switch(event.getItem().getItemMeta().getDisplayName()){
+                        case "§7Unranked Queue (right click)" -> event.getPlayer().chat("/queuegui unranked");
+                        case "§2Ranked Queue §7(right click)" -> event.getPlayer().chat("/queuegui ranked");
+                        case "§7FFA (right click)" -> event.getPlayer().chat("/ffagui");
+                        case "§7Bot Queue (right click)" -> event.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', "&7Feature coming soon!")); //event.getPlayer().chat("/queuegui bot")
+                        case "§7Create a party (right click)" -> event.getPlayer().chat("/partygui");
+                        case "§7Kit editor (right click)" -> event.getPlayer().chat("/kiteditor");
+                        case "§7Tournament (right click)" -> event.getPlayer().chat("/tournamentgui");
+                        case "§7Leaderboards (right click)" -> event.getPlayer().chat("/leaderboards");
+                        case "§7Settings (right click)" -> event.getPlayer().chat("/settings");
+                    }
                 }
             }
             case QUEUE -> {
-                if(event.getItem().getItemMeta().getDisplayName().equalsIgnoreCase("§cLeave Queue §7(right click)"))
-                    event.getPlayer().chat("/queue leave");
+                if(event.getAction() == Action.RIGHT_CLICK_AIR && event.getItem().hasItemMeta()){
+                    if(event.getItem().getItemMeta().getDisplayName().equalsIgnoreCase("§cLeave Queue §7(right click)"))
+                        event.getPlayer().chat("/queue leave");
+                }
+            }
+            case SPECTATING -> {
+            
+            }
+            case DUEL -> {
+                if(event.getPlayer().getItemInHand().getType() == Material.ENDER_PEARL && (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)){
+                    if(playerPearlCooldowns.containsKey(playerData)){
+                        long secondsSinceLastPearlThrow = (System.currentTimeMillis() - playerPearlCooldowns.get(playerData).getLastPearl()) / 1000;
+                        
+                        if(secondsSinceLastPearlThrow < 10){
+                            event.setCancelled(true);
+                            event.getPlayer().sendMessage(ChatColor.RED + "You can pearl again in " + (10 - secondsSinceLastPearlThrow) + " seconds!");
+                            return;
+                        }
+                        
+                        Bukkit.getScheduler().cancelTask(playerPearlCooldowns.get(playerData).getSchedulerId());
+                    }
+                    
+                    int schedulerId = Bukkit.getScheduler().runTaskTimerAsynchronously(EmeraldPractice.getPlugin(), () -> {
+                        MultithreadedUtils.EXECUTOR_SERVICE.submit(() -> {
+                            Player player = Bukkit.getPlayer(playerData.getUuid());
+                            int countdown = Math.round(Math.max(0, 10 - (System.currentTimeMillis() - playerPearlCooldowns.get(playerData).getLastPearl()) / 1000));
+                            
+                            player.setLevel(countdown);
+                            player.setExp(countdown / 10.0f);
+                        });
+                    }, 0L, 10L).getTaskId();
+                    
+                    playerPearlCooldowns.put(playerData, new PearlCooldown(System.currentTimeMillis(), schedulerId));
+                }
             }
         }
     }

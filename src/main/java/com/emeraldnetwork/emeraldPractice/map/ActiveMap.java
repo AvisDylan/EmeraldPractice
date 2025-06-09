@@ -21,7 +21,11 @@ public class ActiveMap{
     public boolean load(){
         FileUtils.copy(map.getWorldFolder(), activeWorldFolder);
         
-        world = Bukkit.createWorld(new WorldCreator(activeWorldFolder.getName()));
+        WorldCreator creator = new WorldCreator(activeWorldFolder.getName());
+        
+        creator.generator(new ChunkGenerator());
+        
+        world = Bukkit.createWorld(creator);
         
         if(world == null){
             Bukkit.getLogger().severe("Failed to load world!");

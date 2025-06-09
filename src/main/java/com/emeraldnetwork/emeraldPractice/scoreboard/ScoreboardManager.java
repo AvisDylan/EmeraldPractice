@@ -64,9 +64,6 @@ public class ScoreboardManager{
                                 ChatColor.RESET + " " + ChatColor.DARK_GREEN + "Duration" + ChatColor.GRAY + ": " + ChatColor.WHITE + FormatUtils.formateTime(System.currentTimeMillis() - match.getStartTime()),
                                 ChatColor.RESET + " " + ChatColor.DARK_GREEN + "Kit" + ChatColor.GRAY + ": " + ChatColor.WHITE + (match.isRanked() ? "Ranked " : "Unranked ") + match.getKit().getDisplayName(),
                                 "",
-                                ChatColor.RESET + " " + ChatColor.DARK_GREEN + "Your Team" + ChatColor.GRAY + ": " + ChatColor.WHITE + match.getTeam(playerData).getAlivePlayers().size() + "/" + match.getTeam(playerData).getPlayers().size(),
-                                ChatColor.RESET + " " + ChatColor.DARK_GREEN + "Their Team" + ChatColor.GRAY + ": " + ChatColor.WHITE + match.getOtherTeam(playerData).getAlivePlayers().size() + "/" + match.getOtherTeam(playerData).getPlayers().size(),
-                                "",
                                 ChatColor.RESET + " " + ChatColor.GRAY + ChatColor.ITALIC + "emerald-network.com",
                                 ChatColor.RESET + "" + ChatColor.GRAY + ChatColor.STRIKETHROUGH + "-+------------------+-"
                         );
