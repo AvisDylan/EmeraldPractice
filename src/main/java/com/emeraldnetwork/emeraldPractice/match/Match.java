@@ -4,15 +4,17 @@ import com.emeraldnetwork.emeraldPractice.EmeraldPractice;
 import com.emeraldnetwork.emeraldPractice.kit.Kit;
 import com.emeraldnetwork.emeraldPractice.map.ActiveMap;
 import com.emeraldnetwork.emeraldPractice.map.Map;
-import com.emeraldnetwork.emeraldPractice.npc.NpcManager;
 import com.emeraldnetwork.emeraldPractice.player.PlayerData;
 import com.emeraldnetwork.emeraldPractice.player.PlayerManager;
 import com.emeraldnetwork.emeraldPractice.player.PlayerState;
 import com.emeraldnetwork.emeraldPractice.team.Team;
 import com.emeraldnetwork.emeraldPractice.team.TeamAssigner;
-import com.emeraldnetwork.emeraldPractice.utils.MultithreadedUtils;
+import com.emeraldnetwork.emeraldPractice.utils.ArrayUtils;
 import com.emeraldnetwork.emeraldPractice.utils.SpawnPointUtils;
 import com.emeraldnetwork.emeraldPractice.utils.WebhookUtils;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.chat.ComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -21,7 +23,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.potion.PotionEffect;
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Match implements Listener{
@@ -153,12 +157,34 @@ public class Match implements Listener{
         players.forEach(playerData -> {
             Player player = Bukkit.getPlayer(playerData.getUuid());
             
-            MatchManager.INVENTORY_MAP.put(playerData.getUuid(), player.getInventory());
+            MatchManager.INVENTORY_MAP.put(playerData.getUuid(), ArrayUtils.reverseArray(player.getInventory().getContents()));
+            
+            player.sendMessage(ChatColor.RESET + "" + ChatColor.DARK_GREEN + ChatColor.BOLD +  "Match Results: " + net.md_5.bungee.api.ChatColor.GRAY + "(click name to view inventory)");
+            player.sendMessage(ChatColor.RESET + "");
+            player.spigot().sendMessage(teamOne.getClickablePlayerNames(true));
+            player.spigot().sendMessage(teamTwo.getClickablePlayerNames(false));
+            player.sendMessage(ChatColor.RESET + "");
+            player.sendMessage(ChatColor.RESET + "" + ChatColor.DARK_GREEN + ChatColor.BOLD +  "Stats: ");
+            if(ranked)
+                player.sendMessage(ChatColor.RESET + "" + ChatColor.GRAY + "Elo: " + ChatColor.DARK_GREEN + Math.round(playerData.getProfile().getStats(kit).getElo()));
+            player.sendMessage(ChatColor.RESET + "" + ChatColor.GRAY + "Wins: " + ChatColor.DARK_GREEN + (ranked ? playerData.getProfile().getStats(kit).getRankedWins() : playerData.getProfile().getStats(kit).getUnrankedWins()));
+            player.sendMessage(ChatColor.RESET + "" + ChatColor.GRAY + "Losses: " + ChatColor.DARK_GREEN + (ranked ? playerData.getProfile().getStats(kit).getRankedLosses() : playerData.getProfile().getStats(kit).getUnrankedLosses()));
+            player.sendMessage(ChatColor.RESET + "" + ChatColor.GRAY + "Kills: " + ChatColor.DARK_GREEN + playerData.getProfile().getStats(kit).getDeaths());
+            player.sendMessage(ChatColor.RESET + "" + ChatColor.GRAY + "Deaths: " + ChatColor.DARK_GREEN + playerData.getProfile().getStats(kit).getKills());
+            player.sendMessage(ChatColor.RESET + "" + ChatColor.GRAY + "K/D: " + ChatColor.DARK_GREEN + playerData.getProfile().getStats(kit).getKd());
+            player.sendMessage(ChatColor.RESET + "");
+            
+            TextComponent playAgainComponent = new TextComponent(ChatColor.RESET + "" + ChatColor.DARK_GREEN + ChatColor.BOLD + "(Play Again)");
+            
+            playAgainComponent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/queue join " + (ranked ? "ranked" : "unranked") + " " + kit.getName()));
+            player.spigot().sendMessage(playAgainComponent);
             
             for(PotionEffect potionEffect : player.getActivePotionEffects()){
                 player.removePotionEffect(potionEffect.getType());
             }
             
+            player.setLevel(0);
+            player.setExp(0.0f);
             player.setFireTicks(0);
             player.setFoodLevel(20);
             player.setHealth(player.getMaxHealth());

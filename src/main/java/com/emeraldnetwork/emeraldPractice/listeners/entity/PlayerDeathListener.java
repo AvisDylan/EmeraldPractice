@@ -13,10 +13,10 @@ public class PlayerDeathListener implements Listener{
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event){
         event.setDeathMessage(null);
+        event.setKeepInventory(true);
         event.getEntity().spigot().respawn();
         
         PlayerData playerData = PlayerManager.getPlayerData(event.getEntity().getUniqueId());
-        
         
         switch(playerData.getPlayerState()){
             case DUEL -> {

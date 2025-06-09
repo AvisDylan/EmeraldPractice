@@ -3,6 +3,7 @@ package com.emeraldnetwork.emeraldPractice.team;
 import com.emeraldnetwork.emeraldPractice.kit.Kit;
 import com.emeraldnetwork.emeraldPractice.player.PlayerData;
 import com.emeraldnetwork.emeraldPractice.utils.MathUtils;
+import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -43,23 +44,23 @@ public class Team{
         return builder.substring(0, builder.length() - 2);
     }
     
-    public TextComponent getClickablePlayerNames(){
-        TextComponent base = new TextComponent();
+    public TextComponent getClickablePlayerNames(boolean winner){
+        TextComponent base = new TextComponent(ChatColor.RESET + (winner ? ChatColor.GREEN + "Winner/s: " : ChatColor.RED + "Loser/s: "));
         
         Iterator<PlayerData> iterator = players.iterator();
         
         while(iterator.hasNext()){
             PlayerData playerData = iterator.next();
             Player player = Bukkit.getPlayer(playerData.getUuid());
-            TextComponent playerComponent = new TextComponent(player.getName());
+            TextComponent playerComponent = new TextComponent(net.md_5.bungee.api.ChatColor.DARK_GREEN + player.getName());
             
             playerComponent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/inventory " + playerData.getUuid()));
-            playerComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent[]{ new TextComponent(ChatColor.GRAY + "Click to view") }));
+            playerComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new BaseComponent[]{ new TextComponent(ChatColor.GRAY + "Click to view") }));
             
-            base.addExtra(playerComponent + ", ");
+            base.addExtra(playerComponent);
             
             if(iterator.hasNext())
-                base.addExtra(new TextComponent(", "));
+                base.addExtra(new TextComponent(ChatColor.GRAY + ", "));
         }
         
         return base;

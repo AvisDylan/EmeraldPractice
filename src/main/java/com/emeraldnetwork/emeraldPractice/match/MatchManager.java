@@ -4,6 +4,7 @@ import com.emeraldnetwork.emeraldPractice.kit.Kit;
 import com.emeraldnetwork.emeraldPractice.map.Map;
 import com.emeraldnetwork.emeraldPractice.player.PlayerData;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 import java.util.Random;
@@ -15,7 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class MatchManager{
     
     public static final List<Match> ONGOING_MATCHES = new CopyOnWriteArrayList<>();
-    public static final java.util.Map<UUID, Inventory> INVENTORY_MAP = new ConcurrentHashMap<>();
+    public static final java.util.Map<UUID, ItemStack[]> INVENTORY_MAP = new ConcurrentHashMap<>();
     
     public static void startMatch(Kit kit, boolean ranked, PlayerData... players){
         Map map = kit.getMaps().stream().skip(new Random().nextInt(kit.getMaps().size())).findFirst().orElse(null);

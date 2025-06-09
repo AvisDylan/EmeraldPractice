@@ -8,6 +8,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.UUID;
 
@@ -24,10 +25,10 @@ public class InventoryCommand implements CommandExecutor{
         
         if(MatchManager.INVENTORY_MAP.containsKey(inventoryUuid)){
             Player player = (Player) commandSender;
-            Inventory sourceInventory = MatchManager.INVENTORY_MAP.get(inventoryUuid);
-            Inventory inventory = Bukkit.createInventory(player, sourceInventory.getSize(), Bukkit.getPlayer(inventoryUuid).getName());
+            ItemStack[] sourceInventory = MatchManager.INVENTORY_MAP.get(inventoryUuid);
+            Inventory inventory = Bukkit.createInventory(player, sourceInventory.length, Bukkit.getPlayer(inventoryUuid).getName());
             
-            inventory.setContents(sourceInventory.getContents());
+            inventory.setContents(sourceInventory);
             
             player.openInventory(inventory);
         }else
