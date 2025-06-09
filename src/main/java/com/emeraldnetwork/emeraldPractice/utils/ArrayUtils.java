@@ -11,4 +11,19 @@ public final class ArrayUtils{
         
         return array;
     }
+    
+    public static <T> T[] reverseArrayVertically(T[] array){
+        for(int i = 0; i < (array.length / 9) / 2; i++){
+            for(int j = 0; j < 9; j++){
+                int topIndex = i * 9 + j;
+                int bottomIndex = ((array.length / 9) - 1 - i) * 9 + j;
+                
+                T temp = array[topIndex];
+                array[topIndex] = array[bottomIndex];
+                array[bottomIndex] = temp;
+            }
+        }
+        
+        return array;
+    }
 }

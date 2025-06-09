@@ -2,8 +2,8 @@ package com.emeraldnetwork.emeraldPractice.utils;
 
 import java.time.Duration;
 
-public class FormatUtils{
-
+public final class FormatUtils{
+    
     public static String formateTime(long time){
         Duration duration = Duration.ofMillis(time);
         
@@ -14,7 +14,7 @@ public class FormatUtils{
     }
     
     public static String formatOrdinalNumbers(int index){
-        String formattedOrdinalNumber = "";
+        String formattedOrdinalNumber;
         
         if(index - 1 % 10 == 0)
             formattedOrdinalNumber = index + "st";

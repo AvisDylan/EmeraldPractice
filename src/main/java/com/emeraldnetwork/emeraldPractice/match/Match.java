@@ -10,6 +10,7 @@ import com.emeraldnetwork.emeraldPractice.player.PlayerState;
 import com.emeraldnetwork.emeraldPractice.team.Team;
 import com.emeraldnetwork.emeraldPractice.team.TeamAssigner;
 import com.emeraldnetwork.emeraldPractice.utils.ArrayUtils;
+import com.emeraldnetwork.emeraldPractice.utils.FormatUtils;
 import com.emeraldnetwork.emeraldPractice.utils.SpawnPointUtils;
 import com.emeraldnetwork.emeraldPractice.utils.WebhookUtils;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -54,8 +55,12 @@ public class Match implements Listener{
             Player player = Bukkit.getPlayer(playerData.getUuid());
             
             playerData.setPlayerState(PlayerState.DUEL);
-            player.sendMessage("§aFound match!");
-            player.sendTitle("§aStarting Game!", "§cHave fun!");
+            player.sendMessage(ChatColor.RESET + "");
+            player.sendMessage(ChatColor.RESET + "" + ChatColor.DARK_GREEN + ChatColor.BOLD + kit.getDisplayName());
+            player.sendMessage(ChatColor.GRAY + "Map: " + ChatColor.DARK_GREEN + map.getDisplayName());
+            player.sendMessage(ChatColor.GRAY + "Time Left: " + ChatColor.DARK_GREEN + (kit.getMaxDurationInSeconds() == 0 ? "Unlimited" : FormatUtils.formateTime(kit.getMaxDurationInSeconds() * 1000)));
+            player.sendMessage(ChatColor.GRAY + "Ranked: " + ChatColor.DARK_GREEN + (ranked ? "Yes" : "No"));
+            player.sendMessage(ChatColor.RESET + "");
             kit.applyKit(player);
         }
         
@@ -157,7 +162,7 @@ public class Match implements Listener{
         players.forEach(playerData -> {
             Player player = Bukkit.getPlayer(playerData.getUuid());
             
-            MatchManager.INVENTORY_MAP.put(playerData.getUuid(), ArrayUtils.reverseArray(player.getInventory().getContents()));
+            MatchManager.INVENTORY_MAP.put(playerData.getUuid(), ArrayUtils.reverseArrayVertically(player.getInventory().getContents()));
             
             player.sendMessage(ChatColor.RESET + "");
             player.sendMessage(ChatColor.RESET + "" + ChatColor.DARK_GREEN + ChatColor.BOLD +  "Match Results: " + net.md_5.bungee.api.ChatColor.GRAY + "(click name to view inventory)");
@@ -170,8 +175,8 @@ public class Match implements Listener{
                 player.sendMessage(ChatColor.RESET + "" + ChatColor.GRAY + "Elo: " + ChatColor.DARK_GREEN + Math.round(playerData.getProfile().getStats(kit).getElo()));
             player.sendMessage(ChatColor.RESET + "" + ChatColor.GRAY + "Wins: " + ChatColor.DARK_GREEN + (ranked ? playerData.getProfile().getStats(kit).getRankedWins() : playerData.getProfile().getStats(kit).getUnrankedWins()));
             player.sendMessage(ChatColor.RESET + "" + ChatColor.GRAY + "Losses: " + ChatColor.DARK_GREEN + (ranked ? playerData.getProfile().getStats(kit).getRankedLosses() : playerData.getProfile().getStats(kit).getUnrankedLosses()));
-            player.sendMessage(ChatColor.RESET + "" + ChatColor.GRAY + "Kills: " + ChatColor.DARK_GREEN + playerData.getProfile().getStats(kit).getDeaths());
-            player.sendMessage(ChatColor.RESET + "" + ChatColor.GRAY + "Deaths: " + ChatColor.DARK_GREEN + playerData.getProfile().getStats(kit).getKills());
+            player.sendMessage(ChatColor.RESET + "" + ChatColor.GRAY + "Kills: " + ChatColor.DARK_GREEN + playerData.getProfile().getStats(kit).getKills());
+            player.sendMessage(ChatColor.RESET + "" + ChatColor.GRAY + "Deaths: " + ChatColor.DARK_GREEN + playerData.getProfile().getStats(kit).getDeaths());
             player.sendMessage(ChatColor.RESET + "" + ChatColor.GRAY + "K/D: " + ChatColor.DARK_GREEN + playerData.getProfile().getStats(kit).getKd());
             player.sendMessage(ChatColor.RESET + "");
             
@@ -378,5 +383,9 @@ public class Match implements Listener{
     
     public void setMatchState(MatchState matchState){
         this.matchState = matchState;
+    }
+    
+    public int getTeamSize(){
+        return Math.max(teamOne.getPlayers().size(), teamTwo.getPlayers().size());
     }
 }

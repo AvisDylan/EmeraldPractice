@@ -2,6 +2,7 @@ package com.emeraldnetwork.emeraldPractice.team;
 
 import com.emeraldnetwork.emeraldPractice.kit.Kit;
 import com.emeraldnetwork.emeraldPractice.player.PlayerData;
+import com.emeraldnetwork.emeraldPractice.queue.QueueEntry;
 import com.emeraldnetwork.emeraldPractice.utils.MathUtils;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -32,6 +33,10 @@ public class Team{
     
     public Set<PlayerData> getPlayers(){
         return players;
+    }
+    
+    public PlayerData getPlayerAtIndex(int index){
+        return new ArrayList<>(players).get(index);
     }
     
     public String getPlayerNames(){

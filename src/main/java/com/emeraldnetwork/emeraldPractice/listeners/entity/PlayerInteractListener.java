@@ -38,7 +38,7 @@ public class PlayerInteractListener implements Listener{
                         case "§7Bot Queue (right click)" -> event.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', "&7Feature coming soon!")); //event.getPlayer().chat("/queuegui bot")
                         case "§7Create a party (right click)" -> event.getPlayer().chat("/partygui");
                         case "§7Kit editor (right click)" -> event.getPlayer().chat("/kiteditor");
-                        case "§7Tournament (right click)" -> event.getPlayer().chat("/tournamentgui");
+                        case "§7Tournament (right click)" -> event.getPlayer().sendMessage(ChatColor.GRAY + "Feature coming soon!"); //event.getPlayer().chat("/tournamentgui")
                         case "§7Leaderboards (right click)" -> event.getPlayer().chat("/leaderboards");
                         case "§7Settings (right click)" -> event.getPlayer().chat("/settings");
                     }
