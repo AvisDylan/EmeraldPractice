@@ -22,3 +22,5 @@ commands:
     description: lets you leave games
   world:
     description: create new world
+  inventory:
+    description: view player past inventories

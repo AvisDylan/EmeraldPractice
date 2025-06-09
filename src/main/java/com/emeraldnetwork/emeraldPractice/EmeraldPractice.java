@@ -55,6 +55,7 @@ public final class EmeraldPractice extends JavaPlugin{
         getCommand("setspawn").setExecutor(new SpawnPointCommand());
         getCommand("leave").setExecutor(new LeaveCommand());
         getCommand("world").setExecutor(new WorldCommand());
+        getCommand("inventory").setExecutor(new InventoryCommand());
         
         KitManager.KITS.forEach(kit -> Bukkit.getScheduler().runTaskTimer(this, () -> QueueManager.handleQueue(kit), 0L, 10L));
         
