@@ -174,6 +174,7 @@ public class Match implements Listener{
     
     public void onDeath(PlayerData playerData, PlayerData killData){
         Player player = Bukkit.getPlayer(playerData.getUuid());
+        Player killer = Bukkit.getPlayer(killData.getUuid());
         
         playerData.getProfile().getStats(kit).incrementDeaths();
         killData.getProfile().getStats(kit).incrementKills();
@@ -184,7 +185,7 @@ public class Match implements Listener{
         players.forEach(playerData1 -> {
             Player player1 = Bukkit.getPlayer(playerData1.getUuid());
             
-            player1.sendMessage(ChatColor.DARK_GREEN + player.getName() + ChatColor.GRAY + " has died!");
+            player1.sendMessage(ChatColor.DARK_GREEN + player.getName() + ChatColor.GRAY + " has been killed by " + ChatColor.DARK_GREEN + killer.getName() + ChatColor.GRAY + "!");
         });
     }
     
