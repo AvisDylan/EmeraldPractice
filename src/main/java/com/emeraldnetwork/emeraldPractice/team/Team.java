@@ -61,7 +61,6 @@ public class Team{
             
             playerComponent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/inventory " + playerData.getUuid()));
             playerComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new BaseComponent[]{ new TextComponent(ChatColor.GRAY + "Click to view") }));
-            
             base.addExtra(playerComponent);
             
             if(iterator.hasNext())
