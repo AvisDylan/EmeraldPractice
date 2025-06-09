@@ -26,20 +26,20 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Match implements Listener{
     
-    private final List<PlayerData> players = new CopyOnWriteArrayList<>();
+    private final List<PlayerData> players = new CopyOnWriteArrayList<>(), spectators = new CopyOnWriteArrayList<>();
     private final Set<Block> playerPlacedBlocks = new HashSet<>();
     private final Team teamOne, teamTwo;
     private final Kit kit;
     private final ActiveMap activeMap;
     private final boolean ranked;
     private final long startTime;
+    private MatchState matchState;
     private int teamOneHits = 0, teamTwoHits = 0, schedulerId;
     
     public Match(Kit kit, Map map, boolean ranked, PlayerData... players){
         this.kit = kit;
         this.ranked = ranked;
         
-        Bukkit.getLogger().info(ranked ? "true" : "false");
         activeMap = new ActiveMap(map);
         
         if(!activeMap.load())
@@ -92,6 +92,8 @@ public class Match implements Listener{
     }
     
     public void handleGameEnd(Team winningTeam, Team losingTeam){
+        Bukkit.getScheduler().cancelTask(schedulerId);
+        
         if(winningTeam == null && losingTeam == null){
             this.players.forEach(playerData -> {
                 Player player = Bukkit.getPlayer(playerData.getUuid());
@@ -139,7 +141,7 @@ public class Match implements Listener{
             WebhookUtils.sendEmbed(
                     ranked ? "Ranked game ended" : "Unranked game ended",
                     "**Kit:** " + kit.getDisplayName() + "\n" +
-                            "**Map:** " + activeMap.getMap().getName() + "\n" +
+                            "**Map:** " + activeMap.getMap().getDisplayName() + "\n" +
                             "**Winning player/s:** " + winningTeam.getPlayerNames() + "\n" +
                             "**Losing player/s:** " + losingTeam.getPlayerNames(),
                     "2bad4e"
@@ -166,31 +168,112 @@ public class Match implements Listener{
             player.teleport(SpawnPointUtils.getSpawnPoint());
         });
         
-        Bukkit.getScheduler().cancelTask(schedulerId);
         activeMap.cleanUp();
         MatchManager.ONGOING_MATCHES.remove(this);
     }
     
     public void onDeath(PlayerData playerData, PlayerData killData){
+        Player player = Bukkit.getPlayer(playerData.getUuid());
+        
         playerData.getProfile().getStats(kit).incrementDeaths();
         killData.getProfile().getStats(kit).incrementKills();
         
         getTeam(playerData).getAlivePlayers().remove(playerData);
         getTeam(playerData).getDeadPlayer().add(playerData);
-    }
-    
-    public void onForfeit(PlayerData playerData){
-        playerData.getProfile().getStats(kit).incrementDeaths();
         
-        getTeam(playerData).getAlivePlayers().remove(playerData);
-        getTeam(playerData).getDeadPlayer().add(playerData);
+        players.forEach(playerData1 -> {
+            Player player1 = Bukkit.getPlayer(playerData1.getUuid());
+            
+            player1.sendMessage(ChatColor.DARK_GREEN + player.getName() + ChatColor.GRAY + " has died!");
+        });
     }
     
     public void onLeave(PlayerData playerData){
+        Player player = Bukkit.getPlayer(playerData.getUuid());
+        
         playerData.getProfile().getStats(kit).incrementDeaths();
+        playerData.getProfile().getStats(kit).resetWinStreak();
+        playerData.getProfile().resetWinStreak();
         
         getTeam(playerData).getAlivePlayers().remove(playerData);
         getTeam(playerData).getDeadPlayer().add(playerData);
+        players.remove(playerData);
+        
+        for(PotionEffect potionEffect : player.getActivePotionEffects()){
+            player.removePotionEffect(potionEffect.getType());
+        }
+        
+        player.setFireTicks(0);
+        player.setFoodLevel(20);
+        player.setHealth(player.getMaxHealth());
+        playerData.setPlayerState(PlayerState.SPAWN);
+        PlayerManager.giveSpawnItems(Bukkit.getPlayer(playerData.getUuid()));
+        player.teleport(SpawnPointUtils.getSpawnPoint());
+        
+        if(ranked){
+            playerData.getProfile().getStats(kit).increaseElo(0, getOtherTeam(playerData).getAverageElo(kit));
+            playerData.getProfile().getStats(kit).incrementRankedLosses();
+        }else{
+            playerData.getProfile().getStats(kit).incrementUnrankedLosses();
+        }
+        
+        players.forEach(playerData1 -> {
+            Player player1 = Bukkit.getPlayer(playerData1.getUuid());
+            
+            player1.sendMessage(ChatColor.DARK_GREEN + player.getName() + ChatColor.GRAY + " has left!");
+        });
+    }
+    
+    public Team getTeam(PlayerData playerData){
+        for(PlayerData teamOnePlayer : teamOne.getPlayers()){
+            if(teamOnePlayer.equals(playerData))
+                return teamOne;
+        }
+        
+        for(PlayerData teamTwoPlayer : teamTwo.getPlayers()){
+            if(teamTwoPlayer.equals(playerData))
+                return teamTwo;
+        }
+        
+        return null;
+    }
+    
+    public Team getOtherTeam(PlayerData playerData){
+        for(PlayerData teamOnePlayer : teamOne.getPlayers()){
+            if(teamOnePlayer.equals(playerData))
+                return teamTwo;
+        }
+        
+        for(PlayerData teamTwoPlayer : teamTwo.getPlayers()){
+            if(teamTwoPlayer.equals(playerData))
+                return teamOne;
+        }
+        
+        return null;
+    }
+    
+    public int getTeamHits(PlayerData playerData){
+        int teamHits = 0;
+        Team playerTeam = getTeam(playerData);
+        
+        if(playerTeam.equals(teamOne))
+            teamHits = teamOneHits;
+        else if(playerTeam.equals(teamTwo))
+            teamHits = teamTwoHits;
+        
+        return teamHits;
+    }
+    
+    public int getOtherTeamHits(PlayerData playerData){
+        int teamHits = 0;
+        Team playerTeam = getOtherTeam(playerData);
+        
+        if(playerTeam.equals(teamOne))
+            teamHits = teamOneHits;
+        else if(playerTeam.equals(teamTwo))
+            teamHits = teamTwoHits;
+        
+        return teamHits;
     }
     
     public List<PlayerData> getPlayers(){
@@ -257,55 +340,15 @@ public class Match implements Listener{
         this.schedulerId = schedulerId;
     }
     
-    public Team getTeam(PlayerData playerData){
-        for(PlayerData teamOnePlayer : teamOne.getPlayers()){
-            if(teamOnePlayer.equals(playerData))
-                return teamOne;
-        }
-        
-        for(PlayerData teamTwoPlayer : teamTwo.getPlayers()){
-            if(teamTwoPlayer.equals(playerData))
-                return teamTwo;
-        }
-        
-        return null;
+    public List<PlayerData> getSpectators(){
+        return spectators;
     }
     
-    public Team getOtherTeam(PlayerData playerData){
-        for(PlayerData teamOnePlayer : teamOne.getPlayers()){
-            if(teamOnePlayer.equals(playerData))
-                return teamTwo;
-        }
-        
-        for(PlayerData teamTwoPlayer : teamTwo.getPlayers()){
-            if(teamTwoPlayer.equals(playerData))
-                return teamOne;
-        }
-        
-        return null;
+    public MatchState getMatchState(){
+        return matchState;
     }
     
-    public int getTeamHits(PlayerData playerData){
-        int teamHits = 0;
-        Team playerTeam = getTeam(playerData);
-        
-        if(playerTeam.equals(teamOne))
-            teamHits = teamOneHits;
-        else if(playerTeam.equals(teamTwo))
-            teamHits = teamTwoHits;
-        
-        return teamHits;
-    }
-    
-    public int getOtherTeamHits(PlayerData playerData){
-        int teamHits = 0;
-        Team playerTeam = getOtherTeam(playerData);
-        
-        if(playerTeam.equals(teamOne))
-            teamHits = teamOneHits;
-        else if(playerTeam.equals(teamTwo))
-            teamHits = teamTwoHits;
-        
-        return teamHits;
+    public void setMatchState(MatchState matchState){
+        this.matchState = matchState;
     }
 }

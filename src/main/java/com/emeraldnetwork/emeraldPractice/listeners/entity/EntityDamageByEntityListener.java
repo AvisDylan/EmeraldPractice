@@ -30,10 +30,10 @@ public class EntityDamageByEntityListener implements Listener{
                 if(match != null && MatchManager.getPlayerMatch(attackerData) != null){
                     //this shit is fucking unreadable ill js put what it checks for it checks if the two players r both on team one or two
                     if((match.getTeamOne().getPlayers().contains(playerData) && match.getTeamOne().getPlayers().contains(attackerData)) ||
-                        (match.getTeamTwo().getPlayers().contains(playerData) && match.getTeamTwo().getPlayers().contains(attackerData)))
+                        (match.getTeamTwo().getPlayers().contains(playerData) && match.getTeamTwo().getPlayers().contains(attackerData))){
                         event.setCancelled(true);
-                    else
-                        event.setCancelled(false);
+                        return;
+                    }
                     
                     if(match.getKit().isBoxing()){
                         event.setDamage(0);
