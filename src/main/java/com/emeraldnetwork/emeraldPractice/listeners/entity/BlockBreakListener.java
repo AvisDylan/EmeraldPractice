@@ -2,6 +2,7 @@ package com.emeraldnetwork.emeraldPractice.listeners.entity;
 
 import com.emeraldnetwork.emeraldPractice.match.Match;
 import com.emeraldnetwork.emeraldPractice.match.MatchManager;
+import com.emeraldnetwork.emeraldPractice.match.MatchState;
 import com.emeraldnetwork.emeraldPractice.player.PlayerData;
 import com.emeraldnetwork.emeraldPractice.player.PlayerManager;
 import org.bukkit.event.EventHandler;
@@ -23,6 +24,11 @@ public class BlockBreakListener implements Listener{
                 Match match = MatchManager.getPlayerMatch(playerData);
                 
                 if(match != null){
+                    if(match.getMatchState() == MatchState.STARTING || match.getMatchState() == MatchState.ENDING){
+                        event.setCancelled(true);
+                        return;
+                    }
+                    
                     if(!match.getKit().isBlocks())
                         event.setCancelled(true);
                     else if(!match.getPlayerPlacedBlocks().contains(event.getBlock()))

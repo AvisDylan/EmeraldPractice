@@ -2,6 +2,7 @@ package com.emeraldnetwork.emeraldPractice.listeners.entity;
 
 import com.emeraldnetwork.emeraldPractice.match.Match;
 import com.emeraldnetwork.emeraldPractice.match.MatchManager;
+import com.emeraldnetwork.emeraldPractice.match.MatchState;
 import com.emeraldnetwork.emeraldPractice.player.PlayerData;
 import com.emeraldnetwork.emeraldPractice.player.PlayerManager;
 import org.bukkit.entity.Player;
@@ -28,6 +29,11 @@ public class EntityDamageByEntityListener implements Listener{
                 Match match = MatchManager.getPlayerMatch(playerData);
                 
                 if(match != null && MatchManager.getPlayerMatch(attackerData) != null){
+                    if(match.getMatchState() == MatchState.STARTING || match.getMatchState() == MatchState.ENDING){
+                        event.setCancelled(true);
+                        return;
+                    }
+                    
                     //this shit is fucking unreadable ill js put what it checks for it checks if the two players r both on team one or two
                     if((match.getTeamOne().getPlayers().contains(playerData) && match.getTeamOne().getPlayers().contains(attackerData)) ||
                         (match.getTeamTwo().getPlayers().contains(playerData) && match.getTeamTwo().getPlayers().contains(attackerData))){

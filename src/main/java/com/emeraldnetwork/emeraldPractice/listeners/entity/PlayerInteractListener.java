@@ -1,6 +1,9 @@
 package com.emeraldnetwork.emeraldPractice.listeners.entity;
 
 import com.emeraldnetwork.emeraldPractice.EmeraldPractice;
+import com.emeraldnetwork.emeraldPractice.match.Match;
+import com.emeraldnetwork.emeraldPractice.match.MatchManager;
+import com.emeraldnetwork.emeraldPractice.match.MatchState;
 import com.emeraldnetwork.emeraldPractice.misc.PearlCooldown;
 import com.emeraldnetwork.emeraldPractice.player.PlayerData;
 import com.emeraldnetwork.emeraldPractice.player.PlayerManager;
@@ -54,6 +57,13 @@ public class PlayerInteractListener implements Listener{
             
             }
             case DUEL -> {
+                Match match = MatchManager.getPlayerMatch(playerData);
+                
+                if(match != null && match.getMatchState() == MatchState.STARTING || match.getMatchState() == MatchState.ENDING){
+                    event.setCancelled(true);
+                    return;
+                }
+                
                 if(event.getPlayer().getItemInHand().getType() == Material.ENDER_PEARL && (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)){
                     if(playerPearlCooldowns.containsKey(playerData)){
                         long secondsSinceLastPearlThrow = (System.currentTimeMillis() - playerPearlCooldowns.get(playerData).getLastPearl()) / 1000;

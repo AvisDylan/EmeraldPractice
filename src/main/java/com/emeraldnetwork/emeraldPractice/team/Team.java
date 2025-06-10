@@ -17,6 +17,7 @@ import java.util.*;
 public class Team{
     
     private final Set<PlayerData> alivePlayers = new HashSet<>(), deadPlayer = new HashSet<>(), players = new HashSet<>();
+    private boolean winningTeam = false;
     
     public Team(List<PlayerData> players){
         this.players.addAll(players);
@@ -37,6 +38,14 @@ public class Team{
     
     public PlayerData getPlayerAtIndex(int index){
         return new ArrayList<>(players).get(index);
+    }
+    
+    public boolean isWinningTeam(){
+        return winningTeam;
+    }
+    
+    public void setWinningTeam(boolean winningTeam){
+        this.winningTeam = winningTeam;
     }
     
     public String getPlayerNames(){

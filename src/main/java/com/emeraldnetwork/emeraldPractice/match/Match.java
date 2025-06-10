@@ -17,16 +17,15 @@ import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.chat.ComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.potion.PotionEffect;
 
-import java.awt.*;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -53,7 +52,7 @@ public class Match implements Listener{
             Bukkit.getLogger().severe("Failed to load map!");
         
         this.players.addAll(List.of(players));
-        for(PlayerData playerData : players){
+        this.players.forEach(playerData -> {
             Player player = Bukkit.getPlayer(playerData.getUuid());
             
             playerData.setPlayerState(PlayerState.DUEL);
@@ -64,8 +63,12 @@ public class Match implements Listener{
             player.sendMessage(ChatColor.GRAY + "Ranked: " + ChatColor.DARK_GREEN + (ranked ? "Yes" : "No"));
             player.sendMessage(ChatColor.RESET + "");
             kit.applyKit(player);
+            
+            if(kit.isNoHitDelay())
+                player.setMaximumNoDamageTicks(4);
+            
             player.setSaturation(20.0f);
-        }
+        });
         
         TeamAssigner teamAssigner = new TeamAssigner(players);
         
@@ -74,31 +77,67 @@ public class Match implements Listener{
         teamOne = new Team(teamAssigner.getTeamOne());
         teamTwo = new Team(teamAssigner.getTeamTwo());
         
-        for(PlayerData playerData : teamOne.getPlayers()){
+        teamOne.getPlayers().forEach(playerData -> {
             Player player = Bukkit.getPlayer(playerData.getUuid());
             
             player.teleport(new Location(activeMap.getWorld(), map.getPlayerOneX(), map.getPlayerOneY(), map.getPlayerOneZ()));
-        }
+        });
         
-        for(PlayerData playerData : teamTwo.getPlayers()){
+        teamTwo.getPlayers().forEach(playerData -> {
             Player player = Bukkit.getPlayer(playerData.getUuid());
             
             player.teleport(new Location(activeMap.getWorld(), map.getPlayerTwoX(), map.getPlayerTwoY(), map.getPlayerTwoZ()));
-        }
+        });
         
         startTime = System.currentTimeMillis();
+        matchState = MatchState.STARTING;
         
         MatchManager.ONGOING_MATCHES.add(this);
         
         schedulerId = Bukkit.getScheduler().runTaskTimer(EmeraldPractice.getPlugin(), () -> {
-            if(teamOne.getAlivePlayers().isEmpty() || (kit.isBoxing() && teamTwoHits >= 100))
-                handleGameEnd(teamTwo, teamOne);
-            else if(teamTwo.getAlivePlayers().isEmpty() || (kit.isBoxing() && teamOneHits >= 100))
-                handleGameEnd(teamOne, teamTwo);
+            int timeBeforeStart = Math.toIntExact((System.currentTimeMillis() - startTime) / 1000);
             
-            if((System.currentTimeMillis() - startTime) / 1000 >= kit.getMaxDurationInSeconds() && kit.getMaxDurationInSeconds() > 0)
-                handleGameEnd(null, null);
-        }, 0L, 10L).getTaskId();
+            if(timeBeforeStart <= 5){
+                this.players.forEach(playerData -> {
+                    Player player = Bukkit.getPlayer(playerData.getUuid());
+                    
+                    player.playSound(player.getLocation(), Sound.NOTE_PLING, 1.0f, 1.0f);
+                    player.sendMessage(ChatColor.GRAY + "Starting in " + ChatColor.DARK_GREEN + (5 - timeBeforeStart) + ChatColor.GRAY + " seconds!");
+                });
+            }else{
+                this.players.forEach(playerData -> {
+                    Player player = Bukkit.getPlayer(playerData.getUuid());
+                    
+                    player.playSound(player.getLocation(), Sound.FIREWORK_LARGE_BLAST, 1.0f, 1.0f);
+                    player.sendMessage(ChatColor.DARK_GREEN + "Game Started!");
+                });
+                
+                teamOne.getPlayers().forEach(playerData -> {
+                    Player player = Bukkit.getPlayer(playerData.getUuid());
+                    
+                    player.teleport(new Location(activeMap.getWorld(), map.getPlayerOneX(), map.getPlayerOneY(), map.getPlayerOneZ()));
+                });
+                
+                teamTwo.getPlayers().forEach(playerData -> {
+                    Player player = Bukkit.getPlayer(playerData.getUuid());
+                    
+                    player.teleport(new Location(activeMap.getWorld(), map.getPlayerTwoX(), map.getPlayerTwoY(), map.getPlayerTwoZ()));
+                });
+                
+                matchState = MatchState.ONGOING;
+                Bukkit.getScheduler().cancelTask(schedulerId);
+                
+                schedulerId = Bukkit.getScheduler().runTaskTimer(EmeraldPractice.getPlugin(), () -> {
+                    if(teamOne.getAlivePlayers().isEmpty() || (kit.isBoxing() && teamTwoHits >= 100))
+                        handleGameEnd(teamTwo, teamOne);
+                    else if(teamTwo.getAlivePlayers().isEmpty() || (kit.isBoxing() && teamOneHits >= 100))
+                        handleGameEnd(teamOne, teamTwo);
+                    
+                    if((System.currentTimeMillis() - startTime) / 1000 >= kit.getMaxDurationInSeconds() && kit.getMaxDurationInSeconds() > 0)
+                        handleGameEnd(null, null);
+                }, 0L, 10L).getTaskId();
+            }
+        }, 0L, 20L).getTaskId();
     }
     
     public void handleGameEnd(Team winningTeam, Team losingTeam){
@@ -114,6 +153,11 @@ public class Match implements Listener{
             });
         }else{
             winningTeam.getPlayers().forEach(playerData -> {
+                if(winningTeam.equals(teamOne))
+                    teamOne.setWinningTeam(true);
+                else if(winningTeam.equals(teamTwo))
+                    teamTwo.setWinningTeam(true);
+                
                 Player player = Bukkit.getPlayer(playerData.getUuid());
                 
                 player.sendTitle(ChatColor.translateAlternateColorCodes('&', "&aWin!"), ChatColor.translateAlternateColorCodes('&', "&aYour team has won the game, GGs!"));
@@ -160,16 +204,19 @@ public class Match implements Listener{
     }
     
     public void cleanUpMatch(){
+        matchState = MatchState.ENDING;
+        
         players.forEach(playerData -> {
             Player player = Bukkit.getPlayer(playerData.getUuid());
             
             MatchManager.INVENTORY_MAP.put(playerData.getUuid(), ArrayUtils.reverseArrayVertically(player.getInventory().getContents()));
             
+            player.playSound(player.getLocation(), Sound.FIREWORK_LARGE_BLAST, 1.0f, 1.0f);
             player.sendMessage(ChatColor.RESET + "");
             player.sendMessage(ChatColor.RESET + "" + ChatColor.DARK_GREEN + ChatColor.BOLD +  "Match Results: " + net.md_5.bungee.api.ChatColor.GRAY + "(click name to view inventory)");
             player.sendMessage(ChatColor.RESET + "");
-            player.spigot().sendMessage(teamOne.getClickablePlayerNames(true));
-            player.spigot().sendMessage(teamTwo.getClickablePlayerNames(false));
+            player.spigot().sendMessage(getWinningTeam().getClickablePlayerNames(true));
+            player.spigot().sendMessage(getLosingTeam().getClickablePlayerNames(false));
             player.sendMessage(ChatColor.RESET + "");
             player.sendMessage(ChatColor.RESET + "" + ChatColor.DARK_GREEN + ChatColor.BOLD +  "Stats: ");
             if(ranked)
@@ -195,19 +242,33 @@ public class Match implements Listener{
             player.setFireTicks(0);
             player.setFoodLevel(20);
             player.setHealth(player.getMaxHealth());
-            playerData.setPlayerState(PlayerState.SPAWN);
-            PlayerManager.giveSpawnItems(Bukkit.getPlayer(playerData.getUuid()));
-            player.teleport(SpawnPointUtils.getSpawnPoint());
+            player.setMaximumNoDamageTicks(20);
+            
+            Bukkit.getScheduler().runTaskLater(EmeraldPractice.getPlugin(), () -> {
+                playerData.setPlayerState(PlayerState.SPAWN);
+                PlayerManager.giveSpawnItems(Bukkit.getPlayer(playerData.getUuid()));
+                player.teleport(SpawnPointUtils.getSpawnPoint());
+                
+                activeMap.cleanUp();
+                MatchManager.ONGOING_MATCHES.remove(this);
+            }, 100L);
         });
-        
-        activeMap.cleanUp();
-        MatchManager.ONGOING_MATCHES.remove(this);
     }
     
     public void onDeath(PlayerData playerData, PlayerData killData){
         Player player = Bukkit.getPlayer(playerData.getUuid());
         Player killer = Bukkit.getPlayer(killData.getUuid());
         
+        Bukkit.getLogger().info(player.getDisplayName());
+        
+        if(teamOne.getPlayers().contains(playerData)){
+            Bukkit.getLogger().info("player1");
+            Bukkit.getLogger().info(activeMap.getWorld().getName() + " " + activeMap.getMap().getPlayerOneX() + " " + activeMap.getMap().getPlayerOneY() + " " + activeMap.getMap().getPlayerOneZ() + " ");
+            player.teleport(new Location(activeMap.getWorld(), activeMap.getMap().getPlayerOneX(), activeMap.getMap().getPlayerOneY(), activeMap.getMap().getPlayerOneZ()));
+        }else if(teamTwo.getPlayers().contains(playerData)){
+            Bukkit.getLogger().info("player2");
+            player.teleport(new Location(activeMap.getWorld(), activeMap.getMap().getPlayerTwoX(), activeMap.getMap().getPlayerTwoY(), activeMap.getMap().getPlayerTwoZ()));
+        }
         playerData.getProfile().getStats(kit).incrementDeaths();
         killData.getProfile().getStats(kit).incrementKills();
         
@@ -387,5 +448,23 @@ public class Match implements Listener{
     
     public int getTeamSize(){
         return Math.max(teamOne.getPlayers().size(), teamTwo.getPlayers().size());
+    }
+    
+    public Team getWinningTeam(){
+        if(teamOne.isWinningTeam())
+            return teamOne;
+        else if(teamTwo.isWinningTeam())
+            return teamTwo;
+        
+        return null;
+    }
+    
+    public Team getLosingTeam(){
+        if(teamOne.isWinningTeam())
+            return teamTwo;
+        else if(teamTwo.isWinningTeam())
+            return teamOne;
+        
+        return null;
     }
 }

@@ -15,6 +15,7 @@ import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 public class DuelRequest{
@@ -37,6 +38,9 @@ public class DuelRequest{
         
         Player receiverPlayer = Bukkit.getPlayer(receiver.getUuid());
         Player senderPlayer = Bukkit.getPlayer(sender.getUuid());
+        
+        if(receiver.getProfile().isMessageSounds())
+            receiverPlayer.playSound(receiverPlayer.getLocation(), Sound.NOTE_PLING, 1.0f, 1.0f);
         
         receiverPlayer.sendMessage(ChatColor.RESET + "");
         receiverPlayer.sendMessage(ChatColor.RESET + "" + ChatColor.DARK_GREEN + ChatColor.BOLD + "Duel Request");
