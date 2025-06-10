@@ -57,7 +57,7 @@ public class InventoryClickListener implements Listener{
                             //send sender message
                             event.getWhoClicked().sendMessage("");
                             event.getWhoClicked().sendMessage(ChatColor.RESET + "" + ChatColor.DARK_GREEN + ChatColor.BOLD + "Duel Request");
-                            event.getWhoClicked().sendMessage(ChatColor.RESET + "" + ChatColor.GRAY + "To: " + ChatColor.DARK_GREEN + Bukkit.getPlayer(playerData.getTempRequest().getReceiver().getUuid()).getName());
+                            event.getWhoClicked().sendMessage(ChatColor.RESET + "" + ChatColor.GRAY + "To: " + ChatColor.DARK_GREEN + Bukkit.getPlayer(playerData.getTempRequest().getReceiver().getUuid()).getName() + ChatColor.GRAY + " (" + playerData.getTempRequest().getReceiver().getPing() + " ms)");
                             event.getWhoClicked().sendMessage(ChatColor.RESET + "" + ChatColor.GRAY + "Kit: " + ChatColor.DARK_GREEN + playerData.getTempRequest().getKit().getDisplayName());
                             event.getWhoClicked().sendMessage(ChatColor.RESET + "" + ChatColor.GRAY + "Map: " + ChatColor.DARK_GREEN + map.getDisplayName());
                             event.getWhoClicked().sendMessage("");

@@ -52,7 +52,8 @@ public class AcceptCommand implements CommandExecutor{
             MatchManager.startMatch(incomingRequest.getKit(), false, incomingRequest.getMap(), senderData, receiverData);
             receiverData.getDuelRequests().remove(incomingRequest);
             receiver.sendMessage(ChatColor.GRAY + "You have accepted " + ChatColor.DARK_GREEN + sender.getName() + ChatColor.GRAY + "'s duel!");
-        }
+        }else
+            commandSender.sendMessage(ChatColor.RED + "You have no duel requests from " + sender.getName() + "!");
         return true;
     }
 }

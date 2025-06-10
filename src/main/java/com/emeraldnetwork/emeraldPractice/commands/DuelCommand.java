@@ -32,6 +32,11 @@ public class DuelCommand implements CommandExecutor{
             PlayerData receiverData = PlayerManager.getPlayerData(receiver.getUniqueId());
             PlayerData senderData = PlayerManager.getPlayerData(sender.getUniqueId());
             
+            if(sender.equals(receiver)){
+                commandSender.sendMessage(ChatColor.RED + "You can't duel yourself!");
+                return false;
+            }
+            
             if(senderData.getDuelRequest(receiverData) != null){
                 sender.chat("/accept " + receiver.getName());
                 return false;
