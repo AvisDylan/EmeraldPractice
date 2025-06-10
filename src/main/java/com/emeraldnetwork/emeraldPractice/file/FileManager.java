@@ -7,6 +7,7 @@ import com.emeraldnetwork.emeraldPractice.adapter.LocationAdapter;
 import com.emeraldnetwork.emeraldPractice.adapter.PotionEffectAdapter;
 import com.emeraldnetwork.emeraldPractice.kit.Kit;
 import com.emeraldnetwork.emeraldPractice.kit.KitManager;
+import com.emeraldnetwork.emeraldPractice.profile.PlayerProfile;
 import com.emeraldnetwork.emeraldPractice.utils.SpawnPointUtils;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
@@ -30,6 +31,26 @@ public class FileManager{
                                                         .registerTypeAdapter(ItemStack.class, new ItemStackAdapter())
                                                         .registerTypeAdapter(PotionEffect.class, new PotionEffectAdapter())
                                                         .registerTypeAdapter(File.class, new FileAdapter()).create();
+    
+    public static void saveProfile(PlayerProfile playerProfile){
+        File file = new File(EmeraldPractice.getPlugin().getDataFolder().getAbsoluteFile() + "/profiles/save_" + playerProfile.getUuid() + "_" + System.currentTimeMillis());
+        
+        try{
+            file.getParentFile().mkdir();
+            file.createNewFile();
+            
+            Writer writer = new BufferedWriter(new FileWriter(file, false));
+            
+            GSON.toJson(playerProfile, writer);
+            writer.flush();
+            writer.close();
+            Bukkit.getLogger().info("Saved player profile!");
+        }catch(FileNotFoundException fnfe){
+            Bukkit.getLogger().severe("File not found!");
+        }catch(IOException ie){
+            Bukkit.getLogger().severe(ie.getMessage());
+        }
+    }
     
     public static void saveSpawnPoint(){
         try{

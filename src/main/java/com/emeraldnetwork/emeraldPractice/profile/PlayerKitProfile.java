@@ -84,4 +84,8 @@ public class PlayerKitProfile{
     public int getKills(){
         return kills;
     }
+    
+    public int getWinstreak(){
+        return winstreak;
+    }
 }

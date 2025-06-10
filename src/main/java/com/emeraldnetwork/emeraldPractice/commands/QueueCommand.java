@@ -7,6 +7,7 @@ import com.emeraldnetwork.emeraldPractice.player.PlayerState;
 import com.emeraldnetwork.emeraldPractice.queue.QueueEntry;
 import com.emeraldnetwork.emeraldPractice.queue.QueueManager;
 import com.emeraldnetwork.emeraldPractice.utils.ItemUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -46,14 +47,14 @@ public class QueueCommand implements CommandExecutor{
                 }
                 
                 if(selectedKit.getMaps().isEmpty()){
-                    System.err.println(selectedKit.getDisplayName() + " has no maps!");
+                    commandSender.sendMessage(ChatColor.RED + selectedKit.getDisplayName() + " has no maps!");
                     return false;
                 }
                 
                 switch(strings[1].toLowerCase()){
                     case "unranked" -> {
                         QueueManager.joinQueue(player, selectedKit, false, 1);
-                        commandSender.sendMessage("§aYou have joined the unranked queue for " + selectedKit.getDisplayName() + "!");
+                        commandSender.sendMessage(ChatColor.GRAY + "You have joined the unranked queue for " + ChatColor.DARK_GREEN + selectedKit.getDisplayName() + ChatColor.GRAY + "!");
                     }
                     case "ranked" -> {
                         if(!selectedKit.isRanked()){
@@ -62,7 +63,7 @@ public class QueueCommand implements CommandExecutor{
                         }
                         
                         QueueManager.joinQueue(player, selectedKit, true, 1);
-                        commandSender.sendMessage("§aYou have joined the ranked queue for " + selectedKit.getDisplayName() + "!");
+                        commandSender.sendMessage(ChatColor.GRAY + "You have joined the unranked queue for " + ChatColor.DARK_GREEN + selectedKit.getDisplayName() + ChatColor.GRAY + "!");
                     }
                     default -> commandSender.sendMessage("§c" + strings[1] + " is not a valid option!");
                 }
@@ -75,7 +76,7 @@ public class QueueCommand implements CommandExecutor{
                     return false;
                 }
                 
-                commandSender.sendMessage("§aYou have left the queue!");
+                commandSender.sendMessage(ChatColor.GRAY + "You have left the queue!");
                 PlayerManager.getPlayerData(player.getUniqueId()).setPlayerState(PlayerState.SPAWN);
                 PlayerManager.giveSpawnItems(player);
             }

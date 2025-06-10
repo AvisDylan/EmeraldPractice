@@ -15,7 +15,7 @@ import java.util.UUID;
 public class PlayerData{
     
     private final UUID uuid;
-    private final PlayerProfile profile;
+    private PlayerProfile profile;
     private PlayerState playerState;
     private final FastBoard fastBoard;
     
@@ -52,6 +52,10 @@ public class PlayerData{
     
     public FastBoard getFastBoard(){
         return fastBoard;
+    }
+    
+    public void resetProfile(){
+        profile = new PlayerProfile(uuid);
     }
     
     public int getPing(){

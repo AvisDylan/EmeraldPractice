@@ -62,6 +62,7 @@ public class Match implements Listener{
             player.sendMessage(ChatColor.GRAY + "Ranked: " + ChatColor.DARK_GREEN + (ranked ? "Yes" : "No"));
             player.sendMessage(ChatColor.RESET + "");
             kit.applyKit(player);
+            player.setSaturation(20.0f);
         }
         
         TeamAssigner teamAssigner = new TeamAssigner(players);
@@ -73,8 +74,6 @@ public class Match implements Listener{
         
         for(PlayerData playerData : teamOne.getPlayers()){
             Player player = Bukkit.getPlayer(playerData.getUuid());
-            
-            Bukkit.getLogger().info(activeMap.getWorld().getName());
             
             player.teleport(new Location(activeMap.getWorld(), map.getPlayerOneX(), map.getPlayerOneY(), map.getPlayerOneZ()));
         }
@@ -173,11 +172,8 @@ public class Match implements Listener{
             player.sendMessage(ChatColor.RESET + "" + ChatColor.DARK_GREEN + ChatColor.BOLD +  "Stats: ");
             if(ranked)
                 player.sendMessage(ChatColor.RESET + "" + ChatColor.GRAY + "Elo: " + ChatColor.DARK_GREEN + Math.round(playerData.getProfile().getStats(kit).getElo()));
-            player.sendMessage(ChatColor.RESET + "" + ChatColor.GRAY + "Wins: " + ChatColor.DARK_GREEN + (ranked ? playerData.getProfile().getStats(kit).getRankedWins() : playerData.getProfile().getStats(kit).getUnrankedWins()));
-            player.sendMessage(ChatColor.RESET + "" + ChatColor.GRAY + "Losses: " + ChatColor.DARK_GREEN + (ranked ? playerData.getProfile().getStats(kit).getRankedLosses() : playerData.getProfile().getStats(kit).getUnrankedLosses()));
-            player.sendMessage(ChatColor.RESET + "" + ChatColor.GRAY + "Kills: " + ChatColor.DARK_GREEN + playerData.getProfile().getStats(kit).getKills());
-            player.sendMessage(ChatColor.RESET + "" + ChatColor.GRAY + "Deaths: " + ChatColor.DARK_GREEN + playerData.getProfile().getStats(kit).getDeaths());
-            player.sendMessage(ChatColor.RESET + "" + ChatColor.GRAY + "K/D: " + ChatColor.DARK_GREEN + playerData.getProfile().getStats(kit).getKd());
+            player.sendMessage(ChatColor.RESET + "" + ChatColor.GRAY + "Global Winstreak: " + ChatColor.DARK_GREEN + playerData.getProfile().getWinstreak());
+            player.sendMessage(ChatColor.RESET + "" + ChatColor.GRAY + "Kit Winsteak: " + ChatColor.DARK_GREEN + playerData.getProfile().getStats(kit).getWinstreak());
             player.sendMessage(ChatColor.RESET + "");
             
             TextComponent playAgainComponent = new TextComponent(ChatColor.RESET + "" + ChatColor.DARK_GREEN + ChatColor.BOLD + "(Play Again)");
@@ -190,6 +186,7 @@ public class Match implements Listener{
                 player.removePotionEffect(potionEffect.getType());
             }
             
+            player.setSaturation(20.0f);
             player.setLevel(0);
             player.setExp(0.0f);
             player.setFireTicks(0);

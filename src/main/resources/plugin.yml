@@ -24,3 +24,7 @@ commands:
     description: create new world
   inventory:
     description: view player past inventories
+  resetstats:
+    description: reset player stats
+  duel:
+    description: send a duel to a player

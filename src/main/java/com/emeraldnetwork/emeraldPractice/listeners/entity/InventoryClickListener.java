@@ -14,7 +14,8 @@ public class InventoryClickListener implements Listener{
         
         switch(playerData.getPlayerState()){
             case QUEUE, SPAWN, SPECTATING -> {
-                event.setCancelled(true);
+                if(!playerData.getProfile().isEditMode())
+                    event.setCancelled(true);
             }
         }
     }
