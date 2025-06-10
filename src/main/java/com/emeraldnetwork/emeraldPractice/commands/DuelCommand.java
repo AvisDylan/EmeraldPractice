@@ -1,5 +1,6 @@
 package com.emeraldnetwork.emeraldPractice.commands;
 
+import com.emeraldnetwork.emeraldPractice.duel.DuelRequest;
 import com.emeraldnetwork.emeraldPractice.kit.Kit;
 import com.emeraldnetwork.emeraldPractice.kit.KitManager;
 import com.emeraldnetwork.emeraldPractice.player.PlayerData;
@@ -31,6 +32,16 @@ public class DuelCommand implements CommandExecutor{
             PlayerData receiverData = PlayerManager.getPlayerData(receiver.getUniqueId());
             PlayerData senderData = PlayerManager.getPlayerData(sender.getUniqueId());
             
+            if(senderData.getDuelRequest(receiverData) != null){
+                sender.chat("/accept " + receiver.getName());
+                return false;
+            }
+            
+            if(receiverData.getDuelRequest(senderData) != null){
+                commandSender.sendMessage(ChatColor.RED + "You already sent a duel request to " + receiver.getName() + "!");
+                return false;
+            }
+            
             if(receiverData.getPlayerState() != PlayerState.SPAWN){
                 commandSender.sendMessage(ChatColor.RED + receiver.getName() + " is not at spawn!");
                 return false;
@@ -56,9 +67,7 @@ public class DuelCommand implements CommandExecutor{
             }
             
             sender.openInventory(inventory);
-            
-            commandSender.sendMessage("You sent a duel to " + receiver.getName());
-            receiver.sendMessage("You received a duel from " + sender.getName());
+            senderData.setTempRequest(new DuelRequest(null, receiverData, senderData));
         }else
             commandSender.sendMessage(ChatColor.RED + strings[0] + " is not a valid player!");
         return true;

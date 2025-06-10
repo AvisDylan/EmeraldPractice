@@ -28,3 +28,5 @@ commands:
     description: reset player stats
   duel:
     description: send a duel to a player
+  accept:
+    description: accept duels

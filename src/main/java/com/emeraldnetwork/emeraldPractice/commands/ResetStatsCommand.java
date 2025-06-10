@@ -19,15 +19,16 @@ public class ResetStatsCommand implements CommandExecutor{
             if(strings[0].equalsIgnoreCase("*"))
                 PlayerManager.PLAYERS.values().forEach(PlayerData::resetProfile);
             else{
-                for(PlayerData playerData : PlayerManager.PLAYERS.values()){
-                    Player player = Bukkit.getPlayer(playerData.getUuid());
+                Player player = Bukkit.getPlayer(strings[0]);
+                
+                if(player != null){
+                    PlayerData playerData = PlayerManager.getPlayerData(player.getUniqueId());
                     
-                    if(player.getName().equalsIgnoreCase(strings[0])){
-                        commandSender.sendMessage(ChatColor.GREEN + "Reset " + player.getName() + "'s stats!");
-                        FileManager.saveProfile(playerData.getProfile());
-                        playerData.resetProfile();
-                        return true;
-                    }
+                    commandSender.sendMessage(ChatColor.GREEN + "Reset " + player.getName() + "'s stats!");
+                    FileManager.saveProfile(playerData.getProfile());
+                    playerData.resetProfile();
+                    player.kickPlayer("stat reset");
+                    return true;
                 }
                 
                 commandSender.sendMessage(ChatColor.RED + strings[0] + " is not a valid player!");

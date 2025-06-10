@@ -26,7 +26,7 @@ public class InventoryCommand implements CommandExecutor{
         if(MatchManager.INVENTORY_MAP.containsKey(inventoryUuid)){
             Player player = (Player) commandSender;
             ItemStack[] sourceInventory = MatchManager.INVENTORY_MAP.get(inventoryUuid);
-            Inventory inventory = Bukkit.createInventory(player, sourceInventory.length, Bukkit.getPlayer(inventoryUuid).getName());
+            Inventory inventory = Bukkit.createInventory(player, sourceInventory.length, Bukkit.getPlayer(inventoryUuid).getName() + "'s inventory");
             
             inventory.setContents(sourceInventory);
             

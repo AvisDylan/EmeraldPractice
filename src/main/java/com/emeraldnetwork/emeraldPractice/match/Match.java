@@ -13,7 +13,9 @@ import com.emeraldnetwork.emeraldPractice.utils.ArrayUtils;
 import com.emeraldnetwork.emeraldPractice.utils.FormatUtils;
 import com.emeraldnetwork.emeraldPractice.utils.SpawnPointUtils;
 import com.emeraldnetwork.emeraldPractice.utils.WebhookUtils;
+import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
 import org.bukkit.Bukkit;
@@ -179,6 +181,7 @@ public class Match implements Listener{
             TextComponent playAgainComponent = new TextComponent(ChatColor.RESET + "" + ChatColor.DARK_GREEN + ChatColor.BOLD + "(Play Again)");
             
             playAgainComponent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/queue join " + (ranked ? "ranked" : "unranked") + " " + kit.getName()));
+            playAgainComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new BaseComponent[]{ new TextComponent(ChatColor.GRAY + "Click to play again") }));
             player.spigot().sendMessage(playAgainComponent);
             player.sendMessage(ChatColor.RESET + "");
             

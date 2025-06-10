@@ -1,6 +1,7 @@
 package com.emeraldnetwork.emeraldPractice.player;
 
 import com.emeraldnetwork.emeraldPractice.database.DatabaseManager;
+import com.emeraldnetwork.emeraldPractice.duel.DuelRequest;
 import com.emeraldnetwork.emeraldPractice.kit.KitManager;
 import com.emeraldnetwork.emeraldPractice.profile.PlayerKitProfile;
 import com.emeraldnetwork.emeraldPractice.profile.PlayerProfile;
@@ -9,6 +10,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -17,7 +20,9 @@ public class PlayerData{
     private final UUID uuid;
     private PlayerProfile profile;
     private PlayerState playerState;
+    private DuelRequest tempRequest;
     private final FastBoard fastBoard;
+    private final List<DuelRequest> duelRequests = new LinkedList<>();
     
     public PlayerData(UUID uuid){
         this.uuid = uuid;
@@ -52,6 +57,31 @@ public class PlayerData{
     
     public FastBoard getFastBoard(){
         return fastBoard;
+    }
+    
+    public void setProfile(PlayerProfile profile){
+        this.profile = profile;
+    }
+    
+    public List<DuelRequest> getDuelRequests(){
+        return duelRequests;
+    }
+    
+    public DuelRequest getTempRequest(){
+        return tempRequest;
+    }
+    
+    public void setTempRequest(DuelRequest tempRequest){
+        this.tempRequest = tempRequest;
+    }
+    
+    public DuelRequest getDuelRequest(PlayerData playerData){
+        for(DuelRequest duelRequest : duelRequests){
+            if(duelRequest.getSender().equals(playerData))
+                return duelRequest;
+        }
+        
+        return null;
     }
     
     public void resetProfile(){

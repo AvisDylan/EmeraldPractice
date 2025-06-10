@@ -23,6 +23,10 @@ public class MatchManager{
         new Match(kit, map, ranked, players);
     }
     
+    public static void startMatch(Kit kit, boolean ranked, Map map, PlayerData... players){
+        new Match(kit, map, ranked, players);
+    }
+    
     /*public static void startMatch(PlayerData playerData1, PlayerData playerData2, Kit kit, Map map){
         Match match = new Match(kit, map, playerData1, playerData2);
     }*/
