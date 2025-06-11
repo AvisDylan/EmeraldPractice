@@ -7,6 +7,7 @@ import com.emeraldnetwork.emeraldPractice.match.MatchState;
 import com.emeraldnetwork.emeraldPractice.misc.PearlCooldown;
 import com.emeraldnetwork.emeraldPractice.player.PlayerData;
 import com.emeraldnetwork.emeraldPractice.player.PlayerManager;
+import com.emeraldnetwork.emeraldPractice.utils.ItemUtils;
 import com.emeraldnetwork.emeraldPractice.utils.MultithreadedUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -69,11 +70,8 @@ public class PlayerInteractListener implements Listener{
                         
                         match.getPlayers().forEach(playerData1 -> {
                             Player player = Bukkit.getPlayer(playerData1.getUuid());
-                            ItemStack playerHead = new ItemStack(Material.SKULL_ITEM);
-                            SkullMeta skullMeta = (SkullMeta) playerHead.getItemMeta();
+                            ItemStack playerHead = ItemUtils.createSkull(player, 1, ChatColor.DARK_GREEN + player.getName());
                             
-                            skullMeta.setOwner(player.getName());
-                            playerHead.setItemMeta(skullMeta);
                             inventory.addItem(playerHead);
                         });
                         

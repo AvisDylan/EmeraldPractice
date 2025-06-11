@@ -229,7 +229,9 @@ public class Match implements Listener{
             player.spigot().sendMessage(getWinningTeam().getClickablePlayerNames(true));
             player.spigot().sendMessage(getLosingTeam().getClickablePlayerNames(false));
             player.sendMessage(ChatColor.RESET + "");
-            player.sendMessage(ChatColor.RESET + "" + ChatColor.DARK_GREEN + ChatColor.BOLD +  "Stats: ");
+            player.sendMessage(ChatColor.RESET + "" + ChatColor.GRAY + "Spectators: " + ChatColor.DARK_GREEN + spectators.size()    );
+            player.sendMessage(ChatColor.RESET + "");
+            player.sendMessage(ChatColor.RESET + "" + ChatColor.DARK_GREEN + ChatColor.BOLD + "Stats: ");
             if(ranked)
                 player.sendMessage(ChatColor.RESET + "" + ChatColor.GRAY + "Elo: " + ChatColor.DARK_GREEN + Math.round(playerData.getProfile().getStats(kit).getElo()));
             player.sendMessage(ChatColor.RESET + "" + ChatColor.GRAY + "Global Winstreak: " + ChatColor.DARK_GREEN + playerData.getProfile().getWinstreak());

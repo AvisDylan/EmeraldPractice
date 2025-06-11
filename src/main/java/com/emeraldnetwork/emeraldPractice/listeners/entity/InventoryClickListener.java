@@ -9,6 +9,7 @@ import com.emeraldnetwork.emeraldPractice.player.PlayerManager;
 import com.emeraldnetwork.emeraldPractice.utils.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -67,6 +68,11 @@ public class InventoryClickListener implements Listener{
                             break;
                         }
                     }
+                }else if(event.getClickedInventory().getTitle().equalsIgnoreCase(ChatColor.GRAY + "Choose a player")){
+                    Player player = Bukkit.getPlayer(ChatColor.stripColor(event.getCurrentItem().getItemMeta().getDisplayName()));
+                    
+                    if(player != null)
+                        event.getWhoClicked().teleport(player);
                 }
                 
                 if(!playerData.getProfile().isEditMode())

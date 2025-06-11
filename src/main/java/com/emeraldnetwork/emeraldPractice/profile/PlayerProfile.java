@@ -13,7 +13,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class PlayerProfile{
     
     private final UUID uuid;
-    private boolean receiveMessages = true, messageSounds = true, duelRequests = true, scoreBoard = true, globalChat = true, editMode = false;
+    private boolean receiveMessages = true, messageSounds = true, duelRequests = true, duelSounds = true, allowSpectators = true, scoreBoard = true, globalChat = true, editMode = false;
     private WeatherType playerWeather = WeatherType.CLEAR;
     private int pingRange = 200;
     private int playerTime = 0;
@@ -98,6 +98,26 @@ public class PlayerProfile{
     
     public void setPlayerTime(int playerTime){
         this.playerTime = playerTime;
+    }
+    
+    public boolean isDuelSounds(){
+        return duelSounds;
+    }
+    
+    public void setDuelSounds(boolean duelSounds){
+        this.duelSounds = duelSounds;
+    }
+    
+    public boolean isAllowSpectators(){
+        return allowSpectators;
+    }
+    
+    public void setAllowSpectators(boolean allowSpectators){
+        this.allowSpectators = allowSpectators;
+    }
+    
+    public void setWinstreak(int winstreak){
+        this.winstreak = winstreak;
     }
     
     public Map<String, PlayerKitProfile> getKitDataList(){

@@ -39,12 +39,13 @@ public class LeaveCommand implements CommandExecutor{
                     playerData.setPlayerState(PlayerState.SPAWN);
                     PlayerManager.giveSpawnItems(Bukkit.getPlayer(playerData.getUuid()));
                     player.teleport(SpawnPointUtils.getSpawnPoint());
+                    match.getSpectators().remove(playerData);
                     
                     match.getPlayers().forEach(playerData1 -> {
                         Player player1 = Bukkit.getPlayer(playerData1.getUuid());
                         
                         player1.showPlayer(player);
-                        player.sendMessage(ChatColor.DARK_GREEN + player.getName() + ChatColor.GRAY + " has stopped spectating!");
+                        player1.sendMessage(ChatColor.DARK_GREEN + player.getName() + ChatColor.GRAY + " has stopped spectating!");
                     });
                 }else
                     commandSender.sendMessage(ChatColor.RED + "You are not spectating any matches!");
