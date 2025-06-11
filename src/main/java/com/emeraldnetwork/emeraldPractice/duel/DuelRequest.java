@@ -39,7 +39,7 @@ public class DuelRequest{
         Player receiverPlayer = Bukkit.getPlayer(receiver.getUuid());
         Player senderPlayer = Bukkit.getPlayer(sender.getUuid());
         
-        if(receiver.getProfile().isMessageSounds())
+        if(receiver.getProfile().isDuelSounds())
             receiverPlayer.playSound(receiverPlayer.getLocation(), Sound.NOTE_PLING, 1.0f, 1.0f);
         
         receiverPlayer.sendMessage(ChatColor.RESET + "");

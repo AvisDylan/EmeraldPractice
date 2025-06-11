@@ -130,6 +130,13 @@
             <version>1.8.4</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.7.5</version>
+        </dependency>
+
+
         <!-- here is link of worledit repo incase i wanan change version in the future https://maven.enginehub.org/repo/com/sk89q/worldedit/worldedit-bukkit/ -->
     </dependencies>
 </project>

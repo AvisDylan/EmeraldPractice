@@ -45,12 +45,17 @@ public class SpectateCommand implements CommandExecutor{
             Match match = MatchManager.getPlayerMatch(targetData);
             
             if(match != null){
-                match.getPlayers().forEach(playerData -> {
+                for(PlayerData playerData : match.getPlayers()){
+                    if(!playerData.getProfile().isAllowSpectators()){
+                        commandSender.sendMessage(ChatColor.RED + "Somebody in " + target.getName() + "'s game isn't allowing spectators!");
+                        return false;
+                    }
+                    
                     Player player = Bukkit.getPlayer(playerData.getUuid());
                     
                     player.hidePlayer(sender);
                     player.sendMessage(ChatColor.DARK_GREEN + sender.getName() + ChatColor.GRAY + " has started spectating!");
-                });
+                }
                 
                 senderData.setPlayerState(PlayerState.SPECTATING);
                 PlayerManager.giveSpectatorItems(sender);
