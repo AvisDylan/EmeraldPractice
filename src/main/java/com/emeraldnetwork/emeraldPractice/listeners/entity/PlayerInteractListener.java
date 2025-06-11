@@ -16,6 +16,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -54,7 +57,29 @@ public class PlayerInteractListener implements Listener{
                 }
             }
             case SPECTATING -> {
-            
+                if(event.getAction() == Action.RIGHT_CLICK_AIR && event.getItem().hasItemMeta()){
+                    if(event.getItem().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.RED + "Stop Spectating " + ChatColor.GRAY + "(right click)"))
+                        event.getPlayer().chat("/leave");
+                    else if(event.getItem().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.GRAY + "Teleport to a player (right click)")){
+                        Inventory inventory = Bukkit.createInventory(event.getPlayer(), 18, ChatColor.GRAY + "Choose a player");
+                        Match match = MatchManager.getSpectatorMatch(playerData);
+                        
+                        if(match == null)
+                            return;
+                        
+                        match.getPlayers().forEach(playerData1 -> {
+                            Player player = Bukkit.getPlayer(playerData1.getUuid());
+                            ItemStack playerHead = new ItemStack(Material.SKULL_ITEM);
+                            SkullMeta skullMeta = (SkullMeta) playerHead.getItemMeta();
+                            
+                            skullMeta.setOwner(player.getName());
+                            playerHead.setItemMeta(skullMeta);
+                            inventory.addItem(playerHead);
+                        });
+                        
+                        event.getPlayer().openInventory(inventory);
+                    }
+                }
             }
             case DUEL -> {
                 Match match = MatchManager.getPlayerMatch(playerData);

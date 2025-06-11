@@ -14,12 +14,16 @@ commands:
     description: edit maps
   queue:
     description: queue for gamemodes
+    aliases:
+      - q
   edit:
     description: allows you to place blocks
   setspawn:
     description: set a custom spawnpoint
   leave:
     description: lets you leave games
+    aliases:
+      - l
   world:
     description: create new world
   inventory:
@@ -28,5 +32,11 @@ commands:
     description: reset player stats
   duel:
     description: send a duel to a player
+    aliases:
+      - d
   accept:
     description: accept duels
+  spectate:
+    description: spectate game
+    aliases:
+      - spec

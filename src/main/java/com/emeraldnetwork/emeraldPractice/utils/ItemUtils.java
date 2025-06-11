@@ -1,5 +1,6 @@
 package com.emeraldnetwork.emeraldPractice.utils;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -26,7 +27,15 @@ public final class ItemUtils{
                                                     null,
                                                     null,
                                                     createItem(Material.INK_SACK, 1, (short) 1, "§cLeave Queue §7(right click)") },
-            SPEC_ITEMS = null;
+            SPEC_ITEMS = { createItem(Material.COMPASS, 1, ChatColor.GRAY + "Teleport to a player (right click)"),
+                            null,
+                            null,
+                            null,
+                            null,
+                            null,
+                            null,
+                            null,
+                            createItem(Material.INK_SACK, 1, (short) 1, ChatColor.RED + "Stop Spectating " + ChatColor.GRAY + "(right click)") };
     
     public static ItemStack createItem(Material material, int amount){
         return new ItemStack(material, amount);

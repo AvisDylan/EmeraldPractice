@@ -206,6 +206,17 @@ public class Match implements Listener{
     public void cleanUpMatch(){
         matchState = MatchState.ENDING;
         
+        spectators.forEach(spectatorData -> {
+            Player player = Bukkit.getPlayer(spectatorData.getUuid());
+            
+            player.sendMessage(ChatColor.RESET + "");
+            player.sendMessage(ChatColor.RESET + "" + ChatColor.DARK_GREEN + ChatColor.BOLD +  "Match Results: " + net.md_5.bungee.api.ChatColor.GRAY + "(click name to view inventory)");
+            player.sendMessage(ChatColor.RESET + "");
+            player.spigot().sendMessage(getWinningTeam().getClickablePlayerNames(true));
+            player.spigot().sendMessage(getLosingTeam().getClickablePlayerNames(false));
+            player.sendMessage(ChatColor.RESET + "");
+        });
+        
         players.forEach(playerData -> {
             Player player = Bukkit.getPlayer(playerData.getUuid());
             
@@ -243,16 +254,35 @@ public class Match implements Listener{
             player.setFoodLevel(20);
             player.setHealth(player.getMaxHealth());
             player.setMaximumNoDamageTicks(20);
+        });
+        
+        Bukkit.getScheduler().runTaskLater(EmeraldPractice.getPlugin(), () -> {
+            spectators.forEach(spectatorData -> {
+                Player player = Bukkit.getPlayer(spectatorData.getUuid());
+                
+                player.setAllowFlight(false);
+                spectatorData.setPlayerState(PlayerState.SPAWN);
+                PlayerManager.giveSpawnItems(Bukkit.getPlayer(spectatorData.getUuid()));
+                player.teleport(SpawnPointUtils.getSpawnPoint());
+            });
             
-            Bukkit.getScheduler().runTaskLater(EmeraldPractice.getPlugin(), () -> {
+            players.forEach(playerData -> {
+                Player player = Bukkit.getPlayer(playerData.getUuid());
+                
                 playerData.setPlayerState(PlayerState.SPAWN);
                 PlayerManager.giveSpawnItems(Bukkit.getPlayer(playerData.getUuid()));
                 player.teleport(SpawnPointUtils.getSpawnPoint());
                 
-                activeMap.cleanUp();
-                MatchManager.ONGOING_MATCHES.remove(this);
-            }, 100L);
-        });
+                spectators.forEach(spectatorData -> {
+                    Player spectator = Bukkit.getPlayer(spectatorData.getUuid());
+                    
+                    player.showPlayer(spectator);
+                });
+            });
+            
+            activeMap.cleanUp();
+            MatchManager.ONGOING_MATCHES.remove(this);
+        }, 100L);
     }
     
     public void onDeath(PlayerData playerData, PlayerData killData){
@@ -269,6 +299,7 @@ public class Match implements Listener{
             Bukkit.getLogger().info("player2");
             player.teleport(new Location(activeMap.getWorld(), activeMap.getMap().getPlayerTwoX(), activeMap.getMap().getPlayerTwoY(), activeMap.getMap().getPlayerTwoZ()));
         }
+        
         playerData.getProfile().getStats(kit).incrementDeaths();
         killData.getProfile().getStats(kit).incrementKills();
         
@@ -282,7 +313,7 @@ public class Match implements Listener{
         });
     }
     
-    public void onLeave(PlayerData playerData){
+    public void onForfeit(PlayerData playerData){
         Player player = Bukkit.getPlayer(playerData.getUuid());
         
         playerData.getProfile().getStats(kit).incrementDeaths();
@@ -303,6 +334,37 @@ public class Match implements Listener{
         playerData.setPlayerState(PlayerState.SPAWN);
         PlayerManager.giveSpawnItems(Bukkit.getPlayer(playerData.getUuid()));
         player.teleport(SpawnPointUtils.getSpawnPoint());
+        
+        spectators.forEach(spectatorData -> {
+            Player spectator = Bukkit.getPlayer(spectatorData.getUuid());
+            
+            player.showPlayer(spectator);
+        });
+        
+        if(ranked){
+            playerData.getProfile().getStats(kit).increaseElo(0, getOtherTeam(playerData).getAverageElo(kit));
+            playerData.getProfile().getStats(kit).incrementRankedLosses();
+        }else{
+            playerData.getProfile().getStats(kit).incrementUnrankedLosses();
+        }
+        
+        players.forEach(playerData1 -> {
+            Player player1 = Bukkit.getPlayer(playerData1.getUuid());
+            
+            player1.sendMessage(ChatColor.DARK_GREEN + player.getName() + ChatColor.GRAY + " has left!");
+        });
+    }
+    
+    public void onLeave(PlayerData playerData){
+        Player player = Bukkit.getPlayer(playerData.getUuid());
+        
+        playerData.getProfile().getStats(kit).incrementDeaths();
+        playerData.getProfile().getStats(kit).resetWinStreak();
+        playerData.getProfile().resetWinStreak();
+        
+        getTeam(playerData).getAlivePlayers().remove(playerData);
+        getTeam(playerData).getDeadPlayer().add(playerData);
+        players.remove(playerData);
         
         if(ranked){
             playerData.getProfile().getStats(kit).increaseElo(0, getOtherTeam(playerData).getAverageElo(kit));

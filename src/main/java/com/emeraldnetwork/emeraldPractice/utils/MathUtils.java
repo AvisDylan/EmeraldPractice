@@ -2,7 +2,7 @@ package com.emeraldnetwork.emeraldPractice.utils;
 
 import java.util.Arrays;
 
-public class MathUtils{
+public final class MathUtils{
     
     public static int getMean(int... nums){
         return Arrays.stream(nums).sum() / nums.length;

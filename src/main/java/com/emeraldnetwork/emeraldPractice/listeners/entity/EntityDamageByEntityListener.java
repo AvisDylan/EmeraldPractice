@@ -20,15 +20,14 @@ public class EntityDamageByEntityListener implements Listener{
         PlayerData playerData = PlayerManager.getPlayerData(player.getUniqueId());
         PlayerData attackerData = PlayerManager.getPlayerData(attacker.getUniqueId());
         
-        
-        switch(playerData.getPlayerState()){
+        switch(attackerData.getPlayerState()){
             case QUEUE, SPAWN, SPECTATING -> {
                     event.setCancelled(true);
             }
             case DUEL -> {
-                Match match = MatchManager.getPlayerMatch(playerData);
+                Match match = MatchManager.getPlayerMatch(attackerData);
                 
-                if(match != null && MatchManager.getPlayerMatch(attackerData) != null){
+                if(match != null && MatchManager.getPlayerMatch(playerData) != null){
                     if(match.getMatchState() == MatchState.STARTING || match.getMatchState() == MatchState.ENDING){
                         event.setCancelled(true);
                         return;

@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class MatchManager{
+public final class MatchManager{
     
     public static final List<Match> ONGOING_MATCHES = new CopyOnWriteArrayList<>();
     public static final java.util.Map<UUID, ItemStack[]> INVENTORY_MAP = new ConcurrentHashMap<>();
@@ -34,6 +34,15 @@ public class MatchManager{
     public static Match getPlayerMatch(PlayerData playerData){
         for(Match match : ONGOING_MATCHES){
             if(match.getPlayers().contains(playerData))
+                return match;
+        }
+        
+        return null;
+    }
+    
+    public static Match getSpectatorMatch(PlayerData playerData){
+        for(Match match : ONGOING_MATCHES){
+            if(match.getSpectators().contains(playerData))
                 return match;
         }
         
