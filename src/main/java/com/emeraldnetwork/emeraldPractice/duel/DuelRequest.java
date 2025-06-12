@@ -8,7 +8,6 @@ import com.emeraldnetwork.emeraldPractice.EmeraldPractice;
 import com.emeraldnetwork.emeraldPractice.kit.Kit;
 import com.emeraldnetwork.emeraldPractice.map.Map;
 import com.emeraldnetwork.emeraldPractice.player.PlayerData;
-import com.emeraldnetwork.emeraldPractice.player.PlayerManager;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
