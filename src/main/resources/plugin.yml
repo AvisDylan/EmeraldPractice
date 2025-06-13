@@ -42,3 +42,7 @@ commands:
       - spec
   settings:
     description: edit your settings
+  party:
+    description: make a party
+    aliases:
+      - p

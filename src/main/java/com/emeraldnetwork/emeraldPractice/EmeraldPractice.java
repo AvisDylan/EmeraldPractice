@@ -58,6 +58,7 @@ public final class EmeraldPractice extends JavaPlugin{
         getCommand("accept").setExecutor(new AcceptCommand());
         getCommand("spectate").setExecutor(new SpectateCommand());
         getCommand("settings").setExecutor(new SettingsCommand());
+        getCommand("party").setExecutor(new PartyCommand());
         
         KitManager.KITS.forEach(kit -> Bukkit.getScheduler().runTaskTimer(this, () -> QueueManager.handleQueue(kit), 0L, 10L));
         

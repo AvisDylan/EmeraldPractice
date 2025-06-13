@@ -13,6 +13,7 @@ public class Party{
     
     private PlayerData partyLeader;
     private final Queue<PlayerData> players = new LinkedList<>();
+    private boolean priv = true;
     
     public Party(PlayerData partyLeader){
         this.partyLeader = partyLeader;
@@ -26,6 +27,18 @@ public class Party{
     
     }
     
+    public void disband(){
+    
+    }
+    
+    public void sendPartyMessage(String message){
+    
+    }
+    
+    public void invite(PlayerData playerData){
+    
+    }
+    
     public PlayerData getPartyLeader(){
         return partyLeader;
     }
@@ -36,5 +49,13 @@ public class Party{
     
     public Queue<PlayerData> getPlayers(){
         return players;
+    }
+    
+    public boolean isPriv(){
+        return priv;
+    }
+    
+    public void setPriv(boolean priv){
+        this.priv = priv;
     }
 }

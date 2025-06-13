@@ -21,7 +21,7 @@ public class AcceptCommand implements CommandExecutor{
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings){
         if(strings.length < 1){
-            commandSender.sendMessage(ChatColor.RED + " Invalid Arguments!");
+            commandSender.sendMessage(ChatColor.RED + " Invalid arguments!");
             return false;
         }
         
