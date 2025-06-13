@@ -2,6 +2,7 @@ package com.emeraldnetwork.emeraldPractice.commands;
 
 import com.emeraldnetwork.emeraldPractice.match.Match;
 import com.emeraldnetwork.emeraldPractice.match.MatchManager;
+import com.emeraldnetwork.emeraldPractice.match.MatchState;
 import com.emeraldnetwork.emeraldPractice.player.PlayerData;
 import com.emeraldnetwork.emeraldPractice.player.PlayerManager;
 import com.emeraldnetwork.emeraldPractice.player.PlayerState;
@@ -26,6 +27,11 @@ public class LeaveCommand implements CommandExecutor{
                 Match match = MatchManager.getPlayerMatch(playerData);
                 
                 if(match != null){
+                    if(match.getMatchState() == MatchState.ENDING || match.getMatchState() == MatchState.STARTING){
+                        commandSender.sendMessage(ChatColor.RED + "You can't leave right now!");
+                        return false;
+                    }
+                    
                     match.onForfeit(playerData);
                     commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&aYou have left the game!"));
                 }else

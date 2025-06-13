@@ -9,11 +9,16 @@ import com.emeraldnetwork.emeraldPractice.player.PlayerManager;
 import com.emeraldnetwork.emeraldPractice.utils.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.WeatherType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.List;
 
 public class InventoryClickListener implements Listener{
 
@@ -72,6 +77,124 @@ public class InventoryClickListener implements Listener{
                     
                     if(player != null)
                         event.getWhoClicked().teleport(player);
+                }else if(event.getClickedInventory().getTitle().equalsIgnoreCase(ChatColor.GRAY + "Settings")){
+                    if(!event.getCurrentItem().hasItemMeta())
+                        return;
+                    
+                    ItemStack item = event.getCurrentItem();
+                    ItemMeta itemMeta = item.getItemMeta();
+                    String itemName = itemMeta.getDisplayName();
+                    
+                    if(itemName.equalsIgnoreCase(ChatColor.RESET + "" + ChatColor.DARK_GREEN + ChatColor.BOLD + "Receive Messages")){
+                        playerData.getProfile().setReceiveMessages(!playerData.getProfile().isReceiveMessages());
+                        
+                        List<String> lore = List.of(ChatColor.GRAY + "Allow people to send you private messages",
+                                "",
+                                (playerData.getProfile().isReceiveMessages() ? ChatColor.DARK_GREEN + "Enabled" : ChatColor.GRAY + "Enabled"),
+                                (!playerData.getProfile().isReceiveMessages() ? ChatColor.DARK_GREEN + "Disabled" : ChatColor.GRAY + "Disabled"));
+                        
+                        itemMeta.setLore(lore);
+                        item.setItemMeta(itemMeta);
+                    }else if(itemName.equalsIgnoreCase(ChatColor.RESET + "" + ChatColor.DARK_GREEN + ChatColor.BOLD + "Messages Sounds")){
+                        playerData.getProfile().setMessageSounds(!playerData.getProfile().isMessageSounds());
+                        
+                        List<String> lore = List.of(ChatColor.GRAY + "Play a sound when somebody messages you",
+                                "",
+                                (playerData.getProfile().isMessageSounds() ? ChatColor.DARK_GREEN + "Enabled" : ChatColor.GRAY + "Enabled"),
+                                (!playerData.getProfile().isMessageSounds() ? ChatColor.DARK_GREEN + "Disabled" : ChatColor.GRAY + "Disabled"));
+                        
+                        itemMeta.setLore(lore);
+                        item.setItemMeta(itemMeta);
+                    }else if(itemName.equalsIgnoreCase(ChatColor.RESET + "" + ChatColor.DARK_GREEN + ChatColor.BOLD + "Duel Requests")){
+                        playerData.getProfile().setDuelRequests(!playerData.getProfile().isDuelRequests());
+                        
+                        List<String> lore = List.of(ChatColor.GRAY + "Allow people to send private duel requests",
+                                "",
+                                (playerData.getProfile().isDuelRequests() ? ChatColor.DARK_GREEN + "Enabled" : ChatColor.GRAY + "Enabled"),
+                                (!playerData.getProfile().isDuelRequests() ? ChatColor.DARK_GREEN + "Disabled" : ChatColor.GRAY + "Disabled"));
+                        
+                        itemMeta.setLore(lore);
+                        item.setItemMeta(itemMeta);
+                    }else if(itemName.equalsIgnoreCase(ChatColor.RESET + "" + ChatColor.DARK_GREEN + ChatColor.BOLD + "Duel Sounds")){
+                        playerData.getProfile().setDuelSounds(!playerData.getProfile().isDuelSounds());
+                        
+                        List<String> lore = List.of(ChatColor.GRAY + "Play a sound when somebody sends you a duel request",
+                                "",
+                                (playerData.getProfile().isDuelSounds() ? ChatColor.DARK_GREEN + "Enabled" : ChatColor.GRAY + "Enabled"),
+                                (!playerData.getProfile().isDuelSounds() ? ChatColor.DARK_GREEN + "Disabled" : ChatColor.GRAY + "Disabled"));
+                        
+                        itemMeta.setLore(lore);
+                        item.setItemMeta(itemMeta);
+                    }else if(itemName.equalsIgnoreCase(ChatColor.RESET + "" + ChatColor.DARK_GREEN + ChatColor.BOLD + "Allow Spectators")){
+                        playerData.getProfile().setAllowSpectators(!playerData.getProfile().isAllowSpectators());
+                        
+                        List<String> lore = List.of(ChatColor.GRAY + "Allow people to spectate your matches",
+                                "",
+                                (playerData.getProfile().isAllowSpectators() ? ChatColor.DARK_GREEN + "Enabled" : ChatColor.GRAY + "Enabled"),
+                                (!playerData.getProfile().isAllowSpectators() ? ChatColor.DARK_GREEN + "Disabled" : ChatColor.GRAY + "Disabled"));
+                        
+                        itemMeta.setLore(lore);
+                        item.setItemMeta(itemMeta);
+                    }else if(itemName.equalsIgnoreCase(ChatColor.RESET + "" + ChatColor.DARK_GREEN + ChatColor.BOLD + "Scoreboard")){
+                        playerData.getProfile().setScoreBoard(!playerData.getProfile().isScoreBoard());
+                        
+                        List<String> lore = List.of(ChatColor.GRAY + "See the scoreboard on the side",
+                                "",
+                                (playerData.getProfile().isScoreBoard() ? ChatColor.DARK_GREEN + "Enabled" : ChatColor.GRAY + "Enabled"),
+                                (!playerData.getProfile().isScoreBoard() ? ChatColor.DARK_GREEN + "Disabled" : ChatColor.GRAY + "Disabled"));
+                        
+                        itemMeta.setLore(lore);
+                        item.setItemMeta(itemMeta);
+                    }else if(itemName.equalsIgnoreCase(ChatColor.RESET + "" + ChatColor.DARK_GREEN + ChatColor.BOLD + "Global Chat")){
+                        playerData.getProfile().setGlobalChat(!playerData.getProfile().isGlobalChat());
+                        
+                        List<String> lore = List.of(ChatColor.GRAY + "See chat messages",
+                                "",
+                                (playerData.getProfile().isGlobalChat() ? ChatColor.DARK_GREEN + "Enabled" : ChatColor.GRAY + "Enabled"),
+                                (!playerData.getProfile().isGlobalChat() ? ChatColor.DARK_GREEN + "Disabled" : ChatColor.GRAY + "Disabled"));
+                        
+                        itemMeta.setLore(lore);
+                        item.setItemMeta(itemMeta);
+                    }else if(itemName.equalsIgnoreCase(ChatColor.RESET + "" + ChatColor.DARK_GREEN + ChatColor.BOLD + "Weather Type")){
+                        playerData.getProfile().setPlayerWeather(playerData.getProfile().getPlayerWeather() == WeatherType.CLEAR ? WeatherType.DOWNFALL : WeatherType.CLEAR);
+                        
+                        List<String> lore = List.of(ChatColor.GRAY + "Customize what weather you see",
+                                "",
+                                (playerData.getProfile().getPlayerWeather() == WeatherType.CLEAR ? ChatColor.DARK_GREEN + "Clear" : ChatColor.GRAY + "Clear"),
+                                (playerData.getProfile().getPlayerWeather() == WeatherType.DOWNFALL ? ChatColor.DARK_GREEN + "Raining" : ChatColor.GRAY + "Raining"));
+                        
+                        //TODO ADD PER PLAYER WEATHER
+                        itemMeta.setLore(lore);
+                        item.setItemMeta(itemMeta);
+                    }else if(itemName.equalsIgnoreCase(ChatColor.RESET + "" + ChatColor.DARK_GREEN + ChatColor.BOLD + "World Time")){
+                        playerData.getProfile().setPlayerTime(playerData.getProfile().getPlayerTime() >= 18000 ? 0 : playerData.getProfile().getPlayerTime() + 6000);
+                        
+                        List<String> lore = List.of(ChatColor.GRAY + "Customize the player time",
+                                "",
+                                (playerData.getProfile().getPlayerTime() == 0 ? ChatColor.DARK_GREEN + "Sunrise" : ChatColor.GRAY + "Sunrise"),
+                                (playerData.getProfile().getPlayerTime() == 6000 ? ChatColor.DARK_GREEN + "Noon" : ChatColor.GRAY + "Noon"),
+                                (playerData.getProfile().getPlayerTime() == 12000 ? ChatColor.DARK_GREEN + "Sunset" : ChatColor.GRAY + "Sunset"),
+                                (playerData.getProfile().getPlayerTime() == 18000 ? ChatColor.DARK_GREEN + "Midnight" : ChatColor.GRAY + "Midnight"));
+                        
+                        ((Player) event.getWhoClicked()).setPlayerTime(playerData.getProfile().getPlayerTime(), true);
+                        itemMeta.setLore(lore);
+                        item.setItemMeta(itemMeta);
+                    }else if(itemName.equalsIgnoreCase(ChatColor.RESET + "" + ChatColor.DARK_GREEN + ChatColor.BOLD + "Ping Range")){
+                        playerData.getProfile().setPingRange(playerData.getProfile().getPingRange() >= 300 ? 0 : playerData.getProfile().getPingRange() + 50);
+                        
+                        List<String> lore = List.of(ChatColor.GRAY + "Only queue people within the ping range of you",
+                                "",
+                                (playerData.getProfile().getPingRange() == 0 ? ChatColor.DARK_GREEN + "Off" : ChatColor.GRAY + "Off"),
+                                (playerData.getProfile().getPingRange() == 50 ? ChatColor.DARK_GREEN + "50" : ChatColor.GRAY + "50"),
+                                (playerData.getProfile().getPingRange() == 100 ? ChatColor.DARK_GREEN + "100" : ChatColor.GRAY + "100"),
+                                (playerData.getProfile().getPingRange() == 150 ? ChatColor.DARK_GREEN + "150" : ChatColor.GRAY + "150"),
+                                (playerData.getProfile().getPingRange() == 200 ? ChatColor.DARK_GREEN + "200" : ChatColor.GRAY + "200"),
+                                (playerData.getProfile().getPingRange() == 250 ? ChatColor.DARK_GREEN + "250" : ChatColor.GRAY + "250"),
+                                (playerData.getProfile().getPingRange() == 300 ? ChatColor.DARK_GREEN + "300" : ChatColor.GRAY + "300"));
+                        
+                        itemMeta.setLore(lore);
+                        item.setItemMeta(itemMeta);
+                    }
                 }
                 
                 if(!playerData.getProfile().isEditMode())

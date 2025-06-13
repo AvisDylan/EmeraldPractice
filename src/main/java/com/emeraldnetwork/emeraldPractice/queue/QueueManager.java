@@ -43,8 +43,8 @@ public class QueueManager{
                 .filter(entry -> entry.getKit().equals(kit) && !entry.isRanked())
                 .filter(entry -> QUEUE.stream()
                         .filter(entry1 -> entry1.getKit().equals(kit) && !entry1.isRanked())
-                        .anyMatch(entry1 -> entry.isWithinPingRange(entry1.getPlayerData())
-                                && entry1.isWithinPingRange(entry.getPlayerData())))
+                        .anyMatch(entry1 -> (entry.isWithinPingRange(entry1.getPlayerData())
+                                && entry1.isWithinPingRange(entry.getPlayerData()))))
                 .limit(2)
                 .toList();
         List<QueueEntry> rankedEntries = QUEUE.stream()

@@ -40,3 +40,5 @@ commands:
     description: spectate game
     aliases:
       - spec
+  settings:
+    description: edit your settings
