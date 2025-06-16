@@ -39,6 +39,7 @@ public class QueueManager{
     }
     
     public static void handleQueue(Kit kit){
+        //TODO FIX PING RANGE
         List<QueueEntry> unrankedEntries = QUEUE.stream()
                 .filter(entry -> entry.getKit().equals(kit) && !entry.isRanked())
                 .filter(entry -> QUEUE.stream()

@@ -18,12 +18,22 @@ public class QueueCommand implements CommandExecutor{
     
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings){
+        if(strings.length < 1){
+            commandSender.sendMessage(ChatColor.RED + " Invalid arguments!");
+            return false;
+        }
+        
         Player player = (Player) commandSender;
         
         switch(strings[0].toLowerCase()){
             case "join" -> {
                 if(!PlayerManager.getPlayerData(player.getUniqueId()).getPlayerState().equals(PlayerState.SPAWN)){
                     commandSender.sendMessage("§cYou can't run this command in your state!");
+                    return false;
+                }
+                
+                if(strings.length < 3){
+                    commandSender.sendMessage(ChatColor.RED + " Invalid arguments!");
                     return false;
                 }
                 

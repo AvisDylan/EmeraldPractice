@@ -91,12 +91,15 @@ public class PlayerData{
     public int getPing(){
         Player player = Bukkit.getPlayer(uuid);
         
+        if(player == null)
+            return -1;
+        
         try{
             Object craftPlayer = player.getClass().getMethod("getHandle").invoke(player);
             
             return (int) craftPlayer.getClass().getField("ping").get(craftPlayer);
         }catch(Exception e){
-            e.printStackTrace();
+            Bukkit.getLogger().warning(e.getMessage());
             return -1;
         }
     }

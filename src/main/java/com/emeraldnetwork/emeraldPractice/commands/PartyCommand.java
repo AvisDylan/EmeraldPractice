@@ -29,7 +29,7 @@ public class PartyCommand implements CommandExecutor{
             return false;
         }
         
-        switch(strings[0]){
+        switch(strings[0].toLowerCase()){
             case "create" -> {
                 if(party != null){
                     commandSender.sendMessage(ChatColor.RED + "You already are in party!");
@@ -84,6 +84,11 @@ public class PartyCommand implements CommandExecutor{
                 PlayerData targetData = PlayerManager.getPlayerData(target.getUniqueId());
                 Party targetParty = PartyManager.getPlayerParty(targetData);
                 
+                if(targetData.equals(playerData)){
+                    commandSender.sendMessage(ChatColor.RED + "You can't join your own party!");
+                    return false;
+                }
+                
                 if(targetData.getPlayerState() != PlayerState.SPAWN){
                     commandSender.sendMessage(ChatColor.RED + target.getName() + "'s party is not at spawn!");
                     return false;
@@ -130,6 +135,11 @@ public class PartyCommand implements CommandExecutor{
                 
                 PlayerData targetData = PlayerManager.getPlayerData(target.getUniqueId());
                 
+                if(targetData.equals(playerData)){
+                    commandSender.sendMessage(ChatColor.RED + "You can't promote yourself!");
+                    return false;
+                }
+                
                 commandSender.sendMessage(ChatColor.GRAY + "You have promoted " + ChatColor.DARK_GREEN + target.getName() + ChatColor.GRAY + " to the party leader!");
                 party.setPartyLeader(targetData);
             }
@@ -150,7 +160,7 @@ public class PartyCommand implements CommandExecutor{
                     builder.append(strings[i]);
                 }
                 
-                party.sendPartyMessage(builder.toString());
+                party.sendPartyMessage(playerData, builder.toString());
             }
             case "invite" -> {
                 if(strings.length < 2){
@@ -178,6 +188,11 @@ public class PartyCommand implements CommandExecutor{
                 PlayerData targetData = PlayerManager.getPlayerData(target.getUniqueId());
                 Party targetParty = PartyManager.getPlayerParty(playerData);
                 
+                if(targetData.equals(playerData)){
+                    commandSender.sendMessage(ChatColor.RED + "You can't invite yourself!");
+                    return false;
+                }
+                
                 if(targetData.getPlayerState() != PlayerState.SPAWN){
                     commandSender.sendMessage(ChatColor.RED + target.getName() + " is not at spawn!");
                     return false;
@@ -190,6 +205,25 @@ public class PartyCommand implements CommandExecutor{
                 
                 commandSender.sendMessage(ChatColor.GRAY + "You have invited " + ChatColor.DARK_GREEN + target.getName() + ChatColor.GRAY + " to the party leader!");
                 party.setPartyLeader(targetData);
+            }
+            case "announce" -> {
+                if(party == null){
+                    commandSender.sendMessage(ChatColor.RED + "You are not in a party!");
+                    return false;
+                }
+                
+                if(!party.getPartyLeader().equals(playerData)){
+                    commandSender.sendMessage(ChatColor.RED + "You are not the party leader!");
+                    return false;
+                }
+                
+                if(party.isPriv()){
+                    commandSender.sendMessage(ChatColor.RED + "The party is private!");
+                    return false;
+                }
+                
+                commandSender.sendMessage(ChatColor.GRAY + "You have announced the party!");
+                party.announceParty(playerData);
             }
             case "public" -> {
                 if(party == null){
@@ -229,6 +263,7 @@ public class PartyCommand implements CommandExecutor{
                 commandSender.sendMessage(ChatColor.GRAY + "You have made the party private!");
                 party.setPriv(true);
             }
+            default -> commandSender.sendMessage(ChatColor.RED + strings[0] + " is not a valid option!");
         }
         
         return true;
