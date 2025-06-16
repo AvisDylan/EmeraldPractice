@@ -17,9 +17,9 @@ public class PlayerQuitListener implements Listener{
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event){
         PlayerData playerData = PlayerManager.getPlayerData(event.getPlayer().getUniqueId());
-        
+        /*
         if(playerData.getFastBoard() != null)
-            playerData.getFastBoard().delete();
+            playerData.getFastBoard().delete();*/
         
         if(playerData.getPlayerState() == PlayerState.DUEL){
             Match match = MatchManager.getPlayerMatch(playerData);
