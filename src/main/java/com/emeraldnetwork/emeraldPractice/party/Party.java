@@ -11,16 +11,18 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.util.LinkedList;
-import java.util.Queue;
+import java.util.List;
 
 public class Party{
     
     private PlayerData partyLeader;
-    private final Queue<PlayerData> players = new LinkedList<>();
+    private final List<PlayerData> players = new LinkedList<>();
     private boolean priv = true;
     
     public Party(PlayerData partyLeader){
         this.partyLeader = partyLeader;
+        
+        PartyManager.PARTIES.add(this);
     }
     
     public void joinParty(PlayerData playerData){
@@ -32,12 +34,12 @@ public class Party{
         
         Player playerJoining = Bukkit.getPlayer(playerData.getUuid());
         
-        players.offer(playerData);
+        players.add(playerData);
         PlayerManager.giveSpawnItems(playerJoining); //if you are give spawn items whilst in a party it will give the party items
     }
     
     public void leaveParty(PlayerData playerData){
-        players.poll();
+        players.remove(playerData);
         
         if(players.isEmpty()){
             disband();
@@ -45,7 +47,7 @@ public class Party{
         }
         
         if(playerData.equals(partyLeader))
-            setPartyLeader(players.peek());
+            setPartyLeader(players.get(0));
         
         players.forEach(playerData1 -> {
             Player player = Bukkit.getPlayer(playerData1.getUuid());
@@ -65,6 +67,8 @@ public class Party{
             player.sendMessage(ChatColor.DARK_GREEN + Bukkit.getPlayer(partyLeader.getUuid()).getName() + ChatColor.GRAY + " has disbanded the party!");
             PlayerManager.giveSpawnItems(player);
         });
+        
+        PartyManager.PARTIES.remove(this);
     }
     
     public void sendPartyMessage(PlayerData senderData, String message){
@@ -74,7 +78,6 @@ public class Party{
             Player player = Bukkit.getPlayer(playerData.getUuid());
             
             player.sendMessage(ChatColor.GRAY + "[" + ChatColor.DARK_GREEN + "Party" + ChatColor.GRAY + "] " + sender.getName() + ": " + message);
-            PlayerManager.giveSpawnItems(player);
         });
     }
     
@@ -94,7 +97,7 @@ public class Party{
         this.partyLeader = partyLeader;
     }
     
-    public Queue<PlayerData> getPlayers(){
+    public List<PlayerData> getPlayers(){
         return players;
     }
     

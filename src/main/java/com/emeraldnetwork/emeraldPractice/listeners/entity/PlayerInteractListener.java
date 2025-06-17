@@ -5,6 +5,8 @@ import com.emeraldnetwork.emeraldPractice.match.Match;
 import com.emeraldnetwork.emeraldPractice.match.MatchManager;
 import com.emeraldnetwork.emeraldPractice.match.MatchState;
 import com.emeraldnetwork.emeraldPractice.misc.PearlCooldown;
+import com.emeraldnetwork.emeraldPractice.party.Party;
+import com.emeraldnetwork.emeraldPractice.party.PartyManager;
 import com.emeraldnetwork.emeraldPractice.player.PlayerData;
 import com.emeraldnetwork.emeraldPractice.player.PlayerManager;
 import com.emeraldnetwork.emeraldPractice.utils.ItemUtils;
@@ -43,11 +45,12 @@ public class PlayerInteractListener implements Listener{
                         case "§2Ranked Queue §7(right click)" -> event.getPlayer().chat("/queuegui ranked");
                         case "§7FFA (right click)" -> event.getPlayer().chat("/ffagui");
                         case "§7Bot Queue (right click)" -> event.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', "&7Feature coming soon!")); //event.getPlayer().chat("/queuegui bot")
-                        case "§7Create a party (right click)" -> event.getPlayer().chat("/party create");
-                        case "§7Kit editor (right click)" -> event.getPlayer().chat("/kiteditor");
+                        case "§7Create a Party (right click)" -> event.getPlayer().chat("/party create");
+                        case "§7Kit Editor (right click)" -> event.getPlayer().chat("/kiteditor");
                         case "§7Tournament (right click)" -> event.getPlayer().sendMessage(ChatColor.GRAY + "Feature coming soon!"); //event.getPlayer().chat("/tournamentgui")
                         case "§7Leaderboards (right click)" -> event.getPlayer().chat("/leaderboards");
                         case "§7Settings (right click)" -> event.getPlayer().chat("/settings");
+                        case "§cLeave Party §7(right click)" -> event.getPlayer().chat("/party leave");
                     }
                 }
             }
@@ -61,7 +64,7 @@ public class PlayerInteractListener implements Listener{
                 if(event.getAction() == Action.RIGHT_CLICK_AIR && event.getItem().hasItemMeta()){
                     if(event.getItem().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.RED + "Stop Spectating " + ChatColor.GRAY + "(right click)"))
                         event.getPlayer().chat("/leave");
-                    else if(event.getItem().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.GRAY + "Teleport to a player (right click)")){
+                    else if(event.getItem().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.GRAY + "Teleport to a Player (right click)")){
                         Inventory inventory = Bukkit.createInventory(event.getPlayer(), 18, ChatColor.GRAY + "Choose a player");
                         Match match = MatchManager.getSpectatorMatch(playerData);
                         

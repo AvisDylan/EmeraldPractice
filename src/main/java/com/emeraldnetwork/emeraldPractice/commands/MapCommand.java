@@ -4,6 +4,7 @@ import com.emeraldnetwork.emeraldPractice.kit.Kit;
 import com.emeraldnetwork.emeraldPractice.kit.KitManager;
 import com.emeraldnetwork.emeraldPractice.map.Map;
 import org.apache.commons.lang.math.NumberUtils;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -17,38 +18,60 @@ public class MapCommand implements CommandExecutor{
             Player player = (Player) commandSender;
             
             switch(strings[0]){
-                case "create":
-                    for(Kit kit : KitManager.KITS){
-                        if(kit.getName().equalsIgnoreCase(strings[1])){
-                            Map map = new Map(strings[2], strings[3]);
-                            
-                            if(player.getItemInHand() != null)
-                                map.setIcon(player.getItemInHand());
-                            
-                            kit.addMap(map);
-                            commandSender.sendMessage("§aCreated map " + strings[2] + "!");
-                            return false;
-                        }
+                case "create" -> {
+                    Kit kit = KitManager.getKit(strings[1]);
+                    
+                    if(kit != null){
+                        Map map = new Map(strings[2], strings[3]);
+                        
+                        if(player.getItemInHand() != null)
+                            map.setIcon(player.getItemInHand());
+                        
+                        kit.addMap(map);
+                        commandSender.sendMessage("§aCreated map " + strings[2] + "!");
+                        return false;
                     }
+                    
                     commandSender.sendMessage("§c" + strings[1] + " is not a valid kit!");
-                    break;
-                case "delete":
-                    for(Kit kit : KitManager.KITS){
-                        if(kit.getName().equalsIgnoreCase(strings[1])){
-                            for(Map map : kit.getMaps()){
-                                if(map.getName().equalsIgnoreCase(strings[2])){
-                                    kit.removeMap(map);
-                                    commandSender.sendMessage("§aDeleted map " + strings[2] + "!");
+                }
+                case "delete" -> {
+                    Kit kit = KitManager.getKit(strings[1]);
+                    
+                    if(kit != null){
+                        for(Map map : kit.getMaps()){
+                            if(map.getName().equalsIgnoreCase(strings[2])){
+                                kit.removeMap(map);
+                                commandSender.sendMessage("§aDeleted map " + strings[2] + "!");
+                                return false;
+                            }
+                        }
+                        commandSender.sendMessage("§c" + strings[2] + " is not a map kit!");
+                        return false;
+                    }else
+                        commandSender.sendMessage("§c" + strings[1] + " is not a valid kit!");
+                }
+                case "copy" -> {
+                    Kit sourceKit = KitManager.getKit(strings[1]);
+                    
+                    if(sourceKit != null){
+                        for(Map map : sourceKit.getMaps()){
+                            if(map.getName().equalsIgnoreCase(strings[2])){
+                                Kit targetKit = KitManager.getKit(strings[3]);
+                                
+                                if(targetKit == null){
+                                    commandSender.sendMessage(ChatColor.RED + strings[3] + " is not a valid kit!");
                                     return false;
                                 }
+                                
+                                targetKit.getMaps().add(map);
+                                commandSender.sendMessage(ChatColor.GREEN + "Added map " + map.getName() + " to " + targetKit.getName());
+                                break;
                             }
-                            commandSender.sendMessage("§c" + strings[2] + " is not a map kit!");
-                            return false;
                         }
-                    }
-                    commandSender.sendMessage("§c" + strings[1] + " is not a valid kit!");
-                    break;
-                case "setspawn":
+                    }else
+                        commandSender.sendMessage(ChatColor.RED + strings[1] + " is not a valid kit!");
+                }
+                case "setspawn" -> {
                     for(Kit kit : KitManager.KITS){
                         if(kit.getName().equalsIgnoreCase(strings[1])){
                             for(Map map : kit.getMaps()){
@@ -75,8 +98,8 @@ public class MapCommand implements CommandExecutor{
                             return false;
                         }
                     }
-                    break;
-                case "seticon":
+                }
+                case "seticon" -> {
                     for(Kit kit : KitManager.KITS){
                         if(kit.getName().equalsIgnoreCase(strings[1])){
                             for(Map map : kit.getMaps()){
@@ -95,8 +118,8 @@ public class MapCommand implements CommandExecutor{
                         }
                     }
                     commandSender.sendMessage("§c" + strings[1] + " is not a valid kit!");
-                    break;
-                case "setname":
+                }
+                case "setname" -> {
                     for(Kit kit : KitManager.KITS){
                         if(kit.getName().equalsIgnoreCase(strings[1])){
                             for(Map map : kit.getMaps()){
@@ -111,8 +134,8 @@ public class MapCommand implements CommandExecutor{
                         }
                     }
                     commandSender.sendMessage("§c" + strings[1] + " is not a valid kit!");
-                    break;
-                case "setdisplayname":
+                }
+                case "setdisplayname" -> {
                     for(Kit kit : KitManager.KITS){
                         if(kit.getName().equalsIgnoreCase(strings[1])){
                             for(Map map : kit.getMaps()){
@@ -126,9 +149,8 @@ public class MapCommand implements CommandExecutor{
                             return false;
                         }
                     }
-                    break;
-                default:
-                    commandSender.sendMessage("§c" + strings[0] + " is not a valid option!");
+                }
+                default -> commandSender.sendMessage("§c" + strings[0] + " is not a valid option!");
             }
         }else
             commandSender.sendMessage("§cYou don't have permission to run this command!");

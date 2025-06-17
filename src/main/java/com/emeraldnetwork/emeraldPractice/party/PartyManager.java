@@ -14,11 +14,6 @@ public final class PartyManager{
     public static final List<Party> PARTIES = new LinkedList<>();
     
     public static Party getPlayerParty(PlayerData playerData){
-        for(Party party : PARTIES){
-            if(party.getPlayers().contains(playerData))
-                return party;
-        }
-        
-        return null;
+        return PARTIES.stream().filter(party -> party.getPlayers().contains(playerData)).findFirst().orElse(null);
     }
 }

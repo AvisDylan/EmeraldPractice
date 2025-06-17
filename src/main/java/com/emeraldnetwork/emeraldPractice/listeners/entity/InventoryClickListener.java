@@ -163,7 +163,7 @@ public class InventoryClickListener implements Listener{
                                 (playerData.getProfile().getPlayerWeather() == WeatherType.CLEAR ? ChatColor.DARK_GREEN + "Clear" : ChatColor.GRAY + "Clear"),
                                 (playerData.getProfile().getPlayerWeather() == WeatherType.DOWNFALL ? ChatColor.DARK_GREEN + "Raining" : ChatColor.GRAY + "Raining"));
                         
-                        //TODO ADD PER PLAYER WEATHER
+                        ((Player) event.getWhoClicked()).setPlayerWeather(playerData.getProfile().getPlayerWeather());
                         itemMeta.setLore(lore);
                         item.setItemMeta(itemMeta);
                     }else if(itemName.equalsIgnoreCase(ChatColor.RESET + "" + ChatColor.DARK_GREEN + ChatColor.BOLD + "World Time")){
