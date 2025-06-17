@@ -6,7 +6,6 @@ prefix: Emerald
 authors: [Avis]
 description: uhh ye
 website: emerald-network.com
-soft-depend: [Citizens]
 commands:
   kit:
     description: edit kits
