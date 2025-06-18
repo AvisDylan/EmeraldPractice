@@ -195,6 +195,22 @@ public class InventoryClickListener implements Listener{
                         itemMeta.setLore(lore);
                         item.setItemMeta(itemMeta);
                     }
+                }else if(event.getClickedInventory().getTitle().equalsIgnoreCase(ChatColor.DARK_GREEN + "Unranked Queue")){
+                    if(!event.getCurrentItem().hasItemMeta())
+                        return;
+                    
+                    String itemName = ChatColor.stripColor(event.getCurrentItem().getItemMeta().getDisplayName());
+                    
+                    ((Player) event.getWhoClicked()).chat("/queue join unranked " + itemName);
+                    event.getWhoClicked().closeInventory();
+                }else if(event.getClickedInventory().getTitle().equalsIgnoreCase(ChatColor.DARK_GREEN + "Ranked Queue")){
+                    if(!event.getCurrentItem().hasItemMeta())
+                        return;
+                    
+                    String itemName = ChatColor.stripColor(event.getCurrentItem().getItemMeta().getDisplayName());
+                    
+                    ((Player) event.getWhoClicked()).chat("/queue join ranked " + itemName);
+                    event.getWhoClicked().closeInventory();
                 }
                 
                 if(!playerData.getProfile().isEditMode())

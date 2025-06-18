@@ -41,8 +41,8 @@ public class PlayerInteractListener implements Listener{
             case SPAWN -> {
                 if(event.getAction() == Action.RIGHT_CLICK_AIR && event.getItem().hasItemMeta()){
                     switch(event.getItem().getItemMeta().getDisplayName()){
-                        case "§7Unranked Queue (right click)" -> event.getPlayer().chat("/queuegui unranked");
-                        case "§2Ranked Queue §7(right click)" -> event.getPlayer().chat("/queuegui ranked");
+                        case "§7Unranked Queue (right click)" -> event.getPlayer().chat("/queue gui unranked");
+                        case "§2Ranked Queue §7(right click)" -> event.getPlayer().chat("/queue gui ranked");
                         case "§7FFA (right click)" -> event.getPlayer().chat("/ffagui");
                         case "§7Bot Queue (right click)" -> event.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', "&7Feature coming soon!")); //event.getPlayer().chat("/queuegui bot")
                         case "§7Create a Party (right click)" -> event.getPlayer().chat("/party create");

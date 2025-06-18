@@ -13,6 +13,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 
 public class QueueCommand implements CommandExecutor{
     
@@ -26,6 +27,37 @@ public class QueueCommand implements CommandExecutor{
         Player player = (Player) commandSender;
         
         switch(strings[0].toLowerCase()){
+            case "gui" -> {
+                if(strings.length < 2){
+                    commandSender.sendMessage(ChatColor.RED + " Invalid arguments!");
+                    return false;
+                }
+                
+                if(!PlayerManager.getPlayerData(player.getUniqueId()).getPlayerState().equals(PlayerState.SPAWN)){
+                    commandSender.sendMessage("§cYou can't run this command in your state!");
+                    return false;
+                }
+                
+                if(strings[1].equalsIgnoreCase("unranked") || strings[1].equalsIgnoreCase("ranked")){
+                    boolean ranked = strings[1].equalsIgnoreCase("ranked");
+                    Inventory inventory = Bukkit.createInventory(player, 45, ChatColor.DARK_GREEN + (ranked ? "Ranked" : "Unranked") + " Queue");
+                    
+                    for(int i = 0; i < KitManager.KITS.size(); i++){
+                        Kit kit = KitManager.KITS.get(i);
+                        
+                        if(!kit.isEnabled() || !kit.isRanked() && ranked)
+                            continue;
+                        
+                        inventory.setItem(i, ItemUtils.createItem(kit.getIcon().getType(), 1, ChatColor.DARK_GREEN + kit.getDisplayName()));
+                    }
+                    
+                    player.openInventory(inventory);
+                }else
+                    commandSender.sendMessage(ChatColor.RED + strings[1] + " is not a valid option!");
+            }
+            case "ranked" -> {
+            
+            }
             case "join" -> {
                 if(!PlayerManager.getPlayerData(player.getUniqueId()).getPlayerState().equals(PlayerState.SPAWN)){
                     commandSender.sendMessage("§cYou can't run this command in your state!");
