@@ -3,22 +3,23 @@ package com.emeraldnetwork.emeraldPractice.player;
 import com.emeraldnetwork.emeraldPractice.database.DatabaseManager;
 import com.emeraldnetwork.emeraldPractice.party.PartyManager;
 import com.emeraldnetwork.emeraldPractice.utils.ItemUtils;
-import org.apache.commons.lang.math.NumberUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class PlayerManager{
+public final class PlayerManager{
     
     public static final Map<UUID, PlayerData> PLAYERS = new HashMap<>();
     
     public static void addPlayer(Player player){
         PlayerData playerData = new PlayerData(player.getUniqueId());
+        
         PLAYERS.put(player.getUniqueId(), playerData);
         playerData.setPlayerState(PlayerState.SPAWN);
+        player.setPlayerWeather(playerData.getProfile().getPlayerWeather());
+        player.setPlayerTime(playerData.getProfile().getPlayerTime(), false);
     }
     
     public static void removePlayer(UUID uuid){

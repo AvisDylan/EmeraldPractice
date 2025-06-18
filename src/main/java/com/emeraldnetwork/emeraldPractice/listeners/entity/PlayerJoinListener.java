@@ -22,9 +22,10 @@ public class PlayerJoinListener implements Listener{
         event.getPlayer().playSound(event.getPlayer().getLocation(), Sound.NOTE_PLING, 1.0f, 1.0f);
         event.getPlayer().sendMessage(ChatColor.RESET + "");
         event.getPlayer().sendMessage(ChatColor.RESET + "" + ChatColor.DARK_GREEN + ChatColor.BOLD + "Welcome to Emerald Practice!");
-        event.getPlayer().sendMessage(ChatColor.RESET + "" + ChatColor.GRAY + "NOTE, if you encounter any bugs as the server is still in alpha please open a ticket on our website or discord!");
+        event.getPlayer().sendMessage(ChatColor.RESET + "" + ChatColor.GRAY + "NOTE: the server is still in alpha, if you encounter any bugs please open a ticket on our website or discord!");
         event.getPlayer().sendMessage(ChatColor.RESET + "");
         event.getPlayer().sendMessage(ChatColor.RESET + "" + ChatColor.GRAY + "Our Website: " + ChatColor.DARK_GREEN + "https://www.emerald-network.com");
+        event.getPlayer().sendMessage(ChatColor.RESET + "" + ChatColor.GRAY + "Our Store: " + ChatColor.DARK_GREEN + "https://www.emerald-network.com/store");
         event.getPlayer().sendMessage(ChatColor.RESET + "" + ChatColor.GRAY + "Our Discord: " + ChatColor.DARK_GREEN + "https://dsc.gg/emeraldnetwork");
         event.getPlayer().sendMessage(ChatColor.RESET + "");
     }

@@ -10,7 +10,6 @@ import com.emeraldnetwork.emeraldPractice.queue.QueueManager;
 import com.emeraldnetwork.emeraldPractice.scoreboard.ScoreboardManager;
 import com.emeraldnetwork.emeraldPractice.utils.MultithreadedUtils;
 import com.emeraldnetwork.emeraldPractice.utils.SpawnPointUtils;
-import org.apache.commons.lang.SystemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
@@ -25,9 +24,6 @@ public final class EmeraldPractice extends JavaPlugin{
     
     @Override
     public void onEnable(){
-        if(!SystemUtils.isJavaVersionAtLeast(17f))
-            getLogger().warning("Your java version is too low consider updating to java version 17+");
-        
         plugin = this;
         String packageName = getClass().getPackage().getName();
         
