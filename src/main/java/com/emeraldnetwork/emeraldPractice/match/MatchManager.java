@@ -58,4 +58,15 @@ public final class MatchManager{
         
         return playersInMatches.get();
     }
+    
+    public static int getPlayersInMatchKit(Kit kit){
+        AtomicInteger playersInMatches = new AtomicInteger();
+        
+        ONGOING_MATCHES.forEach(match -> {
+            if(match.getKit().equals(kit))
+                playersInMatches.addAndGet(match.getPlayers().size());
+        });
+        
+        return playersInMatches.get();
+    }
 }

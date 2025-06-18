@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class QueueManager{
 
@@ -111,5 +112,16 @@ public class QueueManager{
         }
         
         return placeInQueue + 1;
+    }
+    
+    public static int getPlayersInKitQueue(Kit kit){
+        AtomicInteger playersInKitQueue = new AtomicInteger();
+        
+        QUEUE.forEach(queueEntry -> {
+            if(queueEntry.getKit().equals(kit))
+                playersInKitQueue.getAndIncrement();
+        });
+        
+        return playersInKitQueue.get();
     }
 }

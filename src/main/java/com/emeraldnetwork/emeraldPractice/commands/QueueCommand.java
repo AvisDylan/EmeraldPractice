@@ -2,11 +2,13 @@ package com.emeraldnetwork.emeraldPractice.commands;
 
 import com.emeraldnetwork.emeraldPractice.kit.Kit;
 import com.emeraldnetwork.emeraldPractice.kit.KitManager;
+import com.emeraldnetwork.emeraldPractice.match.MatchManager;
 import com.emeraldnetwork.emeraldPractice.player.PlayerManager;
 import com.emeraldnetwork.emeraldPractice.player.PlayerState;
 import com.emeraldnetwork.emeraldPractice.queue.QueueEntry;
 import com.emeraldnetwork.emeraldPractice.queue.QueueManager;
 import com.emeraldnetwork.emeraldPractice.utils.ItemUtils;
+import net.md_5.bungee.protocol.packet.Chat;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -48,7 +50,7 @@ public class QueueCommand implements CommandExecutor{
                         if(!kit.isEnabled() || !kit.isRanked() && ranked)
                             continue;
                         
-                        inventory.setItem(i, ItemUtils.createItem(kit.getIcon().getType(), 1, ChatColor.DARK_GREEN + kit.getDisplayName()));
+                        inventory.addItem(ItemUtils.createItem(kit.getIcon().getType(), 1, ChatColor.DARK_GREEN + kit.getDisplayName(), ChatColor.GRAY + "In Game: " + ChatColor.DARK_GREEN + MatchManager.getPlayersInMatchKit(kit), ChatColor.GRAY + "In Queue: " + ChatColor.DARK_GREEN + QueueManager.getPlayersInKitQueue(kit), "", ChatColor.DARK_GREEN + "Click to Play!"));
                     }
                     
                     player.openInventory(inventory);
