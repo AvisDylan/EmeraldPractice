@@ -59,14 +59,7 @@ public final class MatchManager{
         return playersInMatches.get();
     }
     
-    public static int getPlayersInMatchKit(Kit kit){
-        AtomicInteger playersInMatches = new AtomicInteger();
-        
-        ONGOING_MATCHES.forEach(match -> {
-            if(match.getKit().equals(kit))
-                playersInMatches.addAndGet(match.getPlayers().size());
-        });
-        
-        return playersInMatches.get();
+    public static int getPlayersInMatchKit(Kit kit, boolean ranked){
+        return Math.toIntExact(ONGOING_MATCHES.stream().filter(match -> match.getKit().equals(kit) && match.isRanked() == ranked).count());
     }
 }

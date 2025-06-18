@@ -86,16 +86,7 @@ public class QueueManager{
     }
     
     public static QueueEntry getQueueEntry(PlayerData playerData){
-        QueueEntry queueEntry = null;
-        
-        for(QueueEntry queueEntry1 : QUEUE){
-            if(queueEntry1.getPlayerData().equals(playerData)){
-                queueEntry = queueEntry1;
-                break;
-            }
-        }
-        
-        return queueEntry;
+        return QUEUE.stream().filter(queueEntry -> queueEntry.getPlayerData().equals(playerData)).findFirst().orElse(null);
     }
     
     public static int getPlaceInQueue(QueueEntry queueEntry){
@@ -114,14 +105,7 @@ public class QueueManager{
         return placeInQueue + 1;
     }
     
-    public static int getPlayersInKitQueue(Kit kit){
-        AtomicInteger playersInKitQueue = new AtomicInteger();
-        
-        QUEUE.forEach(queueEntry -> {
-            if(queueEntry.getKit().equals(kit))
-                playersInKitQueue.getAndIncrement();
-        });
-        
-        return playersInKitQueue.get();
+    public static int getPlayersInKitQueue(Kit kit, boolean ranked){
+        return Math.toIntExact(QUEUE.stream().filter(queueEntry -> queueEntry.getKit().equals(kit) && queueEntry.isRanked() == ranked).count());
     }
 }

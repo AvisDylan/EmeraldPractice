@@ -40,7 +40,7 @@ public class Match implements Listener{
     private final boolean ranked;
     private final long startTime;
     private MatchState matchState;
-    private int teamOneHits = 0, teamTwoHits = 0, schedulerId;
+    private int teamOneHits = 0, teamTwoHits = 0, hitsToWin, schedulerId;
     
     public Match(Kit kit, Map map, boolean ranked, PlayerData... players){
         this.kit = kit;
@@ -89,6 +89,7 @@ public class Match implements Listener{
             player.teleport(new Location(activeMap.getWorld(), map.getPlayerTwoX(), map.getPlayerTwoY(), map.getPlayerTwoZ()));
         });
         
+        hitsToWin = getTeamSize() * 100;
         startTime = System.currentTimeMillis();
         matchState = MatchState.STARTING;
         
@@ -128,13 +129,24 @@ public class Match implements Listener{
                 Bukkit.getScheduler().cancelTask(schedulerId);
                 
                 schedulerId = Bukkit.getScheduler().runTaskTimer(EmeraldPractice.getPlugin(), () -> {
-                    if(teamOne.getAlivePlayers().isEmpty() || (kit.isBoxing() && teamTwoHits >= 100))
+                    if(teamOne.getAlivePlayers().isEmpty() || (kit.isBoxing() && teamTwoHits >= hitsToWin))
                         handleGameEnd(teamTwo, teamOne);
-                    else if(teamTwo.getAlivePlayers().isEmpty() || (kit.isBoxing() && teamOneHits >= 100))
+                    else if(teamTwo.getAlivePlayers().isEmpty() || (kit.isBoxing() && teamOneHits >= hitsToWin))
                         handleGameEnd(teamOne, teamTwo);
                     
-                    if((System.currentTimeMillis() - startTime) / 1000 >= kit.getMaxDurationInSeconds() && kit.getMaxDurationInSeconds() > 0)
-                        handleGameEnd(null, null);
+                    if((System.currentTimeMillis() - startTime) / 1000 >= kit.getMaxDurationInSeconds() && kit.getMaxDurationInSeconds() > 0){
+                        if(kit.isBoxing()){
+                            if(teamOneHits > teamTwoHits)
+                                handleGameEnd(teamOne, teamTwo);
+                            else if(teamTwoHits > teamOneHits)
+                                handleGameEnd(teamTwo, teamOne);
+                        }else{
+                            if(teamOne.getAlivePlayers().size() > teamTwo.getAlivePlayers().size())
+                                handleGameEnd(teamOne, teamTwo);
+                            else if(teamTwo.getAlivePlayers().size() > teamOne.getAlivePlayers().size())
+                                handleGameEnd(teamTwo, teamOne);
+                        }
+                    }
                 }, 0L, 10L).getTaskId();
             }
         }, 0L, 20L).getTaskId();
@@ -143,62 +155,51 @@ public class Match implements Listener{
     public void handleGameEnd(Team winningTeam, Team losingTeam){
         Bukkit.getScheduler().cancelTask(schedulerId);
         
-        if(winningTeam == null && losingTeam == null){
-            this.players.forEach(playerData -> {
-                Player player = Bukkit.getPlayer(playerData.getUuid());
-                
-                player.sendTitle(ChatColor.translateAlternateColorCodes('&', "&7Tie!"), ChatColor.translateAlternateColorCodes('&', "&7The game ended in a tie as time ran up!"));
-                
-                WebhookUtils.sendEmbed("Game ended in a tie!", "Player/s: " + teamTwo.getPlayerNames() + ", " + teamTwo.getPlayerNames(), "919191");
-            });
-        }else{
-            winningTeam.getPlayers().forEach(playerData -> {
-                if(winningTeam.equals(teamOne))
-                    teamOne.setWinningTeam(true);
-                else if(winningTeam.equals(teamTwo))
-                    teamTwo.setWinningTeam(true);
-                
-                Player player = Bukkit.getPlayer(playerData.getUuid());
-                
-                player.sendTitle(ChatColor.translateAlternateColorCodes('&', "&aWin!"), ChatColor.translateAlternateColorCodes('&', "&aYour team has won the game, GGs!"));
-                
-                playerData.getProfile().incrementWinStreak();
-                playerData.getProfile().getStats(kit).incrementWinStreak();
-                
-                if(ranked){
-                    playerData.getProfile().getStats(kit).increaseElo(1, losingTeam.getAverageElo(kit));
-                    playerData.getProfile().getStats(kit).incrementRankedWins();
-                }else{
-                    playerData.getProfile().getStats(kit).incrementUnrankedWins();
-                }
-            });
+        winningTeam.getPlayers().forEach(playerData -> {
+            if(winningTeam.equals(teamOne))
+                teamOne.setWinningTeam(true);
+            else if(winningTeam.equals(teamTwo))
+                teamTwo.setWinningTeam(true);
             
-            losingTeam.getPlayers().forEach(playerData -> {
-                Player player = Bukkit.getPlayer(playerData.getUuid());
-                
-                player.sendTitle(ChatColor.translateAlternateColorCodes('&', "&cLost!"), ChatColor.translateAlternateColorCodes('&', "&cYour team has lost the game, better luck next time!"));
-                
-                playerData.getProfile().resetWinStreak();
-                playerData.getProfile().getStats(kit).resetWinStreak();
-                
-                if(ranked){
-                    playerData.getProfile().getStats(kit).increaseElo(0, winningTeam.getAverageElo(kit));
-                    playerData.getProfile().getStats(kit).incrementRankedLosses();
-                }else{
-                    playerData.getProfile().getStats(kit).incrementUnrankedLosses();
-                }
-            });
+            Player player = Bukkit.getPlayer(playerData.getUuid());
             
-            WebhookUtils.sendEmbed(
-                    ranked ? "Ranked game ended" : "Unranked game ended",
-                    "**Kit:** " + kit.getDisplayName() + "\n" +
-                            "**Map:** " + activeMap.getMap().getDisplayName() + "\n" +
-                            "**Winning player/s:** " + winningTeam.getPlayerNames() + "\n" +
-                            "**Losing player/s:** " + losingTeam.getPlayerNames(),
-                    "2bad4e"
-            );
+            player.sendTitle(ChatColor.translateAlternateColorCodes('&', "&aWin!"), ChatColor.translateAlternateColorCodes('&', "&aYour team has won the game, GGs!"));
             
-        }
+            playerData.getProfile().incrementWinStreak();
+            playerData.getProfile().getStats(kit).incrementWinStreak();
+            
+            if(ranked){
+                playerData.getProfile().getStats(kit).increaseElo(1, losingTeam.getAverageElo(kit));
+                playerData.getProfile().getStats(kit).incrementRankedWins();
+            }else{
+                playerData.getProfile().getStats(kit).incrementUnrankedWins();
+            }
+        });
+        
+        losingTeam.getPlayers().forEach(playerData -> {
+            Player player = Bukkit.getPlayer(playerData.getUuid());
+            
+            player.sendTitle(ChatColor.translateAlternateColorCodes('&', "&cLost!"), ChatColor.translateAlternateColorCodes('&', "&cYour team has lost the game, better luck next time!"));
+            
+            playerData.getProfile().resetWinStreak();
+            playerData.getProfile().getStats(kit).resetWinStreak();
+            
+            if(ranked){
+                playerData.getProfile().getStats(kit).increaseElo(0, winningTeam.getAverageElo(kit));
+                playerData.getProfile().getStats(kit).incrementRankedLosses();
+            }else{
+                playerData.getProfile().getStats(kit).incrementUnrankedLosses();
+            }
+        });
+        
+        WebhookUtils.sendEmbed(
+                ranked ? "Ranked game ended" : "Unranked game ended",
+                "**Kit:** " + kit.getDisplayName() + "\n" +
+                        "**Map:** " + activeMap.getMap().getDisplayName() + "\n" +
+                        "**Winning player/s:** " + winningTeam.getPlayerNames() + "\n" +
+                        "**Losing player/s:** " + losingTeam.getPlayerNames(),
+                "2bad4e"
+        );
         
         cleanUpMatch();
     }
@@ -306,7 +307,7 @@ public class Match implements Listener{
         killData.getProfile().getStats(kit).incrementKills();
         
         getTeam(playerData).getAlivePlayers().remove(playerData);
-        getTeam(playerData).getDeadPlayer().add(playerData);
+        getTeam(playerData).getDeadPlayers().add(playerData);
         
         players.forEach(playerData1 -> {
             Player player1 = Bukkit.getPlayer(playerData1.getUuid());
@@ -323,7 +324,7 @@ public class Match implements Listener{
         playerData.getProfile().resetWinStreak();
         
         getTeam(playerData).getAlivePlayers().remove(playerData);
-        getTeam(playerData).getDeadPlayer().add(playerData);
+        getTeam(playerData).getDeadPlayers().add(playerData);
         players.remove(playerData);
         
         for(PotionEffect potionEffect : player.getActivePotionEffects()){
@@ -365,7 +366,8 @@ public class Match implements Listener{
         playerData.getProfile().resetWinStreak();
         
         getTeam(playerData).getAlivePlayers().remove(playerData);
-        getTeam(playerData).getDeadPlayer().add(playerData);
+        getTeam(playerData).getPlayers().remove(playerData);
+        getTeam(playerData).getDeadPlayers().add(playerData);
         players.remove(playerData);
         
         if(ranked){

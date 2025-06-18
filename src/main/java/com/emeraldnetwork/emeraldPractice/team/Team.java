@@ -2,7 +2,6 @@ package com.emeraldnetwork.emeraldPractice.team;
 
 import com.emeraldnetwork.emeraldPractice.kit.Kit;
 import com.emeraldnetwork.emeraldPractice.player.PlayerData;
-import com.emeraldnetwork.emeraldPractice.queue.QueueEntry;
 import com.emeraldnetwork.emeraldPractice.utils.MathUtils;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -16,7 +15,7 @@ import java.util.*;
 
 public class Team{
     
-    private final Set<PlayerData> alivePlayers = new HashSet<>(), deadPlayer = new HashSet<>(), players = new HashSet<>();
+    private final Set<PlayerData> alivePlayers = new HashSet<>(), deadPlayers = new HashSet<>(), players = new HashSet<>();
     private boolean winningTeam = false;
     
     public Team(List<PlayerData> players){
@@ -28,8 +27,8 @@ public class Team{
         return alivePlayers;
     }
     
-    public Set<PlayerData> getDeadPlayer(){
-        return deadPlayer;
+    public Set<PlayerData> getDeadPlayers(){
+        return deadPlayers;
     }
     
     public Set<PlayerData> getPlayers(){
@@ -92,11 +91,11 @@ public class Team{
     @Override
     public boolean equals(Object o){
         if(!(o instanceof Team team)) return false;
-        return Objects.equals(getAlivePlayers(), team.getAlivePlayers()) && Objects.equals(getDeadPlayer(), team.getDeadPlayer()) && Objects.equals(getPlayers(), team.getPlayers());
+        return Objects.equals(getAlivePlayers(), team.getAlivePlayers()) && Objects.equals(getDeadPlayers(), team.getDeadPlayers()) && Objects.equals(getPlayers(), team.getPlayers());
     }
     
     @Override
     public int hashCode(){
-        return Objects.hash(getAlivePlayers(), getDeadPlayer(), getPlayers());
+        return Objects.hash(getAlivePlayers(), getDeadPlayers(), getPlayers());
     }
 }
