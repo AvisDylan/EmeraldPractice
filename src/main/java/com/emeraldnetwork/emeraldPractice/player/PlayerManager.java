@@ -3,6 +3,7 @@ package com.emeraldnetwork.emeraldPractice.player;
 import com.emeraldnetwork.emeraldPractice.database.DatabaseManager;
 import com.emeraldnetwork.emeraldPractice.party.PartyManager;
 import com.emeraldnetwork.emeraldPractice.utils.ItemUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -37,9 +38,11 @@ public final class PlayerManager{
     public static void giveSpawnItems(Player player){
         PlayerData playerData = getPlayerData(player.getUniqueId());
         
+        Bukkit.getLogger().info(PartyManager.getPlayerParty(playerData) + " ");
+        
         player.getInventory().clear();
         player.getInventory().setArmorContents(null);
-        player.getInventory().setContents(PartyManager.getPlayerParty(playerData) != null && PartyManager.getPlayerParty(playerData).getPlayers().contains(playerData) ? ItemUtils.PARTY_ITEMS : ItemUtils.SPAWN_ITEMS);
+        player.getInventory().setContents(PartyManager.getPlayerParty(playerData) != null ? ItemUtils.PARTY_ITEMS : ItemUtils.SPAWN_ITEMS);
         player.updateInventory();
     }
     

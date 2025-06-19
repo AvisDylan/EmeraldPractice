@@ -6,6 +6,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import xyz.krypton.spigot.SatireSpigotAPI;
+import xyz.krypton.spigot.knockback.KnockbackAPI;
 
 import java.util.Arrays;
 
@@ -38,14 +40,14 @@ public final class ItemUtils{
                                                     null,
                                                     null,
                                                     createItem(Material.INK_SACK, 1, (short) 1, ChatColor.RED + "Stop Spectating " + ChatColor.GRAY + "(right click)") },
-                                    PARTY_ITEMS = { createItem(Material.COMPASS, 1, ChatColor.GRAY + "Teleport to a Player (right click)"),
+                                    PARTY_ITEMS = { createItem(Material.IRON_AXE, 1, ChatColor.GRAY + "Start a Party Fight (right click)"),
+                                                    createItem(Material.DIAMOND_AXE, 1, ChatColor.DARK_GREEN + "Fight Another Party" + ChatColor.GRAY + " (right click)"),
                                                     null,
                                                     null,
                                                     null,
                                                     null,
-                                                    null,
-                                                    null,
-                                                    null,
+                                                    createItem(Material.BOOK, 1, "§7Kit Editor (right click)"),
+                                                    createItem(Material.COMPASS, 1, "§7Settings (right click)"),
                                                     createItem(Material.INK_SACK, 1, (short) 1, ChatColor.RED + "Leave Party " + ChatColor.GRAY + "(right click)") };
     ;
     

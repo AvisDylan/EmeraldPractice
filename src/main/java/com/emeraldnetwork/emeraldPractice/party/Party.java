@@ -8,6 +8,7 @@ import com.emeraldnetwork.emeraldPractice.player.PlayerData;
 import com.emeraldnetwork.emeraldPractice.player.PlayerManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 import java.util.LinkedList;
@@ -39,31 +40,30 @@ public class Party{
     }
     
     public void leaveParty(PlayerData playerData){
-        players.remove(playerData);
-        
-        if(players.isEmpty()){
-            disband();
-            return;
-        }
+        if(players.size() <= 1)
+            PartyManager.PARTIES.remove(this);
         
         if(playerData.equals(partyLeader))
             setPartyLeader(players.get(0));
         
-        players.forEach(playerData1 -> {
-            Player player = Bukkit.getPlayer(playerData1.getUuid());
-            
-            player.sendMessage(ChatColor.DARK_GREEN + Bukkit.getPlayer(playerData.getUuid()).getName() + ChatColor.GRAY + " has left the party!");
-        });
+        players.remove(playerData);
         
         Player player = Bukkit.getPlayer(playerData.getUuid());
         
         PlayerManager.giveSpawnItems(player);
+        
+        players.forEach(playerData1 -> {
+            Player player1 = Bukkit.getPlayer(playerData1.getUuid());
+            
+            player1.sendMessage(ChatColor.DARK_GREEN + player.getName() + ChatColor.GRAY + " has left the party!");
+        });
     }
     
     public void disband(){
-        players.forEach(playerData1 -> {
-            Player player = Bukkit.getPlayer(playerData1.getUuid());
+        players.forEach(playerData -> {
+            Player player = Bukkit.getPlayer(playerData.getUuid());
             
+            players.remove(playerData);
             player.sendMessage(ChatColor.DARK_GREEN + Bukkit.getPlayer(partyLeader.getUuid()).getName() + ChatColor.GRAY + " has disbanded the party!");
             PlayerManager.giveSpawnItems(player);
         });
@@ -77,6 +77,7 @@ public class Party{
         players.forEach(playerData -> {
             Player player = Bukkit.getPlayer(playerData.getUuid());
             
+            player.playSound(player.getLocation(), Sound.NOTE_PLING, 1.0f, 1.0f);
             player.sendMessage(ChatColor.GRAY + "[" + ChatColor.DARK_GREEN + "Party" + ChatColor.GRAY + "] " + sender.getName() + ": " + message);
         });
     }

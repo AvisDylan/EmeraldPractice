@@ -156,8 +156,8 @@ public class PartyCommand implements CommandExecutor{
                 
                 StringBuilder builder = new StringBuilder();
                 
-                for(int i = 1; i < strings.length - 1; i++){
-                    builder.append(strings[i]);
+                for(int i = 1; i < strings.length; i++){
+                    builder.append(strings[i]).append(" ");
                 }
                 
                 party.sendPartyMessage(playerData, builder.toString());
