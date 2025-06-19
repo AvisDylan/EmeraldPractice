@@ -39,9 +39,14 @@ commands:
     description: spectate game
     aliases:
       - spec
+      - s
   settings:
     description: edit your settings
   party:
     description: make a party
     aliases:
       - p
+  kiteditor:
+    description: edit kit layouts
+    aliases:
+      - ke
