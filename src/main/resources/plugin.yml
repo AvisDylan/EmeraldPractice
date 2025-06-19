@@ -46,6 +46,8 @@ commands:
     description: make a party
     aliases:
       - p
+  pc:
+    description: send messages to the party
   kiteditor:
     description: edit kit layouts
     aliases:
