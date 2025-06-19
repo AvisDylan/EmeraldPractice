@@ -211,7 +211,23 @@ public class InventoryClickListener implements Listener{
                     
                     ((Player) event.getWhoClicked()).chat("/queue join ranked " + itemName);
                     event.getWhoClicked().closeInventory();
+                }else if(event.getClickedInventory().getTitle().equalsIgnoreCase(ChatColor.DARK_GREEN + "Select a Kit to Edit")){
+                    if(!event.getCurrentItem().hasItemMeta())
+                        return;
+                    
+                    String itemName = ChatColor.stripColor(event.getCurrentItem().getItemMeta().getDisplayName());
+                    Kit kit = KitManager.getKit(itemName);
+                    event.getWhoClicked().closeInventory();
+                    
+                    Inventory inventory = Bukkit.createInventory(event.getWhoClicked(), 45, ChatColor.GRAY + "Edit " + ChatColor.DARK_GREEN + kit.getDisplayName());
+                    
+                    inventory.setContents(kit.getEditorItems());
+                    event.getWhoClicked().getInventory().setContents(playerData.getProfile().getStats(kit).getKitLayoutItems() == null ? kit.getItems() : playerData.getProfile().getStats(kit).getKitLayoutItems());
+                    event.getWhoClicked().openInventory(inventory);
                 }
+                
+                if(event.getView().getTitle().contains("Edit "))
+                    return;
                 
                 if(!playerData.getProfile().isEditMode())
                     event.setCancelled(true);

@@ -1,9 +1,12 @@
 package com.emeraldnetwork.emeraldPractice.profile;
 
 import com.google.gson.annotations.Expose;
+import org.bukkit.inventory.ItemStack;
 
 public class PlayerKitProfile{
     
+    @Expose
+    private ItemStack[] kitLayoutItems = null;
     @Expose
     private double elo = 1000;
     @Expose
@@ -87,5 +90,13 @@ public class PlayerKitProfile{
     
     public int getWinstreak(){
         return winstreak;
+    }
+    
+    public ItemStack[] getKitLayoutItems(){
+        return kitLayoutItems;
+    }
+    
+    public void setKitLayoutItems(ItemStack[] kitLayoutItems){
+        this.kitLayoutItems = kitLayoutItems;
     }
 }

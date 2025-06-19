@@ -1,5 +1,6 @@
 package com.emeraldnetwork.emeraldPractice.database;
 
+import com.emeraldnetwork.emeraldPractice.adapter.ItemStackAdapter;
 import com.emeraldnetwork.emeraldPractice.kit.KitManager;
 import com.emeraldnetwork.emeraldPractice.player.PlayerManager;
 import com.emeraldnetwork.emeraldPractice.profile.PlayerKitProfile;
@@ -9,6 +10,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import org.bukkit.Bukkit;
 import org.bukkit.WeatherType;
+import org.bukkit.inventory.ItemStack;
 
 import java.sql.*;
 import java.util.Map;
@@ -17,7 +19,7 @@ import java.util.UUID;
 public class DatabaseManager{
 
     private static Connection playerDatabase;
-    private static final Gson GSON = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+    private static final Gson GSON = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().registerTypeAdapter(ItemStack.class, new ItemStackAdapter()).create();
     private static final String PLAYERDATA_URL = "jdbc:postgresql://209.112.91.51:5432/player_datas",
                                 PLAYERDATA_USERNAME = "postgres",
                                 PLAYERDATA_PASSWORD = "!aosikop\"sdW2sd$";

@@ -2,6 +2,8 @@ package com.emeraldnetwork.emeraldPractice.kit;
 
 import com.emeraldnetwork.emeraldPractice.map.Map;
 import com.emeraldnetwork.emeraldPractice.math.BoundingBox;
+import com.emeraldnetwork.emeraldPractice.player.PlayerManager;
+import com.emeraldnetwork.emeraldPractice.profile.PlayerKitProfile;
 import com.google.gson.annotations.Expose;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -90,9 +92,11 @@ public class Kit{
     }
     
     public void applyKit(Player player){
+        PlayerKitProfile playerKitProfile = PlayerManager.getPlayerData(player.getUniqueId()).getProfile().getStats(this);
+        
         player.getInventory().clear();
         player.getInventory().setArmorContents(null);
-        player.getInventory().setContents(items);
+        player.getInventory().setContents(playerKitProfile.getKitLayoutItems() != null ? playerKitProfile.getKitLayoutItems() : items);
         player.getInventory().setArmorContents(armourItems);
         
         /*for(PotionEffect potionEffect : potionEffects){

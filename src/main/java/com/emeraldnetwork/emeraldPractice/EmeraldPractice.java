@@ -60,11 +60,7 @@ public final class EmeraldPractice extends JavaPlugin{
         
         KitManager.KITS.forEach(kit -> Bukkit.getScheduler().runTaskTimer(this, () -> QueueManager.handleQueue(kit), 0L, 10L));
         
-        Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> MultithreadedUtils.EXECUTOR_SERVICE.submit(() -> {
-            for(PlayerData playerData : PlayerManager.PLAYERS.values()){
-                ScoreboardManager.updateBoard(playerData);
-            }
-        }), 0L, 10L);
+        Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> MultithreadedUtils.EXECUTOR_SERVICE.submit(() -> PlayerManager.PLAYERS.values().forEach(ScoreboardManager::updateBoard)), 0L, 10L);
         
         Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> MultithreadedUtils.EXECUTOR_SERVICE.submit(DatabaseManager::savePlayerProfiles), 12000L, 12000L);
     }
