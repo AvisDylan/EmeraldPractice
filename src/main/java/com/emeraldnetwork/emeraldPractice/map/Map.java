@@ -16,10 +16,16 @@ public class Map{
     @Expose
     private double playerOneX, playerOneY, playerOneZ, playerTwoX, playerTwoY, playerTwoZ;
     @Expose
+    private float playerOneYaw, playerOnePitch, playerTwoYaw, playerTwoPitch;
+    @Expose
     private final File worldFolder;
     
-    public Map(File sourceWorldFolder, double playerTwoZ, double playerTwoY, double playerTwoX, double playerOneZ, double playerOneY, double playerOneX, ItemStack icon, String displayName, String name){
-        this.worldFolder = sourceWorldFolder;
+    public Map(File sourceWorldFolder, float playerTwoPitch, float playerTwoYaw, float playerOnePitch, float playerOneYaw, double playerTwoZ, double playerTwoY, double playerTwoX, double playerOneZ, double playerOneY, double playerOneX, ItemStack icon, String displayName, String name){
+        worldFolder = sourceWorldFolder;
+        this.playerTwoPitch = playerTwoPitch;
+        this.playerTwoYaw = playerTwoYaw;
+        this.playerOnePitch = playerOnePitch;
+        this.playerOneYaw = playerOneYaw;
         this.playerTwoZ = playerTwoZ;
         this.playerTwoY = playerTwoY;
         this.playerTwoX = playerTwoX;
@@ -112,5 +118,37 @@ public class Map{
     
     public File getWorldFolder(){
         return worldFolder;
+    }
+    
+    public float getPlayerOneYaw(){
+        return playerOneYaw;
+    }
+    
+    public void setPlayerOneYaw(float playerOneYaw){
+        this.playerOneYaw = playerOneYaw;
+    }
+    
+    public float getPlayerOnePitch(){
+        return playerOnePitch;
+    }
+    
+    public void setPlayerOnePitch(float playerOnePitch){
+        this.playerOnePitch = playerOnePitch;
+    }
+    
+    public float getPlayerTwoYaw(){
+        return playerTwoYaw;
+    }
+    
+    public void setPlayerTwoYaw(float playerTwoYaw){
+        this.playerTwoYaw = playerTwoYaw;
+    }
+    
+    public float getPlayerTwoPitch(){
+        return playerTwoPitch;
+    }
+    
+    public void setPlayerTwoPitch(float playerTwoPitch){
+        this.playerTwoPitch = playerTwoPitch;
     }
 }

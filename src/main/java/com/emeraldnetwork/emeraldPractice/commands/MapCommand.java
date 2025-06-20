@@ -3,6 +3,7 @@ package com.emeraldnetwork.emeraldPractice.commands;
 import com.emeraldnetwork.emeraldPractice.kit.Kit;
 import com.emeraldnetwork.emeraldPractice.kit.KitManager;
 import com.emeraldnetwork.emeraldPractice.map.Map;
+import com.emeraldnetwork.emeraldPractice.utils.MathUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -81,11 +82,15 @@ public class MapCommand implements CommandExecutor{
                                         map.setPlayerOneX(player.getLocation().getX());
                                         map.setPlayerOneY(player.getLocation().getY());
                                         map.setPlayerOneZ(player.getLocation().getZ());
+                                        map.setPlayerOneYaw(MathUtils.roundYaw(player.getLocation().getYaw()));
+                                        map.setPlayerOnePitch(MathUtils.roundPitch(player.getLocation().getPitch()));
                                         commandSender.sendMessage("§aSet player one spawn on " + strings[1] + " on map" + strings[2] + " to your position!");
                                     }else if(strings[3].equalsIgnoreCase("player2")){
                                         map.setPlayerTwoX(player.getLocation().getX());
                                         map.setPlayerTwoY(player.getLocation().getY());
                                         map.setPlayerTwoZ(player.getLocation().getZ());
+                                        map.setPlayerTwoYaw(MathUtils.roundYaw(player.getLocation().getYaw()));
+                                        map.setPlayerTwoPitch(MathUtils.roundPitch(player.getLocation().getPitch()));
                                         commandSender.sendMessage("§aSet player one spawn on " + strings[1] + " on map" + strings[2] + " to your position!");
                                     }else{
                                         commandSender.sendMessage("§c" + strings[1] + " is not a valid option!");

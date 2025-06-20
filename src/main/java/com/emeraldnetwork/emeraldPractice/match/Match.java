@@ -80,13 +80,13 @@ public class Match implements Listener{
         teamOne.getPlayers().forEach(playerData -> {
             Player player = Bukkit.getPlayer(playerData.getUuid());
             
-            player.teleport(new Location(activeMap.getWorld(), map.getPlayerOneX(), map.getPlayerOneY(), map.getPlayerOneZ()));
+            player.teleport(new Location(activeMap.getWorld(), map.getPlayerOneX(), map.getPlayerOneY(), map.getPlayerOneZ(), map.getPlayerOneYaw(), map.getPlayerOnePitch()));
         });
         
         teamTwo.getPlayers().forEach(playerData -> {
             Player player = Bukkit.getPlayer(playerData.getUuid());
             
-            player.teleport(new Location(activeMap.getWorld(), map.getPlayerTwoX(), map.getPlayerTwoY(), map.getPlayerTwoZ()));
+            player.teleport(new Location(activeMap.getWorld(), map.getPlayerTwoX(), map.getPlayerTwoY(), map.getPlayerTwoZ(), map.getPlayerTwoYaw(), map.getPlayerTwoPitch()));
         });
         
         hitsToWin = getTeamSize() * 100;
@@ -116,13 +116,13 @@ public class Match implements Listener{
                 teamOne.getPlayers().forEach(playerData -> {
                     Player player = Bukkit.getPlayer(playerData.getUuid());
                     
-                    player.teleport(new Location(activeMap.getWorld(), map.getPlayerOneX(), map.getPlayerOneY(), map.getPlayerOneZ()));
+                    player.teleport(new Location(activeMap.getWorld(), map.getPlayerOneX(), map.getPlayerOneY(), map.getPlayerOneZ(), map.getPlayerOneYaw(), map.getPlayerOnePitch()));
                 });
                 
                 teamTwo.getPlayers().forEach(playerData -> {
                     Player player = Bukkit.getPlayer(playerData.getUuid());
                     
-                    player.teleport(new Location(activeMap.getWorld(), map.getPlayerTwoX(), map.getPlayerTwoY(), map.getPlayerTwoZ()));
+                    player.teleport(new Location(activeMap.getWorld(), map.getPlayerTwoX(), map.getPlayerTwoY(), map.getPlayerTwoZ(), map.getPlayerTwoYaw(), map.getPlayerTwoPitch()));
                 });
                 
                 matchState = MatchState.ONGOING;
@@ -294,14 +294,11 @@ public class Match implements Listener{
         
         Bukkit.getLogger().info(player.getDisplayName());
         
-        if(teamOne.getPlayers().contains(playerData)){
-            Bukkit.getLogger().info("player1");
-            Bukkit.getLogger().info(activeMap.getWorld().getName() + " " + activeMap.getMap().getPlayerOneX() + " " + activeMap.getMap().getPlayerOneY() + " " + activeMap.getMap().getPlayerOneZ() + " ");
-            player.teleport(new Location(activeMap.getWorld(), activeMap.getMap().getPlayerOneX(), activeMap.getMap().getPlayerOneY(), activeMap.getMap().getPlayerOneZ()));
-        }else if(teamTwo.getPlayers().contains(playerData)){
-            Bukkit.getLogger().info("player2");
-            player.teleport(new Location(activeMap.getWorld(), activeMap.getMap().getPlayerTwoX(), activeMap.getMap().getPlayerTwoY(), activeMap.getMap().getPlayerTwoZ()));
-        }
+        if(teamOne.getPlayers().contains(playerData))
+            player.teleport(new Location(activeMap.getWorld(), activeMap.getMap().getPlayerOneX(), activeMap.getMap().getPlayerOneY(), activeMap.getMap().getPlayerOneZ(), activeMap.getMap().getPlayerOneYaw(), activeMap.getMap().getPlayerOnePitch()));
+        else if(teamTwo.getPlayers().contains(playerData))
+            player.teleport(new Location(activeMap.getWorld(), activeMap.getMap().getPlayerTwoX(), activeMap.getMap().getPlayerTwoY(), activeMap.getMap().getPlayerTwoZ(), activeMap.getMap().getPlayerTwoYaw(), activeMap.getMap().getPlayerTwoPitch()));
+        
         
         playerData.getProfile().getStats(kit).incrementDeaths();
         killData.getProfile().getStats(kit).incrementKills();
