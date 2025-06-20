@@ -44,7 +44,7 @@ public class InventoryClickListener implements Listener{
                     
                     for(Kit kit : KitManager.KITS){
                         if(kit.getDisplayName().equalsIgnoreCase(kitName)){
-                            Inventory inventory = GuiUtils.createInventoryWithBorder((Player) event.getWhoClicked(), 45, ChatColor.GRAY + "Select a map");
+                            Inventory inventory = GuiUtils.createInventoryWithBorder((Player) event.getWhoClicked(), 45, ChatColor.DARK_GREEN + "Select a map");
                             
                             kit.getMaps().forEach(map -> inventory.addItem(ItemUtils.createItem(map.getIcon().getType(), 1, ChatColor.DARK_GREEN + map.getDisplayName())));
                             
@@ -225,9 +225,15 @@ public class InventoryClickListener implements Listener{
                     Kit kit = KitManager.getKit(itemName);
                     //event.getWhoClicked().closeInventory();
                     
-                    Inventory inventory = GuiUtils.createInventoryWithBorder((Player) event.getWhoClicked(), 45, ChatColor.GRAY + "Edit " + ChatColor.DARK_GREEN + kit.getDisplayName());
+                    Inventory inventory = GuiUtils.createInventoryWithBorder((Player) event.getWhoClicked(), 36, ChatColor.GRAY + "Edit " + ChatColor.DARK_GREEN + kit.getDisplayName());
                     
-                    inventory.setContents(kit.getEditorItems());
+                    for(int i = 0; i < 36; i++){
+                        if(kit.getEditorItems()[i] == null)
+                            continue;
+                        
+                        inventory.setItem(i, kit.getEditorItems()[i]);
+                    }
+                    
                     event.getWhoClicked().getInventory().setContents(playerData.getProfile().getStats(kit).getKitLayoutItems() == null ? kit.getItems() : playerData.getProfile().getStats(kit).getKitLayoutItems());
                     event.getWhoClicked().openInventory(inventory);
                 }
