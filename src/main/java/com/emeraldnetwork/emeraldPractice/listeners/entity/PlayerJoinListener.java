@@ -16,7 +16,7 @@ public class PlayerJoinListener implements Listener{
     public void onPlayerJoin(PlayerJoinEvent event){
         PlayerManager.addPlayer(event.getPlayer());
         PlayerManager.giveSpawnItems(event.getPlayer());
-        event.getPlayer().setPlayerTime(PlayerManager.getPlayerData(event.getPlayer().getUniqueId()).getProfile().getPlayerTime(), true);
+        event.getPlayer().setPlayerTime(PlayerManager.getPlayerData(event.getPlayer().getUniqueId()).getProfile().getPlayerTime(), false);
         event.getPlayer().teleport(SpawnPointUtils.getSpawnPoint());
         
         event.getPlayer().playSound(event.getPlayer().getLocation(), Sound.NOTE_PLING, 1.0f, 1.0f);

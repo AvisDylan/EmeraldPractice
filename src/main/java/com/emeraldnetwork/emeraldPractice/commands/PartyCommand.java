@@ -5,6 +5,7 @@ import com.emeraldnetwork.emeraldPractice.party.PartyManager;
 import com.emeraldnetwork.emeraldPractice.player.PlayerData;
 import com.emeraldnetwork.emeraldPractice.player.PlayerManager;
 import com.emeraldnetwork.emeraldPractice.player.PlayerState;
+import net.md_5.bungee.protocol.packet.Chat;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -32,7 +33,7 @@ public class PartyCommand implements CommandExecutor{
         switch(strings[0].toLowerCase()){
             case "create" -> {
                 if(party != null){
-                    commandSender.sendMessage(ChatColor.RED + "You already are in party!");
+                    commandSender.sendMessage(ChatColor.RED + "You already are in a party!");
                     return false;
                 }
                 
@@ -70,7 +71,7 @@ public class PartyCommand implements CommandExecutor{
                 }
                 
                 if(party != null){
-                    commandSender.sendMessage(ChatColor.RED + "You already are in party!");
+                    commandSender.sendMessage(ChatColor.RED + "You already are in a party!");
                     return false;
                 }
                 
@@ -109,6 +110,9 @@ public class PartyCommand implements CommandExecutor{
             }
             case "duel" -> {
                 //TODO ADD PARTY DUELS
+            }
+            case "fight" -> {
+            
             }
             case "promote" -> {
                 if(strings.length < 2){
@@ -224,6 +228,23 @@ public class PartyCommand implements CommandExecutor{
                 
                 commandSender.sendMessage(ChatColor.GRAY + "You have announced the party!");
                 party.announceParty(playerData);
+            }
+            case "list" -> {
+                if(party == null){
+                    commandSender.sendMessage(ChatColor.RED + "You are not in a party!");
+                    return false;
+                }
+                
+                StringBuilder builder = new StringBuilder();
+                
+                party.getPlayers().forEach(playerData1 -> {
+                    Player player = Bukkit.getPlayer(playerData1.getUuid());
+                    
+                    builder.append(ChatColor.DARK_GREEN).append(player.getName()).append(ChatColor.GRAY).append(", ");
+                });
+                
+                commandSender.sendMessage(ChatColor.DARK_GREEN + Bukkit.getPlayer(party.getPartyLeader().getUuid()).getName() + ChatColor.GRAY + "'s party");
+                commandSender.sendMessage(ChatColor.GRAY + "Members: " + builder.substring(0, builder.length() - 2));
             }
             case "public" -> {
                 if(party == null){

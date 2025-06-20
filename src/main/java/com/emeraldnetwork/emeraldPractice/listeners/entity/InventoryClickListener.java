@@ -176,7 +176,7 @@ public class InventoryClickListener implements Listener{
                                 (playerData.getProfile().getPlayerTime() == 12000 ? ChatColor.DARK_GREEN + "Sunset" : ChatColor.GRAY + "Sunset"),
                                 (playerData.getProfile().getPlayerTime() == 18000 ? ChatColor.DARK_GREEN + "Midnight" : ChatColor.GRAY + "Midnight"));
                         
-                        ((Player) event.getWhoClicked()).setPlayerTime(playerData.getProfile().getPlayerTime(), true);
+                        ((Player) event.getWhoClicked()).setPlayerTime(playerData.getProfile().getPlayerTime(), false);
                         itemMeta.setLore(lore);
                         item.setItemMeta(itemMeta);
                     }else if(itemName.equalsIgnoreCase(ChatColor.RESET + "" + ChatColor.DARK_GREEN + ChatColor.BOLD + "Ping Range")){

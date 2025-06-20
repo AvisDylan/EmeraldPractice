@@ -6,6 +6,11 @@ package com.emeraldnetwork.emeraldPractice.party;
 
 import com.emeraldnetwork.emeraldPractice.player.PlayerData;
 import com.emeraldnetwork.emeraldPractice.player.PlayerManager;
+import com.emeraldnetwork.emeraldPractice.player.PlayerState;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
@@ -87,7 +92,22 @@ public class Party{
     }
     
     public void announceParty(PlayerData playerData){
-        //TODO ADD ANNOUNCING
+        Player sender = Bukkit.getPlayer(playerData.getUuid());
+        
+        for(PlayerData playerData1 : PlayerManager.PLAYERS.values()){
+            if(playerData.getPlayerState() != PlayerState.SPAWN)
+                continue;
+            
+            Player player = Bukkit.getPlayer(playerData1.getUuid());
+            TextComponent base = new TextComponent(ChatColor.DARK_GREEN + sender.getName() + ChatColor.GRAY + " wants you to join their party! ");
+            TextComponent joinComponent = new TextComponent(ChatColor.RESET + "" + ChatColor.DARK_GREEN + ChatColor.BOLD + "(Join)");
+            
+            joinComponent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/party join " + sender.getName()));
+            joinComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new BaseComponent[]{ new TextComponent(ChatColor.GRAY + "Click to join") }));
+            base.addExtra(joinComponent);
+            
+            player.spigot().sendMessage(base);
+        }
     }
     
     public PlayerData getPartyLeader(){
