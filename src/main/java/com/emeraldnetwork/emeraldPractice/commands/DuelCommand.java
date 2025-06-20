@@ -67,9 +67,8 @@ public class DuelCommand implements CommandExecutor{
             
             for(int i = 0; i < KitManager.KITS.size(); i++){
                 Kit kit = KitManager.KITS.get(i);
-                ItemStack itemStack = ItemUtils.createItem(kit.getIcon().getType(), 1, ChatColor.DARK_GREEN + kit.getDisplayName());
                 
-                inventory.setItem(i, itemStack);
+                inventory.addItem(ItemUtils.createItem(kit.getIcon().getType(), 1, ChatColor.DARK_GREEN + kit.getDisplayName()));
             }
             
             sender.openInventory(inventory);

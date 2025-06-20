@@ -27,6 +27,11 @@ public class InventoryClickListener implements Listener{
     public void onInventoryClick(InventoryClickEvent event){
         PlayerData playerData = PlayerManager.getPlayerData(event.getWhoClicked().getUniqueId());
         
+        if(event.getCurrentItem().getItemMeta().getDisplayName().equalsIgnoreCase(" ")){
+            event.setCancelled(true);
+            return;
+        }
+        
         switch(playerData.getPlayerState()){
             case QUEUE, SPAWN, SPECTATING -> {
                 if(event.getClickedInventory().getName().contains("Duel")){
@@ -78,7 +83,7 @@ public class InventoryClickListener implements Listener{
                     
                     if(player != null)
                         event.getWhoClicked().teleport(player);
-                }else if(event.getClickedInventory().getTitle().equalsIgnoreCase(ChatColor.GRAY + "Settings")){
+                }else if(event.getClickedInventory().getTitle().equalsIgnoreCase(ChatColor.DARK_GREEN + "Settings")){
                     if(!event.getCurrentItem().hasItemMeta())
                         return;
                     
