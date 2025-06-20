@@ -7,6 +7,7 @@ import com.emeraldnetwork.emeraldPractice.player.PlayerManager;
 import com.emeraldnetwork.emeraldPractice.player.PlayerState;
 import com.emeraldnetwork.emeraldPractice.queue.QueueEntry;
 import com.emeraldnetwork.emeraldPractice.queue.QueueManager;
+import com.emeraldnetwork.emeraldPractice.utils.GuiUtils;
 import com.emeraldnetwork.emeraldPractice.utils.ItemUtils;
 import net.md_5.bungee.protocol.packet.Chat;
 import org.bukkit.Bukkit;
@@ -42,7 +43,7 @@ public class QueueCommand implements CommandExecutor{
                 
                 if(strings[1].equalsIgnoreCase("unranked") || strings[1].equalsIgnoreCase("ranked")){
                     boolean ranked = strings[1].equalsIgnoreCase("ranked");
-                    Inventory inventory = Bukkit.createInventory(player, 45, ChatColor.DARK_GREEN + (ranked ? "Ranked" : "Unranked") + " Queue");
+                    Inventory inventory = GuiUtils.createInventoryWithBorder(player, 45, ChatColor.DARK_GREEN + (ranked ? "Ranked" : "Unranked") + " Queue");
                     
                     for(int i = 0; i < KitManager.KITS.size(); i++){
                         Kit kit = KitManager.KITS.get(i);

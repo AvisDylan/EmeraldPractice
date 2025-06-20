@@ -6,13 +6,11 @@ package com.emeraldnetwork.emeraldPractice.commands;
 
 import com.emeraldnetwork.emeraldPractice.kit.Kit;
 import com.emeraldnetwork.emeraldPractice.kit.KitManager;
-import com.emeraldnetwork.emeraldPractice.match.MatchManager;
 import com.emeraldnetwork.emeraldPractice.player.PlayerData;
 import com.emeraldnetwork.emeraldPractice.player.PlayerManager;
 import com.emeraldnetwork.emeraldPractice.player.PlayerState;
-import com.emeraldnetwork.emeraldPractice.queue.QueueManager;
+import com.emeraldnetwork.emeraldPractice.utils.GuiUtils;
 import com.emeraldnetwork.emeraldPractice.utils.ItemUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -32,7 +30,7 @@ public class KitEditorCommand implements CommandExecutor{
             return false;
         }
         
-        Inventory inventory = Bukkit.createInventory(player, 45, ChatColor.DARK_GREEN + "Select a Kit to Edit");
+        Inventory inventory = GuiUtils.createInventoryWithBorder(player, 45, ChatColor.DARK_GREEN + "Select a Kit to Edit");
         
         for(int i = 0; i < KitManager.KITS.size(); i++){
             Kit kit = KitManager.KITS.get(i);

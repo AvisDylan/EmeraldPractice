@@ -6,6 +6,7 @@ import com.emeraldnetwork.emeraldPractice.kit.KitManager;
 import com.emeraldnetwork.emeraldPractice.player.PlayerData;
 import com.emeraldnetwork.emeraldPractice.player.PlayerManager;
 import com.emeraldnetwork.emeraldPractice.player.PlayerState;
+import com.emeraldnetwork.emeraldPractice.utils.GuiUtils;
 import com.emeraldnetwork.emeraldPractice.utils.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -62,7 +63,7 @@ public class DuelCommand implements CommandExecutor{
                 return false;
             }
             
-            Inventory inventory = Bukkit.createInventory(sender, 45, ChatColor.GRAY + "Duel " + ChatColor.GREEN + receiver.getName());
+            Inventory inventory = GuiUtils.createInventoryWithBorder(sender.getPlayer(), 45, ChatColor.GRAY + "Duel " + ChatColor.GREEN + receiver.getName());
             
             for(int i = 0; i < KitManager.KITS.size(); i++){
                 Kit kit = KitManager.KITS.get(i);

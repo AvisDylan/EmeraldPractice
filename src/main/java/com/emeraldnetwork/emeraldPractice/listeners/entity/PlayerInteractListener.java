@@ -9,6 +9,7 @@ import com.emeraldnetwork.emeraldPractice.party.Party;
 import com.emeraldnetwork.emeraldPractice.party.PartyManager;
 import com.emeraldnetwork.emeraldPractice.player.PlayerData;
 import com.emeraldnetwork.emeraldPractice.player.PlayerManager;
+import com.emeraldnetwork.emeraldPractice.utils.GuiUtils;
 import com.emeraldnetwork.emeraldPractice.utils.ItemUtils;
 import com.emeraldnetwork.emeraldPractice.utils.MultithreadedUtils;
 import org.bukkit.Bukkit;
@@ -67,7 +68,7 @@ public class PlayerInteractListener implements Listener{
                     if(event.getItem().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.RED + "Stop Spectating " + ChatColor.GRAY + "(right click)"))
                         event.getPlayer().chat("/leave");
                     else if(event.getItem().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.GRAY + "Teleport to a Player (right click)")){
-                        Inventory inventory = Bukkit.createInventory(event.getPlayer(), 18, ChatColor.GRAY + "Choose a player");
+                        Inventory inventory = GuiUtils.createInventoryWithBorder(event.getPlayer(), 36, ChatColor.GRAY + "Choose a player");
                         Match match = MatchManager.getSpectatorMatch(playerData);
                         
                         if(match == null)

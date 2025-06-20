@@ -6,6 +6,7 @@ import com.emeraldnetwork.emeraldPractice.kit.KitManager;
 import com.emeraldnetwork.emeraldPractice.map.Map;
 import com.emeraldnetwork.emeraldPractice.player.PlayerData;
 import com.emeraldnetwork.emeraldPractice.player.PlayerManager;
+import com.emeraldnetwork.emeraldPractice.utils.GuiUtils;
 import com.emeraldnetwork.emeraldPractice.utils.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -38,7 +39,7 @@ public class InventoryClickListener implements Listener{
                     
                     for(Kit kit : KitManager.KITS){
                         if(kit.getDisplayName().equalsIgnoreCase(kitName)){
-                            Inventory inventory = Bukkit.createInventory(event.getWhoClicked(), 45, ChatColor.GRAY + "Select a map");
+                            Inventory inventory = GuiUtils.createInventoryWithBorder((Player) event.getWhoClicked(), 45, ChatColor.GRAY + "Select a map");
                             
                             kit.getMaps().forEach(map -> inventory.addItem(ItemUtils.createItem(map.getIcon().getType(), 1, ChatColor.DARK_GREEN + map.getDisplayName())));
                             
@@ -217,9 +218,9 @@ public class InventoryClickListener implements Listener{
                     
                     String itemName = ChatColor.stripColor(event.getCurrentItem().getItemMeta().getDisplayName());
                     Kit kit = KitManager.getKit(itemName);
-                    event.getWhoClicked().closeInventory();
+                    //event.getWhoClicked().closeInventory();
                     
-                    Inventory inventory = Bukkit.createInventory(event.getWhoClicked(), 45, ChatColor.GRAY + "Edit " + ChatColor.DARK_GREEN + kit.getDisplayName());
+                    Inventory inventory = GuiUtils.createInventoryWithBorder((Player) event.getWhoClicked(), 45, ChatColor.GRAY + "Edit " + ChatColor.DARK_GREEN + kit.getDisplayName());
                     
                     inventory.setContents(kit.getEditorItems());
                     event.getWhoClicked().getInventory().setContents(playerData.getProfile().getStats(kit).getKitLayoutItems() == null ? kit.getItems() : playerData.getProfile().getStats(kit).getKitLayoutItems());

@@ -7,6 +7,7 @@ package com.emeraldnetwork.emeraldPractice.commands;
 import com.emeraldnetwork.emeraldPractice.player.PlayerData;
 import com.emeraldnetwork.emeraldPractice.player.PlayerManager;
 import com.emeraldnetwork.emeraldPractice.player.PlayerState;
+import com.emeraldnetwork.emeraldPractice.utils.GuiUtils;
 import com.emeraldnetwork.emeraldPractice.utils.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -31,7 +32,7 @@ public class SettingsCommand implements CommandExecutor{
             return false;
         }
         
-        Inventory inventory = Bukkit.createInventory(player, 18, ChatColor.GRAY + "Settings");
+        Inventory inventory = GuiUtils.createInventoryWithBorder(player, 36, ChatColor.DARK_GREEN + "Settings");
         
         ItemStack receiveMessages = ItemUtils.createItem(Material.BOOK_AND_QUILL, 1, ChatColor.RESET + "" + ChatColor.DARK_GREEN + ChatColor.BOLD + "Receive Messages",
                 ChatColor.GRAY + "Allow people to send you private messages",

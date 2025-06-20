@@ -148,4 +148,8 @@ public final class ItemUtils{
     public static ItemStack createGoldenHead(){
         return createItem(Material.GOLDEN_APPLE, 1, ChatColor.GOLD + "Golden Head");
     }
+    
+    public static ItemStack createFillerItem(){
+        return createItem(Material.STAINED_GLASS_PANE, 1, (short) 7, " ");
+    }
 }
