@@ -49,13 +49,12 @@ public class DatabaseManager{
                         "allow_spectators, " +
                         "score_board, " +
                         "global_chat, " +
-                        "edit_mode, " +
                         "player_weather, " +
                         "player_time, " +
                         "ping_range, " +
                         "win_streak, " +
                         "kit_datas) " +
-                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?::weather_type, ?, ?, ?, ?::jsonb) " +
+                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?::weather_type, ?, ?, ?, ?::jsonb) " +
                         "ON CONFLICT (player_uuid) DO UPDATE SET " +
                         "receive_messages = EXCLUDED.receive_messages, " +
                         "message_sounds = EXCLUDED.message_sounds, " +
@@ -64,7 +63,6 @@ public class DatabaseManager{
                         "allow_spectators = EXCLUDED.allow_spectators, " +
                         "score_board = EXCLUDED.score_board, " +
                         "global_chat = EXCLUDED.global_chat, " +
-                        "edit_mode = EXCLUDED.edit_mode, " +
                         "player_weather = EXCLUDED.player_weather, " +
                         "player_time = EXCLUDED.player_time," +
                         "ping_range = EXCLUDED.ping_range, " +
@@ -83,12 +81,11 @@ public class DatabaseManager{
             statement.setBoolean(6, playerProfile.isAllowSpectators());
             statement.setBoolean(7, playerProfile.isScoreBoard());
             statement.setBoolean(8, playerProfile.isGlobalChat());
-            statement.setBoolean(9, playerProfile.isEditMode());
-            statement.setString(10, playerProfile.getPlayerWeather().name().toLowerCase());
-            statement.setInt(11, playerProfile.getPlayerTime());
-            statement.setInt(12, playerProfile.getPingRange());
-            statement.setInt(13, playerProfile.getWinstreak());
-            statement.setString(14, GSON.toJson(playerProfile.getKitDataList()));
+            statement.setString(9, playerProfile.getPlayerWeather().name().toLowerCase());
+            statement.setInt(10, playerProfile.getPlayerTime());
+            statement.setInt(11, playerProfile.getPingRange());
+            statement.setInt(12, playerProfile.getWinstreak());
+            statement.setString(13, GSON.toJson(playerProfile.getKitDataList()));
             
             statement.executeUpdate();
             
@@ -119,7 +116,6 @@ public class DatabaseManager{
                 playerProfile.setAllowSpectators(resultSet.getBoolean("allow_spectators"));
                 playerProfile.setScoreBoard(resultSet.getBoolean("score_board"));
                 playerProfile.setGlobalChat(resultSet.getBoolean("global_chat"));
-                playerProfile.setEditMode(resultSet.getBoolean("edit_mode"));
                 playerProfile.setPlayerWeather(WeatherType.valueOf(resultSet.getString("player_weather").toUpperCase()));
                 playerProfile.setPlayerTime(resultSet.getInt("player_time"));
                 playerProfile.setPingRange(resultSet.getInt("ping_range"));
