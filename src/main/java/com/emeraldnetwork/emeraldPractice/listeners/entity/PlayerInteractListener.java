@@ -52,6 +52,7 @@ public class PlayerInteractListener implements Listener{
                         case "§7Settings (right click)" -> event.getPlayer().chat("/settings");
                         case "§cLeave Party §7(right click)" -> event.getPlayer().chat("/party leave");
                         case "§7Party List (right click)" -> event.getPlayer().chat("/party list");
+                        case "§Start a Party Fight (right click)" -> event.getPlayer().chat("/party fight");
                     }
                 }
             }

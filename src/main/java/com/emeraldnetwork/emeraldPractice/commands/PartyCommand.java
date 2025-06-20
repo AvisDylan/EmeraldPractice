@@ -112,7 +112,17 @@ public class PartyCommand implements CommandExecutor{
                 //TODO ADD PARTY DUELS
             }
             case "fight" -> {
-            
+                if(party == null){
+                    commandSender.sendMessage(ChatColor.RED + "You are not in a party!");
+                    return false;
+                }
+                
+                if(!party.getPartyLeader().equals(playerData)){
+                    commandSender.sendMessage(ChatColor.RED + "You are not the party leader!");
+                    return false;
+                }
+                
+                
             }
             case "promote" -> {
                 if(strings.length < 2){
