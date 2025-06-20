@@ -146,12 +146,6 @@ public final class ItemUtils{
     }
     
     public static ItemStack createGoldenHead(){
-        ItemStack goldenHead = new ItemStack(Material.GOLDEN_APPLE, 1);
-        ItemMeta itemMeta = goldenHead.getItemMeta();
-        
-        itemMeta.setDisplayName(ChatColor.GOLD + "Golden Head");
-        goldenHead.setItemMeta(itemMeta);
-        
-        return goldenHead;
+        return createItem(Material.GOLDEN_APPLE, 1, ChatColor.GOLD + "Golden Head");
     }
 }

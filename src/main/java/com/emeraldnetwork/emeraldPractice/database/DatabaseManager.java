@@ -34,9 +34,7 @@ public class DatabaseManager{
     }
     
     public static void savePlayerProfiles(){
-        PlayerManager.PLAYERS.forEach((uuid, playerData) -> {
-            savePlayerProfile(playerData.getProfile());
-        });
+        PlayerManager.PLAYERS.forEach((uuid, playerData) -> savePlayerProfile(playerData.getProfile()));
     }
     
     public static void savePlayerProfile(PlayerProfile playerProfile){
