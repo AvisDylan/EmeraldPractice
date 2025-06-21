@@ -4,12 +4,12 @@
 
 package com.emeraldnetwork.emeraldPractice.commands;
 
+import com.emeraldnetwork.emeraldPractice.misc.DeathEffect;
 import com.emeraldnetwork.emeraldPractice.player.PlayerData;
 import com.emeraldnetwork.emeraldPractice.player.PlayerManager;
 import com.emeraldnetwork.emeraldPractice.player.PlayerState;
 import com.emeraldnetwork.emeraldPractice.utils.GuiUtils;
 import com.emeraldnetwork.emeraldPractice.utils.ItemUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.WeatherType;
@@ -69,6 +69,16 @@ public class SettingsCommand implements CommandExecutor{
                 "",
                 (playerData.getProfile().isGlobalChat() ? ChatColor.DARK_GREEN + "Enabled" : ChatColor.GRAY + "Enabled"),
                 (!playerData.getProfile().isGlobalChat() ? ChatColor.DARK_GREEN + "Disabled" : ChatColor.GRAY + "Disabled"));
+        ItemStack partyRequests = ItemUtils.createItem(Material.NAME_TAG, 1, ChatColor.RESET + "" + ChatColor.DARK_GREEN + ChatColor.BOLD + "Party Requests",
+                ChatColor.GRAY + "Allow people to invite you to their party",
+                "",
+                (playerData.getProfile().isPartyInvites() ? ChatColor.DARK_GREEN + "Enabled" : ChatColor.GRAY + "Enabled"),
+                (!playerData.getProfile().isPartyInvites() ? ChatColor.DARK_GREEN + "Disabled" : ChatColor.GRAY + "Disabled"));
+        ItemStack partySounds = ItemUtils.createItem(Material.RECORD_8, 1, ChatColor.RESET + "" + ChatColor.DARK_GREEN + ChatColor.BOLD + "Party Sounds",
+                ChatColor.GRAY + "Play a sound when you receive a party invite",
+                "",
+                (playerData.getProfile().isPartySounds() ? ChatColor.DARK_GREEN + "Enabled" : ChatColor.GRAY + "Enabled"),
+                (!playerData.getProfile().isPartySounds() ? ChatColor.DARK_GREEN + "Disabled" : ChatColor.GRAY + "Disabled"));
         ItemStack playerWeather = ItemUtils.createItem(Material.SNOW_BALL, 1, ChatColor.RESET + "" + ChatColor.DARK_GREEN + ChatColor.BOLD + "Weather Type",
                 ChatColor.GRAY + "Customize what weather you see",
                 "",
@@ -81,6 +91,13 @@ public class SettingsCommand implements CommandExecutor{
                 (playerData.getProfile().getPlayerTime() == 6000 ? ChatColor.DARK_GREEN + "Noon" : ChatColor.GRAY + "Noon"),
                 (playerData.getProfile().getPlayerTime() == 12000 ? ChatColor.DARK_GREEN + "Sunset" : ChatColor.GRAY + "Sunset"),
                 (playerData.getProfile().getPlayerTime() == 18000 ? ChatColor.DARK_GREEN + "Midnight" : ChatColor.GRAY + "Midnight"));
+        ItemStack deathEffect = ItemUtils.createItem(Material.SKULL_ITEM, 1, ChatColor.RESET + "" + ChatColor.DARK_GREEN + ChatColor.BOLD + "Death Effect",
+                ChatColor.GRAY + "Customize the what animation to play when you kill another player",
+                "",
+                (playerData.getProfile().getDeathEffect() == DeathEffect.NONE ? ChatColor.DARK_GREEN + "None" : ChatColor.GRAY + "None"),
+                (playerData.getProfile().getDeathEffect() == DeathEffect.EXPLOSION ? ChatColor.DARK_GREEN + "Explosion" : ChatColor.GRAY + "Explosion"),
+                (playerData.getProfile().getDeathEffect() == DeathEffect.BLOOD ? ChatColor.DARK_GREEN + "Blood" : ChatColor.GRAY + "Blood"),
+                (playerData.getProfile().getDeathEffect() == DeathEffect.LIGHTNING ? ChatColor.DARK_GREEN + "Lightning" : ChatColor.GRAY + "Lightning"));
         ItemStack pingRange = ItemUtils.createItem(Material.STICK, 1, ChatColor.RESET + "" + ChatColor.DARK_GREEN + ChatColor.BOLD + "Ping Range",
                 ChatColor.GRAY + "Only queue people within the ping range of you",
                 "",
@@ -99,8 +116,11 @@ public class SettingsCommand implements CommandExecutor{
         inventory.addItem(allowSpectators);
         inventory.addItem(scoreBoard);
         inventory.addItem(globalChat);
+        inventory.addItem(partyRequests);
+        inventory.addItem(partySounds);
         inventory.addItem(playerWeather);
         inventory.addItem(playerTime);
+        inventory.addItem(deathEffect);
         inventory.addItem(pingRange);
         
         player.openInventory(inventory);

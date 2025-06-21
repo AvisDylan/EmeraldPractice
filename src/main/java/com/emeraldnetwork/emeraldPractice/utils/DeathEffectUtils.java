@@ -26,7 +26,7 @@ public final class DeathEffectUtils{
         switch(killerData.getProfile().getDeathEffect()){
             case BLOOD -> playBlood(killer, victim);
             case EXPLOSION -> playExplosion(killer, victim);
-            case LIGHTING -> playLightning(killer, victim);
+            case LIGHTNING -> playLightning(killer, victim);
         }
     }
     
