@@ -2,6 +2,7 @@ package com.emeraldnetwork.emeraldPractice.database;
 
 import com.emeraldnetwork.emeraldPractice.adapter.ItemStackAdapter;
 import com.emeraldnetwork.emeraldPractice.kit.KitManager;
+import com.emeraldnetwork.emeraldPractice.misc.DeathEffect;
 import com.emeraldnetwork.emeraldPractice.player.PlayerManager;
 import com.emeraldnetwork.emeraldPractice.profile.PlayerKitProfile;
 import com.emeraldnetwork.emeraldPractice.profile.PlayerProfile;
@@ -51,8 +52,11 @@ public class DatabaseManager{
                         "player_time, " +
                         "ping_range, " +
                         "win_streak, " +
+                        "party_requests, " +
+                        "party_sounds, " +
+                        "death_effects, " +
                         "kit_datas) " +
-                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?::weather_type, ?, ?, ?, ?::jsonb) " +
+                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?::weather_type, ?, ?, ?, ?, ?, ?::death_effect, ?::jsonb) " +
                         "ON CONFLICT (player_uuid) DO UPDATE SET " +
                         "receive_messages = EXCLUDED.receive_messages, " +
                         "message_sounds = EXCLUDED.message_sounds, " +
@@ -65,6 +69,9 @@ public class DatabaseManager{
                         "player_time = EXCLUDED.player_time," +
                         "ping_range = EXCLUDED.ping_range, " +
                         "win_streak = EXCLUDED.win_streak," +
+                        "party_requests = EXCLUDED.party_requests," +
+                        "party_sounds = EXCLUDED.party_sounds," +
+                        "death_effects = EXCLUDED.death_effects," +
                         "kit_datas = EXCLUDED.kit_datas;";
         long now = System.currentTimeMillis();
         
@@ -83,7 +90,10 @@ public class DatabaseManager{
             statement.setInt(10, playerProfile.getPlayerTime());
             statement.setInt(11, playerProfile.getPingRange());
             statement.setInt(12, playerProfile.getWinstreak());
-            statement.setString(13, GSON.toJson(playerProfile.getKitDataList()));
+            statement.setBoolean(13, playerProfile.isPartyInvites());
+            statement.setBoolean(14, playerProfile.isPartySounds());
+            statement.setString(15, playerProfile.getDeathEffect().name().toLowerCase());
+            statement.setString(16, GSON.toJson(playerProfile.getKitDataList()));
             
             statement.executeUpdate();
             
@@ -97,9 +107,7 @@ public class DatabaseManager{
         String code = "SELECT * FROM player_data WHERE player_uuid = ?";
         long now = System.currentTimeMillis();
         
-        try{
-            PreparedStatement statement = playerDatabase.prepareStatement(code);
-
+        try(PreparedStatement statement = playerDatabase.prepareStatement(code)){
             statement.setString(1, playerUuid.toString());
             
             ResultSet resultSet = statement.executeQuery();
@@ -117,7 +125,10 @@ public class DatabaseManager{
                 playerProfile.setPlayerWeather(WeatherType.valueOf(resultSet.getString("player_weather").toUpperCase()));
                 playerProfile.setPlayerTime(resultSet.getInt("player_time"));
                 playerProfile.setPingRange(resultSet.getInt("ping_range"));
-                playerProfile.setPlayerTime(resultSet.getInt("win_streak"));
+                playerProfile.setPartyInvites(resultSet.getBoolean("party_requests"));
+                playerProfile.setPartySounds(resultSet.getBoolean("party_sounds"));
+                playerProfile.setDeathEffect(DeathEffect.valueOf(resultSet.getString("death_effect").toUpperCase()));
+                playerProfile.setWinstreak(resultSet.getInt("win_streak"));
                 
                 String jsonKitDataList = resultSet.getString("kit_datas");
                 

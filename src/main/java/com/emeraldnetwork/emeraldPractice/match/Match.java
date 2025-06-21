@@ -9,10 +9,7 @@ import com.emeraldnetwork.emeraldPractice.player.PlayerManager;
 import com.emeraldnetwork.emeraldPractice.player.PlayerState;
 import com.emeraldnetwork.emeraldPractice.team.Team;
 import com.emeraldnetwork.emeraldPractice.team.TeamAssigner;
-import com.emeraldnetwork.emeraldPractice.utils.ArrayUtils;
-import com.emeraldnetwork.emeraldPractice.utils.FormatUtils;
-import com.emeraldnetwork.emeraldPractice.utils.SpawnPointUtils;
-import com.emeraldnetwork.emeraldPractice.utils.WebhookUtils;
+import com.emeraldnetwork.emeraldPractice.utils.*;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -223,7 +220,9 @@ public class Match implements Listener{
             
             MatchManager.INVENTORY_MAP.put(playerData.getUuid(), ArrayUtils.reverseArrayVertically(player.getInventory().getContents()));
             
-            player.playSound(player.getLocation(), Sound.FIREWORK_LARGE_BLAST, 1.0f, 1.0f);
+            if(getTeamSize() == 1)
+                DeathEffectUtils.playDeathEffect(playerData, getOtherTeam(playerData).getPlayerAtIndex(0));
+            
             player.sendMessage(ChatColor.RESET + "");
             player.sendMessage(ChatColor.RESET + "" + ChatColor.DARK_GREEN + ChatColor.BOLD +  "Match Results: " + net.md_5.bungee.api.ChatColor.GRAY + "(click name to view inventory)");
             player.sendMessage(ChatColor.RESET + "");
@@ -292,7 +291,7 @@ public class Match implements Listener{
         Player player = Bukkit.getPlayer(playerData.getUuid());
         Player killer = Bukkit.getPlayer(killData.getUuid());
         
-        Bukkit.getLogger().info(player.getDisplayName());
+        DeathEffectUtils.playDeathEffect(killData, playerData);
         
         if(teamOne.getPlayers().contains(playerData))
             player.teleport(new Location(activeMap.getWorld(), activeMap.getMap().getPlayerOneX(), activeMap.getMap().getPlayerOneY(), activeMap.getMap().getPlayerOneZ(), activeMap.getMap().getPlayerOneYaw(), activeMap.getMap().getPlayerOnePitch()));

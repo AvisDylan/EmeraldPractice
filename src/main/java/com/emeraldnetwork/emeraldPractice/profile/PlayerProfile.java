@@ -2,6 +2,7 @@ package com.emeraldnetwork.emeraldPractice.profile;
 
 import com.emeraldnetwork.emeraldPractice.kit.Kit;
 import com.emeraldnetwork.emeraldPractice.kit.KitManager;
+import com.emeraldnetwork.emeraldPractice.misc.DeathEffect;
 import com.emeraldnetwork.emeraldPractice.utils.MathUtils;
 import org.bukkit.WeatherType;
 
@@ -13,11 +14,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class PlayerProfile{
     
     private final UUID uuid;
-    private boolean receiveMessages = true, messageSounds = true, duelRequests = true, duelSounds = true, allowSpectators = true, scoreBoard = true, globalChat = true, editMode = false;
+    private boolean receiveMessages = true, messageSounds = true, duelRequests = true, duelSounds = true, allowSpectators = true, scoreBoard = true, globalChat = true, partyInvites = false, partySounds = false, editMode = false;
     private WeatherType playerWeather = WeatherType.CLEAR;
     private int pingRange = 200;
     private int playerTime = 0;
     private int winstreak = 0;
+    private DeathEffect deathEffect = DeathEffect.NONE;
     private final Map<String, PlayerKitProfile> kitDataList = new HashMap<>();
     
     public PlayerProfile(UUID uuid){
@@ -122,6 +124,30 @@ public class PlayerProfile{
     
     public Map<String, PlayerKitProfile> getKitDataList(){
         return kitDataList;
+    }
+    
+    public boolean isPartyInvites(){
+        return partyInvites;
+    }
+    
+    public void setPartyInvites(boolean partyInvites){
+        this.partyInvites = partyInvites;
+    }
+    
+    public boolean isPartySounds(){
+        return partySounds;
+    }
+    
+    public void setPartySounds(boolean partySounds){
+        this.partySounds = partySounds;
+    }
+    
+    public DeathEffect getDeathEffect(){
+        return deathEffect;
+    }
+    
+    public void setDeathEffect(DeathEffect deathEffect){
+        this.deathEffect = deathEffect;
     }
     
     public PlayerKitProfile getStats(Kit kit){

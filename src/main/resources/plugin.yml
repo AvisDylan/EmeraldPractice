@@ -6,6 +6,7 @@ prefix: Emerald
 authors: [Avis]
 description: uhh ye
 website: emerald-network.com
+depend: [ProtcolLib]
 commands:
   kit:
     description: edit kits
