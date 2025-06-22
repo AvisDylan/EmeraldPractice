@@ -22,6 +22,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.ArrayList;
 import java.util.List;
 
+//TODO FINISH LEADERBOARDS
 public class LeaderboardCommand implements CommandExecutor{
     
     @Override
