@@ -270,6 +270,7 @@ public class PartyCommand implements CommandExecutor{
                 
                 commandSender.sendMessage(ChatColor.GRAY + "You have accepted " + ChatColor.DARK_GREEN + target.getName() + ChatColor.GRAY + "'s party invite!");
                 targetParty.joinParty(playerData);
+                playerData.getPartyRequests().remove(partyInviteRequest);
             }
             case "announce" -> {
                 if(party == null){

@@ -10,6 +10,12 @@ import com.emeraldnetwork.emeraldPractice.profile.PlayerProfile;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.ReplaceOptions;
+import org.bson.Document;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.WeatherType;
@@ -20,20 +26,16 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class DatabaseManager{
-
-    private static Connection playerDatabase;
+    
+    private static MongoClient mongoClient;
+    private static MongoDatabase playerDatabase;
+    private static MongoCollection<Document> players;
     private static final Gson GSON = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().registerTypeAdapter(ItemStack.class, new ItemStackAdapter()).create();
-    private static final String PLAYERDATA_URL = "jdbc:postgresql://209.112.91.51:5432/player_datas",
-                                PLAYERDATA_USERNAME = "postgres",
-                                PLAYERDATA_PASSWORD = "!aosikop\"sdW2sd$";
 
-    public static void init() {
-        try{
-            Class.forName("org.postgresql.Driver");
-            playerDatabase = DriverManager.getConnection(PLAYERDATA_URL, PLAYERDATA_USERNAME, PLAYERDATA_PASSWORD);
-        }catch(SQLException | ClassNotFoundException e){
-            Bukkit.getLogger().severe(e.getMessage());
-        }
+    public static void init(){
+        mongoClient = MongoClients.create("mongodb://niceman:!aosikop\"sdW2sd$@209.112.91.51:27017");
+        playerDatabase = mongoClient.getDatabase("practice_data");
+        DatabaseManager.players = playerDatabase.getCollection("player_data");
     }
     
     public static void savePlayerProfiles(){
@@ -41,115 +43,103 @@ public class DatabaseManager{
     }
     
     public static void savePlayerProfile(PlayerProfile playerProfile){
-        String code = "INSERT INTO player_data (" +
-                        "player_uuid, " +
-                        "receive_messages, " +
-                        "message_sounds, " +
-                        "duel_requests, " +
-                        "duel_sounds, " +
-                        "allow_spectators, " +
-                        "score_board, " +
-                        "global_chat, " +
-                        "player_weather, " +
-                        "player_time, " +
-                        "ping_range, " +
-                        "win_streak, " +
-                        "party_requests, " +
-                        "party_sounds, " +
-                        "death_effect, " +
-                        "kit_datas) " +
-                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?::weather_type, ?, ?, ?, ?, ?, ?::death_effect, ?::jsonb) " +
-                        "ON CONFLICT (player_uuid) DO UPDATE SET " +
-                        "receive_messages = EXCLUDED.receive_messages, " +
-                        "message_sounds = EXCLUDED.message_sounds, " +
-                        "duel_requests = EXCLUDED.duel_requests, " +
-                        "duel_sounds = EXCLUDED.duel_sounds, " +
-                        "allow_spectators = EXCLUDED.allow_spectators, " +
-                        "score_board = EXCLUDED.score_board, " +
-                        "global_chat = EXCLUDED.global_chat, " +
-                        "player_weather = EXCLUDED.player_weather, " +
-                        "player_time = EXCLUDED.player_time," +
-                        "ping_range = EXCLUDED.ping_range, " +
-                        "win_streak = EXCLUDED.win_streak," +
-                        "party_requests = EXCLUDED.party_requests," +
-                        "party_sounds = EXCLUDED.party_sounds," +
-                        "death_effect = EXCLUDED.death_effect," +
-                        "kit_datas = EXCLUDED.kit_datas;";
         long now = System.currentTimeMillis();
+        Document filterDocument = new Document("player_uuid", playerProfile.getUuid().toString());
+        Document playerDocument = new Document("player_uuid", playerProfile.getUuid().toString())
+                .append("receive_messages", playerProfile.isReceiveMessages())
+                .append("message_sounds", playerProfile.isMessageSounds())
+                .append("duel_requests", playerProfile.isDuelRequests())
+                .append("duel_sounds", playerProfile.isDuelSounds())
+                .append("allow_spectators", playerProfile.isAllowSpectators())
+                .append("score_board", playerProfile.isScoreBoard())
+                .append("global_chat", playerProfile.isGlobalChat())
+                .append("player_weather", playerProfile.getPlayerWeather().name().toLowerCase())
+                .append("player_time", playerProfile.getPlayerTime())
+                .append("ping_range", playerProfile.getPingRange())
+                .append("win_streak", playerProfile.getWinstreak())
+                .append("party_requests", playerProfile.isPartyInvites())
+                .append("party_sounds", playerProfile.isPartySounds())
+                .append("death_effect", playerProfile.getDeathEffect().name().toLowerCase());
+        Document kitDataDocument = new Document();
         
-        try{
-            PreparedStatement statement = playerDatabase.prepareStatement(code);
-
-            statement.setString(1, playerProfile.getUuid().toString());
-            statement.setBoolean(2, playerProfile.isReceiveMessages());
-            statement.setBoolean(3, playerProfile.isMessageSounds());
-            statement.setBoolean(4, playerProfile.isDuelRequests());
-            statement.setBoolean(5, playerProfile.isDuelSounds());
-            statement.setBoolean(6, playerProfile.isAllowSpectators());
-            statement.setBoolean(7, playerProfile.isScoreBoard());
-            statement.setBoolean(8, playerProfile.isGlobalChat());
-            statement.setString(9, playerProfile.getPlayerWeather().name().toLowerCase());
-            statement.setInt(10, playerProfile.getPlayerTime());
-            statement.setInt(11, playerProfile.getPingRange());
-            statement.setInt(12, playerProfile.getWinstreak());
-            statement.setBoolean(13, playerProfile.isPartyInvites());
-            statement.setBoolean(14, playerProfile.isPartySounds());
-            statement.setString(15, playerProfile.getDeathEffect().name().toLowerCase());
-            statement.setString(16, GSON.toJson(playerProfile.getKitDataList()));
+        playerProfile.getKitDataList().forEach((key, playerKitProfile) -> {
+            Document kitProfileDocument = new Document()
+                    .append("elo", playerKitProfile.getElo())
+                    .append("rankedWins", playerKitProfile.getRankedWins())
+                    .append("rankedLosses", playerKitProfile.getRankedLosses())
+                    .append("unrankedWins", playerKitProfile.getUnrankedWins())
+                    .append("unrankedLosses", playerKitProfile.getUnrankedLosses())
+                    .append("winstreak", playerKitProfile.getWinstreak())
+                    .append("kills", playerKitProfile.getKills())
+                    .append("deaths", playerKitProfile.getDeaths())
+                    .append("kitLayoutItems", GSON.toJson(playerKitProfile.getKitLayoutItems()));
             
-            statement.executeUpdate();
-            
-            Bukkit.getLogger().info("Saved " + playerProfile.getUuid() + " profile in " + (System.currentTimeMillis() - now) + "ms!");
-        }catch (SQLException se){
-            se.printStackTrace();
-        }
+            kitDataDocument.append(key.getName(), kitProfileDocument);
+        });
+        
+        playerDocument.append("kit_datas", kitDataDocument);
+        
+        players.replaceOne(filterDocument, playerDocument, new ReplaceOptions().upsert(true));
+        
+        Bukkit.getLogger().info("Saved " + playerProfile.getUuid() + " profile in " + (System.currentTimeMillis() - now) + "ms!");
     }
 
     public static PlayerProfile loadPlayerProfile(UUID playerUuid){
-        String code = "SELECT * FROM player_data WHERE player_uuid = ?";
-        long now = System.currentTimeMillis();
+        Document resultDocument = players.find(new Document("player_uuid", playerUuid.toString())).first();
         
-        try(PreparedStatement statement = playerDatabase.prepareStatement(code)){
-            statement.setString(1, playerUuid.toString());
+        if(resultDocument != null){
+            long now = System.currentTimeMillis();
+            PlayerProfile playerProfile = new PlayerProfile(playerUuid);
             
-            ResultSet resultSet = statement.executeQuery();
+            playerProfile.setReceiveMessages(resultDocument.getBoolean("receive_messages", true));
+            playerProfile.setMessageSounds(resultDocument.getBoolean("message_sounds", true));
+            playerProfile.setDuelRequests(resultDocument.getBoolean("duel_requests", true));
+            playerProfile.setDuelSounds(resultDocument.getBoolean("duel_sounds", true));
+            playerProfile.setAllowSpectators(resultDocument.getBoolean("allow_spectators", true));
+            playerProfile.setScoreBoard(resultDocument.getBoolean("score_board", true));
+            playerProfile.setGlobalChat(resultDocument.getBoolean("global_chat", true));
+            playerProfile.setPlayerWeather(WeatherType.valueOf(resultDocument.getString("player_weather").toUpperCase()));
+            playerProfile.setPlayerTime(resultDocument.getInteger("player_time", 0));
+            playerProfile.setPingRange(resultDocument.getInteger("ping_range", 100));
+            playerProfile.setWinstreak(resultDocument.getInteger("win_streak", 0));
+            playerProfile.setPartyInvites(resultDocument.getBoolean("party_requests", true));
+            playerProfile.setPartySounds(resultDocument.getBoolean("party_sounds", true));
+            playerProfile.setDeathEffect(DeathEffect.valueOf(resultDocument.getString("death_effect").toUpperCase()));
             
-            if(resultSet.next()){
-                PlayerProfile playerProfile = new PlayerProfile(playerUuid);
+            Document kitDataDocument = resultDocument.get("kit_datas", Document.class);
+            
+            if(kitDataDocument != null){
+                Map<Kit, PlayerKitProfile> kitDataMap = new HashMap<>();
                 
-                playerProfile.setReceiveMessages(resultSet.getBoolean("receive_messages"));
-                playerProfile.setMessageSounds(resultSet.getBoolean("message_sounds"));
-                playerProfile.setDuelRequests(resultSet.getBoolean("duel_requests"));
-                playerProfile.setDuelSounds(resultSet.getBoolean("duel_sounds"));
-                playerProfile.setAllowSpectators(resultSet.getBoolean("allow_spectators"));
-                playerProfile.setScoreBoard(resultSet.getBoolean("score_board"));
-                playerProfile.setGlobalChat(resultSet.getBoolean("global_chat"));
-                playerProfile.setPlayerWeather(WeatherType.valueOf(resultSet.getString("player_weather").toUpperCase()));
-                playerProfile.setPlayerTime(resultSet.getInt("player_time"));
-                playerProfile.setPingRange(resultSet.getInt("ping_range"));
-                playerProfile.setPartyInvites(resultSet.getBoolean("party_requests"));
-                playerProfile.setPartySounds(resultSet.getBoolean("party_sounds"));
-                playerProfile.setDeathEffect(DeathEffect.valueOf(resultSet.getString("death_effect").toUpperCase()));
-                playerProfile.setWinstreak(resultSet.getInt("win_streak"));
-                
-                String jsonKitDataList = resultSet.getString("kit_datas");
-                
-                if(jsonKitDataList != null && !jsonKitDataList.isEmpty()){
-                    Map<String, PlayerKitProfile> kitDataList = GSON.fromJson(jsonKitDataList, new TypeToken<Map<String, PlayerKitProfile>>(){}.getType());
+                for(String kitName : kitDataDocument.keySet()){
+                    Document kitData = kitDataDocument.get(kitName, Document.class);
+                    Kit kit = KitManager.getKit(kitName);
                     
-                    kitDataList.keySet().removeIf(kitName -> KitManager.KITS.stream().noneMatch(kit -> kit.getName().equalsIgnoreCase(kitName)));
+                    if(kitData == null || kit == null)
+                        continue;
                     
-                    KitManager.KITS.forEach(kit -> kitDataList.putIfAbsent(kit.getName(), new PlayerKitProfile()));
+                    PlayerKitProfile playerKitProfile = new PlayerKitProfile();
                     
-                    playerProfile.getKitDataList().putAll(kitDataList);
+                    playerKitProfile.setElo(kitData.getDouble("elo"));
+                    playerKitProfile.setRankedWins(kitData.getInteger("rankedWins"));
+                    playerKitProfile.setRankedLosses(kitData.getInteger("rankedLosses"));
+                    playerKitProfile.setUnrankedWins(kitData.getInteger("unrankedWins"));
+                    playerKitProfile.setUnrankedLosses(kitData.getInteger("unrankedLosses"));
+                    playerKitProfile.setWinstreak(kitData.getInteger("winstreak"));
+                    playerKitProfile.setKills(kitData.getInteger("kills"));
+                    playerKitProfile.setDeaths(kitData.getInteger("deaths"));
+                    playerKitProfile.setKitLayoutItems(GSON.fromJson(kitData.getString("kitLayoutItems"), ItemStack[].class));
+                    
+                    kitDataMap.put(kit, playerKitProfile);
                 }
                 
-                Bukkit.getLogger().info("Loaded " + playerUuid + " profile in " + (System.currentTimeMillis() - now) + "ms!");
-                
-                return playerProfile;
+                kitDataMap.keySet().removeIf(kit -> KitManager.KITS.stream().noneMatch(kit1 -> kit1.getName().equalsIgnoreCase(kit.getName())));
+                playerProfile.getKitDataList().putAll(kitDataMap);
             }
-        }catch (SQLException se){
-            se.printStackTrace();
+            
+            Bukkit.getLogger().info("Loaded " + playerProfile.getUuid() + " profile in " + (System.currentTimeMillis() - now) + "ms!");
+            
+            return playerProfile;
         }
         
         Bukkit.getLogger().info("No player profile");
@@ -158,7 +148,8 @@ public class DatabaseManager{
     }
     
     public static List<String> getPlayers(Kit kit, boolean ranked){
-        String code = "SELECT * FROM player_data";
+        //TODO FINISH LEADERBOARDS
+        /*String code = "SELECT * FROM player_data";
         Map<String, Double> unsortedPlayers = new HashMap<>();
         
         try(PreparedStatement statement = playerDatabase.prepareStatement(code)){
@@ -191,6 +182,7 @@ public class DatabaseManager{
             se.printStackTrace();
         }
         
-        return unsortedPlayers.entrySet().stream().sorted(Map.Entry.comparingByValue(Comparator.reverseOrder())).map(Map.Entry::getKey).collect(Collectors.toList());
+        return unsortedPlayers.entrySet().stream().sorted(Map.Entry.comparingByValue(Comparator.reverseOrder())).map(Map.Entry::getKey).collect(Collectors.toList());*/
+        return null;
     }
 }

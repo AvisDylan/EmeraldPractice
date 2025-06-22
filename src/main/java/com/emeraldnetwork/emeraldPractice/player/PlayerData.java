@@ -36,7 +36,7 @@ public class PlayerData{
         if(loadedProfile == null){
             profile = new PlayerProfile(uuid);
             
-            KitManager.KITS.forEach(kit -> profile.getKitDataList().put(kit.getName(), new PlayerKitProfile()));
+            KitManager.KITS.forEach(kit -> profile.getKitDataList().put(kit, new PlayerKitProfile()));
         }else
             profile = loadedProfile;
     }

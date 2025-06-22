@@ -99,4 +99,36 @@ public class PlayerKitProfile{
     public void setKitLayoutItems(ItemStack[] kitLayoutItems){
         this.kitLayoutItems = kitLayoutItems;
     }
+    
+    public void setElo(double elo){
+        this.elo = elo;
+    }
+    
+    public void setRankedWins(int rankedWins){
+        this.rankedWins = rankedWins;
+    }
+    
+    public void setRankedLosses(int rankedLosses){
+        this.rankedLosses = rankedLosses;
+    }
+    
+    public void setUnrankedWins(int unrankedWins){
+        this.unrankedWins = unrankedWins;
+    }
+    
+    public void setUnrankedLosses(int unrankedLosses){
+        this.unrankedLosses = unrankedLosses;
+    }
+    
+    public void setWinstreak(int winstreak){
+        this.winstreak = winstreak;
+    }
+    
+    public void setDeaths(int deaths){
+        this.deaths = deaths;
+    }
+    
+    public void setKills(int kills){
+        this.kills = kills;
+    }
 }

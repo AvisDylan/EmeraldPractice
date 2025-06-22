@@ -14,13 +14,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class PlayerProfile{
     
     private final UUID uuid;
-    private boolean receiveMessages = true, messageSounds = true, duelRequests = true, duelSounds = true, allowSpectators = true, scoreBoard = true, globalChat = true, partyInvites = false, partySounds = false, editMode = false;
+    private boolean receiveMessages = true, messageSounds = true, duelRequests = true, duelSounds = true, allowSpectators = true, scoreBoard = true, globalChat = true, partyInvites = true, partySounds = true, editMode = false;
     private WeatherType playerWeather = WeatherType.CLEAR;
     private int pingRange = 200;
     private int playerTime = 0;
     private int winstreak = 0;
     private DeathEffect deathEffect = DeathEffect.NONE;
-    private final Map<String, PlayerKitProfile> kitDataList = new HashMap<>();
+    private final Map<Kit, PlayerKitProfile> kitDataList = new HashMap<>();
     
     public PlayerProfile(UUID uuid){
         this.uuid = uuid;
@@ -122,7 +122,7 @@ public class PlayerProfile{
         this.winstreak = winstreak;
     }
     
-    public Map<String, PlayerKitProfile> getKitDataList(){
+    public Map<Kit, PlayerKitProfile> getKitDataList(){
         return kitDataList;
     }
     
