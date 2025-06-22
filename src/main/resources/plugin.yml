@@ -55,3 +55,8 @@ commands:
       - ke
   goldenhead:
     description: give a golden head
+  leaderboards:
+    description: view leaderboards
+    aliases:
+      - lb
+      - leaderboard

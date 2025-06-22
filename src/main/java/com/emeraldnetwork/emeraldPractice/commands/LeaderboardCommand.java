@@ -39,21 +39,21 @@ public class LeaderboardCommand implements CommandExecutor{
             List<String> lore = new ArrayList<>();
             
             lore.add(ChatColor.translateAlternateColorCodes('&', "&2&lUnranked"));
-            lore.add(ChatColor.translateAlternateColorCodes('&', "&7Your Place In Leaderboards: &7" + kit.getPlaceInUnrankedLeaderboard(playerData)));
+            lore.add(ChatColor.translateAlternateColorCodes('&', "&7Your Place In Leaderboards: &71"));
             lore.add("");
             
             for(int i = 0; i < 10; i++){
-                lore.add(ChatColor.translateAlternateColorCodes('&', "&7#" + (i + 1) + ": &2" + (kit.getTopUnrankedPlayers().get(i) == null ? "None" : kit.getTopUnrankedPlayers().get(i))));
+                lore.add(ChatColor.translateAlternateColorCodes('&', "&7#" + (i + 1) + ": &2" + (kit.getTopUnrankedPlayers().get(i) == null ? "None" : kit.getTopUnrankedPlayers().get(i)) + "&7 - &21"));
             }
             
             if(kit.isRanked()){
                 lore.add("");
                 lore.add(ChatColor.translateAlternateColorCodes('&', "&2&lRanked"));
-                lore.add(ChatColor.translateAlternateColorCodes('&', "&7Your Place In Leaderboards: &7" + kit.getPlaceInRankedLeaderboard(playerData)));
+                lore.add(ChatColor.translateAlternateColorCodes('&', "&7Your Place In Leaderboards: &71"));
                 lore.add("");
                 
                 for(int i = 0; i < 10; i++){
-                    lore.add(ChatColor.translateAlternateColorCodes('&', "&7#" + (i + 1) + ": &2" + (kit.getTopUnrankedPlayers().get(i) == null ? "None" : kit.getTopUnrankedPlayers().get(i)) + "&7 - "));
+                    lore.add(ChatColor.translateAlternateColorCodes('&', "&7#" + (i + 1) + ": &2" + (kit.getTopUnrankedPlayers().get(i) == null ? "None" : kit.getTopUnrankedPlayers().get(i)) + "&7 - &21"));
                 }
             }
             
@@ -61,6 +61,8 @@ public class LeaderboardCommand implements CommandExecutor{
             itemStack.setItemMeta(itemMeta);
             inventory.addItem(itemStack);
         }
+        
+        player.openInventory(inventory);
         
         return true;
     }

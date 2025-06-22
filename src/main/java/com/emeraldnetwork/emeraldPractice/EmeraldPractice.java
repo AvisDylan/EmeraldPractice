@@ -58,6 +58,7 @@ public final class EmeraldPractice extends JavaPlugin{
         getCommand("kiteditor").setExecutor(new KitEditorCommand());
         getCommand("pc").setExecutor(new PcCommand());
         getCommand("goldenhead").setExecutor(new GoldenHeadCommand());
+        getCommand("leaderboards").setExecutor(new LeaderboardCommand());
         
         KitManager.KITS.forEach(kit -> Bukkit.getScheduler().runTaskTimer(this, () -> QueueManager.handleQueue(kit), 0L, 10L));
         Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> MultithreadedUtils.EXECUTOR_SERVICE.submit(() -> PlayerManager.PLAYERS.values().forEach(ScoreboardManager::updateBoard)), 0L, 10L);
