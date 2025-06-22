@@ -44,8 +44,8 @@ public class DatabaseManager{
     
     public static void savePlayerProfile(PlayerProfile playerProfile){
         long now = System.currentTimeMillis();
-        Document filterDocument = new Document("player_uuid", playerProfile.getUuid().toString());
-        Document playerDocument = new Document("player_uuid", playerProfile.getUuid().toString())
+        Document filterDocument = new Document("_id", playerProfile.getUuid().toString());
+        Document playerDocument = new Document("_id", playerProfile.getUuid().toString())
                 .append("receive_messages", playerProfile.isReceiveMessages())
                 .append("message_sounds", playerProfile.isMessageSounds())
                 .append("duel_requests", playerProfile.isDuelRequests())
@@ -85,7 +85,7 @@ public class DatabaseManager{
     }
 
     public static PlayerProfile loadPlayerProfile(UUID playerUuid){
-        Document resultDocument = players.find(new Document("player_uuid", playerUuid.toString())).first();
+        Document resultDocument = players.find(new Document("_id", playerUuid.toString())).first();
         
         if(resultDocument != null){
             long now = System.currentTimeMillis();
