@@ -78,12 +78,11 @@ public class PlayerData{
     }
     
     public DuelRequest getDuelRequest(PlayerData playerData){
-        for(DuelRequest duelRequest : duelRequests){
-            if(duelRequest.getSender().equals(playerData))
-                return duelRequest;
-        }
-        
-        return null;
+        return duelRequests.stream().filter(duelRequest -> duelRequest.getSender().equals(playerData)).findFirst().orElse(null);
+    }
+    
+    public PartyInviteRequest getPartyInviteRequest(PlayerData playerData){
+        return partyRequests.stream().filter(partyRequest -> partyRequest.getSender().equals(playerData)).findFirst().orElse(null);
     }
     
     public void resetProfile(){

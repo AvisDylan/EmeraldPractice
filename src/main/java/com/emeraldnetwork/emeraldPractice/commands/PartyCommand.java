@@ -1,6 +1,7 @@
 package com.emeraldnetwork.emeraldPractice.commands;
 
 import com.emeraldnetwork.emeraldPractice.party.Party;
+import com.emeraldnetwork.emeraldPractice.party.PartyInviteRequest;
 import com.emeraldnetwork.emeraldPractice.party.PartyManager;
 import com.emeraldnetwork.emeraldPractice.player.PlayerData;
 import com.emeraldnetwork.emeraldPractice.player.PlayerManager;
@@ -223,7 +224,52 @@ public class PartyCommand implements CommandExecutor{
                 }
                 
                 commandSender.sendMessage(ChatColor.GRAY + "You have invited " + ChatColor.DARK_GREEN + target.getName() + ChatColor.GRAY + " to the party!");
-                //party.setPartyLeader(targetData);
+                targetData.getPartyRequests().add(new PartyInviteRequest(playerData, targetData));
+            }
+            case "accept" -> {
+                if(strings.length < 2){
+                    commandSender.sendMessage(ChatColor.RED + " Invalid arguments!");
+                    return false;
+                }
+                
+                if(party != null){
+                    commandSender.sendMessage(ChatColor.RED + "You are already in a party!");
+                    return false;
+                }
+                
+                Player target = Bukkit.getPlayer(strings[1]);
+                
+                if(target == null){
+                    commandSender.sendMessage(ChatColor.RED + strings[1] + " is not a valid player!");
+                    return false;
+                }
+                
+                PlayerData targetData = PlayerManager.getPlayerData(target.getUniqueId());
+                Party targetParty = PartyManager.getPlayerParty(playerData);
+                PartyInviteRequest partyInviteRequest = playerData.getPartyInviteRequest(targetData);
+                
+                if(targetParty == null){
+                    commandSender.sendMessage(ChatColor.RED + target.getName() + " does not have a party!");
+                    return false;
+                }
+                
+                if(partyInviteRequest == null){
+                    commandSender.sendMessage(ChatColor.RED + "You do not have a party request from " + target.getName() + "!");
+                    return false;
+                }
+                
+                if(targetData.equals(playerData)){
+                    commandSender.sendMessage(ChatColor.RED + "You can't accept yourself!");
+                    return false;
+                }
+                
+                if(targetData.getPlayerState() != PlayerState.SPAWN){
+                    commandSender.sendMessage(ChatColor.RED + target.getName() + " is not at spawn!");
+                    return false;
+                }
+                
+                commandSender.sendMessage(ChatColor.GRAY + "You have accepted " + ChatColor.DARK_GREEN + target.getName() + ChatColor.GRAY + "'s party invite!");
+                targetParty.joinParty(playerData);
             }
             case "announce" -> {
                 if(party == null){
