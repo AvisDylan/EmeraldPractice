@@ -4,6 +4,7 @@ import com.emeraldnetwork.emeraldPractice.duel.DuelRequest;
 import com.emeraldnetwork.emeraldPractice.kit.Kit;
 import com.emeraldnetwork.emeraldPractice.kit.KitManager;
 import com.emeraldnetwork.emeraldPractice.map.Map;
+import com.emeraldnetwork.emeraldPractice.misc.DeathEffect;
 import com.emeraldnetwork.emeraldPractice.player.PlayerData;
 import com.emeraldnetwork.emeraldPractice.player.PlayerManager;
 import com.emeraldnetwork.emeraldPractice.utils.GuiUtils;
@@ -161,6 +162,26 @@ public class InventoryClickListener implements Listener{
                         
                         itemMeta.setLore(lore);
                         item.setItemMeta(itemMeta);
+                    }else if(itemName.equalsIgnoreCase(ChatColor.RESET + "" + ChatColor.DARK_GREEN + ChatColor.BOLD + "Party Requests")){
+                        playerData.getProfile().setPartyInvites(!playerData.getProfile().isPartyInvites());
+                        
+                        List<String> lore = List.of(ChatColor.GRAY + "Allow people to invite you to their party",
+                                "",
+                                (playerData.getProfile().isPartyInvites() ? ChatColor.DARK_GREEN + "Enabled" : ChatColor.GRAY + "Enabled"),
+                                (!playerData.getProfile().isPartyInvites() ? ChatColor.DARK_GREEN + "Disabled" : ChatColor.GRAY + "Disabled"));
+                        
+                        itemMeta.setLore(lore);
+                        item.setItemMeta(itemMeta);
+                    }else if(itemName.equalsIgnoreCase(ChatColor.RESET + "" + ChatColor.DARK_GREEN + ChatColor.BOLD + "Party Sounds")){
+                        playerData.getProfile().setPartySounds(!playerData.getProfile().isPartySounds());
+                        
+                        List<String> lore = List.of(ChatColor.GRAY + "Play a sound when you receive a party invite",
+                                "",
+                                (playerData.getProfile().isPartySounds() ? ChatColor.DARK_GREEN + "Enabled" : ChatColor.GRAY + "Enabled"),
+                                (!playerData.getProfile().isPartySounds() ? ChatColor.DARK_GREEN + "Disabled" : ChatColor.GRAY + "Disabled"));
+                        
+                        itemMeta.setLore(lore);
+                        item.setItemMeta(itemMeta);
                     }else if(itemName.equalsIgnoreCase(ChatColor.RESET + "" + ChatColor.DARK_GREEN + ChatColor.BOLD + "Weather Type")){
                         playerData.getProfile().setPlayerWeather(playerData.getProfile().getPlayerWeather() == WeatherType.CLEAR ? WeatherType.DOWNFALL : WeatherType.CLEAR);
                         
@@ -183,6 +204,26 @@ public class InventoryClickListener implements Listener{
                                 (playerData.getProfile().getPlayerTime() == 18000 ? ChatColor.DARK_GREEN + "Midnight" : ChatColor.GRAY + "Midnight"));
                         
                         ((Player) event.getWhoClicked()).setPlayerTime(playerData.getProfile().getPlayerTime(), false);
+                        itemMeta.setLore(lore);
+                        item.setItemMeta(itemMeta);
+                    }else if(itemName.equalsIgnoreCase(ChatColor.RESET + "" + ChatColor.DARK_GREEN + ChatColor.BOLD + "Death Effect")){
+                        if(playerData.getProfile().getDeathEffect() == DeathEffect.NONE)
+                            playerData.getProfile().setDeathEffect(DeathEffect.EXPLOSION);
+                        else if(playerData.getProfile().getDeathEffect() == DeathEffect.EXPLOSION)
+                            playerData.getProfile().setDeathEffect(DeathEffect.BLOOD);
+                        else if(playerData.getProfile().getDeathEffect() == DeathEffect.BLOOD)
+                            playerData.getProfile().setDeathEffect(DeathEffect.LIGHTNING);
+                        else
+                            playerData.getProfile().setDeathEffect(DeathEffect.NONE);
+                        
+                        List<String> lore = List.of(ChatColor.GRAY + "Customize the what animation to play when you kill another player",
+                                "",
+                                (playerData.getProfile().getDeathEffect() == DeathEffect.NONE ? ChatColor.DARK_GREEN + "None" : ChatColor.GRAY + "None"),
+                                (playerData.getProfile().getDeathEffect() == DeathEffect.EXPLOSION ? ChatColor.DARK_GREEN + "Explosion" : ChatColor.GRAY + "Explosion"),
+                                (playerData.getProfile().getDeathEffect() == DeathEffect.BLOOD ? ChatColor.DARK_GREEN + "Blood" : ChatColor.GRAY + "Blood"),
+                                (playerData.getProfile().getDeathEffect() == DeathEffect.LIGHTNING ? ChatColor.DARK_GREEN + "Lightning" : ChatColor.GRAY + "Lightning"));
+                        
+                        ((Player) event.getWhoClicked()).setPlayerWeather(playerData.getProfile().getPlayerWeather());
                         itemMeta.setLore(lore);
                         item.setItemMeta(itemMeta);
                     }else if(itemName.equalsIgnoreCase(ChatColor.RESET + "" + ChatColor.DARK_GREEN + ChatColor.BOLD + "Ping Range")){

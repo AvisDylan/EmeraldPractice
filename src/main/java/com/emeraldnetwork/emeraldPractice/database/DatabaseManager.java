@@ -54,7 +54,7 @@ public class DatabaseManager{
                         "win_streak, " +
                         "party_requests, " +
                         "party_sounds, " +
-                        "death_effects, " +
+                        "death_effect, " +
                         "kit_datas) " +
                         "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?::weather_type, ?, ?, ?, ?, ?, ?::death_effect, ?::jsonb) " +
                         "ON CONFLICT (player_uuid) DO UPDATE SET " +
@@ -71,7 +71,7 @@ public class DatabaseManager{
                         "win_streak = EXCLUDED.win_streak," +
                         "party_requests = EXCLUDED.party_requests," +
                         "party_sounds = EXCLUDED.party_sounds," +
-                        "death_effects = EXCLUDED.death_effects," +
+                        "death_effect = EXCLUDED.death_effect," +
                         "kit_datas = EXCLUDED.kit_datas;";
         long now = System.currentTimeMillis();
         

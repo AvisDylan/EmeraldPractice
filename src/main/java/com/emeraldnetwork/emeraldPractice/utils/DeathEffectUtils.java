@@ -13,6 +13,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collections;
 
 public final class DeathEffectUtils{
     
@@ -36,6 +37,7 @@ public final class DeathEffectUtils{
         packetContainer.getDoubles().write(0, victim.getLocation().getX());
         packetContainer.getDoubles().write(1, victim.getLocation().getY());
         packetContainer.getDoubles().write(2, victim.getLocation().getZ());
+        packetContainer.getBlockPositionCollectionModifier().write(0, Collections.emptyList());
         packetContainer.getFloat().write(0, 4.0f);
         
         try{
@@ -48,7 +50,7 @@ public final class DeathEffectUtils{
     private static void playLightning(Player killer, Player victim){
         PacketContainer packetContainer = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.SPAWN_ENTITY_WEATHER);
         
-        packetContainer.getIntegers().write(0, 128);
+        packetContainer.getIntegers().write(0, (int) (Math.random() * Integer.MAX_VALUE));
         packetContainer.getIntegers().write(1, 1);
         packetContainer.getDoubles().write(0, victim.getLocation().getX());
         packetContainer.getDoubles().write(1, victim.getLocation().getY());
@@ -62,7 +64,9 @@ public final class DeathEffectUtils{
     }
     
     private static void playBlood(Player killer, Player victim){
-        PacketContainer packetContainer = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.SPAWN_ENTITY_WEATHER);
+        //TODO ADD BLOOD
+        
+        /*PacketContainer packetContainer = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.SPAWN_ENTITY_WEATHER);
         
         packetContainer.getIntegers().write(0, 128);
         packetContainer.getIntegers().write(1, 1);
@@ -74,6 +78,6 @@ public final class DeathEffectUtils{
             ProtocolLibrary.getProtocolManager().sendServerPacket(killer, packetContainer);
         }catch(InvocationTargetException ite){
             Bukkit.getLogger().severe(ite.getMessage());
-        }
+        }*/
     }
 }
