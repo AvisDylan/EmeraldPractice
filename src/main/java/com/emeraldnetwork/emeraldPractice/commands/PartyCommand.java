@@ -218,7 +218,7 @@ public class PartyCommand implements CommandExecutor{
                 }
                 
                 commandSender.sendMessage(ChatColor.GRAY + "You have invited " + ChatColor.DARK_GREEN + target.getName() + ChatColor.GRAY + " to the party leader!");
-                party.setPartyLeader(targetData);
+                //party.setPartyLeader(targetData);
             }
             case "announce" -> {
                 if(party == null){

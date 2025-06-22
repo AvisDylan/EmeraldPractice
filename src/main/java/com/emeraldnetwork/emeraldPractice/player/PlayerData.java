@@ -3,6 +3,7 @@ package com.emeraldnetwork.emeraldPractice.player;
 import com.emeraldnetwork.emeraldPractice.database.DatabaseManager;
 import com.emeraldnetwork.emeraldPractice.duel.DuelRequest;
 import com.emeraldnetwork.emeraldPractice.kit.KitManager;
+import com.emeraldnetwork.emeraldPractice.party.PartyInviteRequest;
 import com.emeraldnetwork.emeraldPractice.profile.PlayerKitProfile;
 import com.emeraldnetwork.emeraldPractice.profile.PlayerProfile;
 import fr.mrmicky.fastboard.FastBoard;
@@ -23,6 +24,7 @@ public class PlayerData{
     private DuelRequest tempRequest;
     private final FastBoard fastBoard;
     private final List<DuelRequest> duelRequests = new LinkedList<>();
+    private final List<PartyInviteRequest> partyRequests = new LinkedList<>();
     
     public PlayerData(UUID uuid){
         this.uuid = uuid;
@@ -102,6 +104,10 @@ public class PlayerData{
             Bukkit.getLogger().warning(e.getMessage());
             return -1;
         }
+    }
+    
+    public List<PartyInviteRequest> getPartyRequests(){
+        return partyRequests;
     }
     
     @Override

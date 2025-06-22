@@ -4,6 +4,7 @@
 
 package com.emeraldnetwork.emeraldPractice.party;
 
+import com.emeraldnetwork.emeraldPractice.duel.DuelRequest;
 import com.emeraldnetwork.emeraldPractice.player.PlayerData;
 import com.emeraldnetwork.emeraldPractice.player.PlayerManager;
 import com.emeraldnetwork.emeraldPractice.player.PlayerState;
@@ -22,8 +23,10 @@ import java.util.List;
 public class Party{
     
     private PlayerData partyLeader;
+    private PartyDuelRequest tempPartyDuelRequest;
     private final List<PlayerData> players = new LinkedList<>();
     private boolean priv = true;
+    private final List<PartyDuelRequest> duelRequests = new LinkedList<>();
     
     public Party(PlayerData partyLeader){
         this.partyLeader = partyLeader;
@@ -108,6 +111,18 @@ public class Party{
             
             player.spigot().sendMessage(base);
         }
+    }
+    
+    public PartyDuelRequest getTempPartyDuelRequest(){
+        return tempPartyDuelRequest;
+    }
+    
+    public void setTempPartyDuelRequest(PartyDuelRequest tempPartyDuelRequest){
+        this.tempPartyDuelRequest = tempPartyDuelRequest;
+    }
+    
+    public List<PartyDuelRequest> getDuelRequests(){
+        return duelRequests;
     }
     
     public PlayerData getPartyLeader(){
