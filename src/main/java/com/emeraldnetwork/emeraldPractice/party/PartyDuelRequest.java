@@ -52,7 +52,7 @@ public class PartyDuelRequest{
         
         TextComponent acceptComponent = new TextComponent(ChatColor.RESET + "" + ChatColor.DARK_GREEN + ChatColor.BOLD + "(Accept)");
         
-        acceptComponent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/party accept " + senderPlayer.getName()));
+        acceptComponent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/party duel accept " + senderPlayer.getName()));
         acceptComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new BaseComponent[]{ new TextComponent(ChatColor.GRAY + "Click to accept") }));
         receiverPlayer.spigot().sendMessage(acceptComponent);
         receiverPlayer.sendMessage(ChatColor.RESET + "");

@@ -207,6 +207,11 @@ public class PartyCommand implements CommandExecutor{
                     return false;
                 }
                 
+                if(targetData.getProfile().isPartyInvites()){
+                    commandSender.sendMessage(ChatColor.RED + target.getName() + " is not accepting party invites!");
+                    return false;
+                }
+                
                 if(targetData.getPlayerState() != PlayerState.SPAWN){
                     commandSender.sendMessage(ChatColor.RED + target.getName() + " is not at spawn!");
                     return false;
@@ -217,7 +222,7 @@ public class PartyCommand implements CommandExecutor{
                     return false;
                 }
                 
-                commandSender.sendMessage(ChatColor.GRAY + "You have invited " + ChatColor.DARK_GREEN + target.getName() + ChatColor.GRAY + " to the party leader!");
+                commandSender.sendMessage(ChatColor.GRAY + "You have invited " + ChatColor.DARK_GREEN + target.getName() + ChatColor.GRAY + " to the party!");
                 //party.setPartyLeader(targetData);
             }
             case "announce" -> {
