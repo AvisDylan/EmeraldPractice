@@ -60,10 +60,19 @@ public final class EmeraldPractice extends JavaPlugin{
         getCommand("goldenhead").setExecutor(new GoldenHeadCommand());
         
         KitManager.KITS.forEach(kit -> Bukkit.getScheduler().runTaskTimer(this, () -> QueueManager.handleQueue(kit), 0L, 10L));
-        
         Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> MultithreadedUtils.EXECUTOR_SERVICE.submit(() -> PlayerManager.PLAYERS.values().forEach(ScoreboardManager::updateBoard)), 0L, 10L);
-        
         Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> MultithreadedUtils.EXECUTOR_SERVICE.submit(DatabaseManager::savePlayerProfiles), 12000L, 12000L);
+        Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> {
+            KitManager.KITS.forEach(kit -> {
+                MultithreadedUtils.EXECUTOR_SERVICE.submit(() -> {
+                    kit.getTopRankedPlayers().clear();
+                    kit.getTopUnrankedPlayers().clear();
+                    
+                    kit.getTopUnrankedPlayers().addAll(DatabaseManager.getPlayers(kit, false));
+                    kit.getTopRankedPlayers().addAll(DatabaseManager.getPlayers(kit, true));
+                });
+            });
+        }, 0L, 12000L);
     }
     
     @Override

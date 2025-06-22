@@ -1,6 +1,7 @@
 package com.emeraldnetwork.emeraldPractice.database;
 
 import com.emeraldnetwork.emeraldPractice.adapter.ItemStackAdapter;
+import com.emeraldnetwork.emeraldPractice.kit.Kit;
 import com.emeraldnetwork.emeraldPractice.kit.KitManager;
 import com.emeraldnetwork.emeraldPractice.misc.DeathEffect;
 import com.emeraldnetwork.emeraldPractice.player.PlayerManager;
@@ -10,12 +11,13 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.WeatherType;
 import org.bukkit.inventory.ItemStack;
 
 import java.sql.*;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class DatabaseManager{
 
@@ -153,5 +155,42 @@ public class DatabaseManager{
         Bukkit.getLogger().info("No player profile");
         
         return null;
+    }
+    
+    public static List<String> getPlayers(Kit kit, boolean ranked){
+        String code = "SELECT * FROM player_data";
+        Map<String, Double> unsortedPlayers = new HashMap<>();
+        
+        try(PreparedStatement statement = playerDatabase.prepareStatement(code)){
+            ResultSet resultSet = statement.executeQuery();
+            
+            while(resultSet.next()){
+                String jsonKitDataList = resultSet.getString("kit_datas");
+                String uuid = resultSet.getString("player_uuid");
+                
+                if(jsonKitDataList.isEmpty())
+                    continue;
+                
+                Map<String, PlayerKitProfile> kitDataList = GSON.fromJson(jsonKitDataList, new TypeToken<Map<String, PlayerKitProfile>>(){}.getType());
+                kitDataList.keySet().removeIf(kitName -> KitManager.KITS.stream().noneMatch(kit1 -> kit1.getName().equalsIgnoreCase(kitName)));
+                
+                if(!kitDataList.containsKey(kit.getName()))
+                    continue;
+                
+                OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(uuid));
+                
+                if(offlinePlayer == null)
+                    continue;
+                
+                if(ranked)
+                    unsortedPlayers.put(offlinePlayer.getName(), kitDataList.get(kit.getName()).getElo());
+                else
+                    unsortedPlayers.put(offlinePlayer.getName(), (double) kitDataList.get(kit.getName()).getUnrankedWins());
+            }
+        }catch (SQLException se){
+            se.printStackTrace();
+        }
+        
+        return unsortedPlayers.entrySet().stream().sorted(Map.Entry.comparingByValue(Comparator.reverseOrder())).map(Map.Entry::getKey).collect(Collectors.toList());
     }
 }
