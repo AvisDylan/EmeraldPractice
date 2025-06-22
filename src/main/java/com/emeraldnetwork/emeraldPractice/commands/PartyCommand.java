@@ -201,14 +201,14 @@ public class PartyCommand implements CommandExecutor{
                 }
                 
                 PlayerData targetData = PlayerManager.getPlayerData(target.getUniqueId());
-                Party targetParty = PartyManager.getPlayerParty(playerData);
+                Party targetParty = PartyManager.getPlayerParty(targetData);
                 
                 if(targetData.equals(playerData)){
                     commandSender.sendMessage(ChatColor.RED + "You can't invite yourself!");
                     return false;
                 }
                 
-                if(targetData.getProfile().isPartyInvites()){
+                if(!targetData.getProfile().isPartyInvites()){
                     commandSender.sendMessage(ChatColor.RED + target.getName() + " is not accepting party invites!");
                     return false;
                 }
@@ -245,7 +245,7 @@ public class PartyCommand implements CommandExecutor{
                 }
                 
                 PlayerData targetData = PlayerManager.getPlayerData(target.getUniqueId());
-                Party targetParty = PartyManager.getPlayerParty(playerData);
+                Party targetParty = PartyManager.getPlayerParty(targetData);
                 PartyInviteRequest partyInviteRequest = playerData.getPartyInviteRequest(targetData);
                 
                 if(targetParty == null){
