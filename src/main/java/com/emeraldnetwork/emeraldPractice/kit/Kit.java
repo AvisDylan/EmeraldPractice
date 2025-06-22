@@ -2,9 +2,11 @@ package com.emeraldnetwork.emeraldPractice.kit;
 
 import com.emeraldnetwork.emeraldPractice.map.Map;
 import com.emeraldnetwork.emeraldPractice.math.BoundingBox;
+import com.emeraldnetwork.emeraldPractice.player.PlayerData;
 import com.emeraldnetwork.emeraldPractice.player.PlayerManager;
 import com.emeraldnetwork.emeraldPractice.profile.PlayerKitProfile;
 import com.google.gson.annotations.Expose;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -374,5 +376,17 @@ public class Kit{
     
     public List<String> getTopRankedPlayers(){
         return topRankedPlayers;
+    }
+    
+    public int getPlaceInUnrankedLeaderboard(PlayerData playerData){
+        Player player = Bukkit.getPlayer(playerData.getUuid());
+        
+        return topUnrankedPlayers.indexOf(player.getName());
+    }
+    
+    public int getPlaceInRankedLeaderboard(PlayerData playerData){
+        Player player = Bukkit.getPlayer(playerData.getUuid());
+        
+        return topRankedPlayers.indexOf(player.getName());
     }
 }
