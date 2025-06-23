@@ -20,7 +20,7 @@ public class PlayerProfile{
     private int playerTime = 0;
     private int winstreak = 0;
     private DeathEffect deathEffect = DeathEffect.NONE;
-    private final Map<Kit, PlayerKitProfile> kitDataList = new HashMap<>();
+    private final Map<String, PlayerKitProfile> kitDataList = new HashMap<>();
     
     public PlayerProfile(UUID uuid){
         this.uuid = uuid;
@@ -122,7 +122,7 @@ public class PlayerProfile{
         this.winstreak = winstreak;
     }
     
-    public Map<Kit, PlayerKitProfile> getKitDataList(){
+    public Map<String, PlayerKitProfile> getKitDataList(){
         return kitDataList;
     }
     
