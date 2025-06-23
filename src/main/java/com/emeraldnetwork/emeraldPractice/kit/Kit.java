@@ -97,7 +97,7 @@ public class Kit{
     }
     
     public void applyKit(Player player){
-        PlayerKitProfile playerKitProfile = PlayerManager.getPlayerData(player.getUniqueId()).getProfile().getStats(this);
+        PlayerKitProfile playerKitProfile = PlayerManager.getPlayerData(player.getUniqueId()).getProfile().getKitProfile(this);
         
         player.getInventory().clear();
         player.getInventory().setArmorContents(null);

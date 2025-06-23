@@ -8,7 +8,6 @@ import com.emeraldnetwork.emeraldPractice.kit.Kit;
 import com.emeraldnetwork.emeraldPractice.kit.KitManager;
 import com.emeraldnetwork.emeraldPractice.player.PlayerData;
 import com.emeraldnetwork.emeraldPractice.player.PlayerManager;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -30,7 +29,7 @@ public class InventoryCloseListener implements Listener{
                     String kitName = ChatColor.stripColor(event.getInventory().getTitle().substring(7));
                     Kit kit = KitManager.getKit(kitName);
                     
-                    playerData.getProfile().getStats(kit).setKitLayoutItems(event.getPlayer().getInventory().getContents());
+                    playerData.getProfile().getKitProfile(kit).setKitLayoutItems(event.getPlayer().getInventory().getContents());
                     PlayerManager.giveSpawnItems((Player) event.getPlayer());
                     event.getPlayer().sendMessage(ChatColor.GRAY + "Saved your layout for " + ChatColor.DARK_GREEN + kit.getDisplayName() + ChatColor.GRAY + "!");
                 }

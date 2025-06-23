@@ -88,6 +88,8 @@ public class DatabaseManager{
         Document resultDocument = players.find(new Document("_id", playerUuid.toString())).first();
         
         if(resultDocument != null){
+            Bukkit.getLogger().info(resultDocument.toJson());
+            
             long now = System.currentTimeMillis();
             PlayerProfile playerProfile = new PlayerProfile(playerUuid);
             
@@ -134,7 +136,9 @@ public class DatabaseManager{
                 }
                 
                 kitDataMap.keySet().removeIf(kit -> KitManager.KITS.stream().noneMatch(kit1 -> kit1.getName().equalsIgnoreCase(kit.getName())));
+                KitManager.KITS.forEach(kit -> kitDataMap.putIfAbsent(kit, new PlayerKitProfile()));
                 playerProfile.getKitDataList().putAll(kitDataMap);
+                
             }
             
             Bukkit.getLogger().info("Loaded " + playerProfile.getUuid() + " profile in " + (System.currentTimeMillis() - now) + "ms!");

@@ -163,13 +163,13 @@ public class Match implements Listener{
             player.sendTitle(ChatColor.translateAlternateColorCodes('&', "&aWin!"), ChatColor.translateAlternateColorCodes('&', "&aYour team has won the game, GGs!"));
             
             playerData.getProfile().incrementWinStreak();
-            playerData.getProfile().getStats(kit).incrementWinStreak();
+            playerData.getProfile().getKitProfile(kit).incrementWinStreak();
             
             if(ranked){
-                playerData.getProfile().getStats(kit).increaseElo(1, losingTeam.getAverageElo(kit));
-                playerData.getProfile().getStats(kit).incrementRankedWins();
+                playerData.getProfile().getKitProfile(kit).increaseElo(1, losingTeam.getAverageElo(kit));
+                playerData.getProfile().getKitProfile(kit).incrementRankedWins();
             }else{
-                playerData.getProfile().getStats(kit).incrementUnrankedWins();
+                playerData.getProfile().getKitProfile(kit).incrementUnrankedWins();
             }
         });
         
@@ -179,13 +179,13 @@ public class Match implements Listener{
             player.sendTitle(ChatColor.translateAlternateColorCodes('&', "&cLost!"), ChatColor.translateAlternateColorCodes('&', "&cYour team has lost the game, better luck next time!"));
             
             playerData.getProfile().resetWinStreak();
-            playerData.getProfile().getStats(kit).resetWinStreak();
+            playerData.getProfile().getKitProfile(kit).resetWinStreak();
             
             if(ranked){
-                playerData.getProfile().getStats(kit).increaseElo(0, winningTeam.getAverageElo(kit));
-                playerData.getProfile().getStats(kit).incrementRankedLosses();
+                playerData.getProfile().getKitProfile(kit).increaseElo(0, winningTeam.getAverageElo(kit));
+                playerData.getProfile().getKitProfile(kit).incrementRankedLosses();
             }else{
-                playerData.getProfile().getStats(kit).incrementUnrankedLosses();
+                playerData.getProfile().getKitProfile(kit).incrementUnrankedLosses();
             }
         });
         
@@ -233,9 +233,9 @@ public class Match implements Listener{
             player.sendMessage(ChatColor.RESET + "");
             player.sendMessage(ChatColor.RESET + "" + ChatColor.DARK_GREEN + ChatColor.BOLD + "Stats: ");
             if(ranked)
-                player.sendMessage(ChatColor.RESET + "" + ChatColor.GRAY + "Elo: " + ChatColor.DARK_GREEN + Math.round(playerData.getProfile().getStats(kit).getElo()));
+                player.sendMessage(ChatColor.RESET + "" + ChatColor.GRAY + "Elo: " + ChatColor.DARK_GREEN + Math.round(playerData.getProfile().getKitProfile(kit).getElo()));
             player.sendMessage(ChatColor.RESET + "" + ChatColor.GRAY + "Global Winstreak: " + ChatColor.DARK_GREEN + playerData.getProfile().getWinstreak());
-            player.sendMessage(ChatColor.RESET + "" + ChatColor.GRAY + "Kit Winsteak: " + ChatColor.DARK_GREEN + playerData.getProfile().getStats(kit).getWinstreak());
+            player.sendMessage(ChatColor.RESET + "" + ChatColor.GRAY + "Kit Winsteak: " + ChatColor.DARK_GREEN + playerData.getProfile().getKitProfile(kit).getWinstreak());
             player.sendMessage(ChatColor.RESET + "");
             
             TextComponent playAgainComponent = new TextComponent(ChatColor.RESET + "" + ChatColor.DARK_GREEN + ChatColor.BOLD + "(Play Again)");
@@ -299,8 +299,8 @@ public class Match implements Listener{
             player.teleport(new Location(activeMap.getWorld(), activeMap.getMap().getPlayerTwoX(), activeMap.getMap().getPlayerTwoY(), activeMap.getMap().getPlayerTwoZ(), activeMap.getMap().getPlayerTwoYaw(), activeMap.getMap().getPlayerTwoPitch()));
         
         
-        playerData.getProfile().getStats(kit).incrementDeaths();
-        killData.getProfile().getStats(kit).incrementKills();
+        playerData.getProfile().getKitProfile(kit).incrementDeaths();
+        killData.getProfile().getKitProfile(kit).incrementKills();
         
         getTeam(playerData).getAlivePlayers().remove(playerData);
         getTeam(playerData).getDeadPlayers().add(playerData);
@@ -315,8 +315,8 @@ public class Match implements Listener{
     public void onForfeit(PlayerData playerData){
         Player player = Bukkit.getPlayer(playerData.getUuid());
         
-        playerData.getProfile().getStats(kit).incrementDeaths();
-        playerData.getProfile().getStats(kit).resetWinStreak();
+        playerData.getProfile().getKitProfile(kit).incrementDeaths();
+        playerData.getProfile().getKitProfile(kit).resetWinStreak();
         playerData.getProfile().resetWinStreak();
         
         getTeam(playerData).getAlivePlayers().remove(playerData);
@@ -341,10 +341,10 @@ public class Match implements Listener{
         });
         
         if(ranked){
-            playerData.getProfile().getStats(kit).increaseElo(0, getOtherTeam(playerData).getAverageElo(kit));
-            playerData.getProfile().getStats(kit).incrementRankedLosses();
+            playerData.getProfile().getKitProfile(kit).increaseElo(0, getOtherTeam(playerData).getAverageElo(kit));
+            playerData.getProfile().getKitProfile(kit).incrementRankedLosses();
         }else{
-            playerData.getProfile().getStats(kit).incrementUnrankedLosses();
+            playerData.getProfile().getKitProfile(kit).incrementUnrankedLosses();
         }
         
         players.forEach(playerData1 -> {
@@ -357,8 +357,8 @@ public class Match implements Listener{
     public void onLeave(PlayerData playerData){
         Player player = Bukkit.getPlayer(playerData.getUuid());
         
-        playerData.getProfile().getStats(kit).incrementDeaths();
-        playerData.getProfile().getStats(kit).resetWinStreak();
+        playerData.getProfile().getKitProfile(kit).incrementDeaths();
+        playerData.getProfile().getKitProfile(kit).resetWinStreak();
         playerData.getProfile().resetWinStreak();
         
         getTeam(playerData).getAlivePlayers().remove(playerData);
@@ -367,10 +367,10 @@ public class Match implements Listener{
         players.remove(playerData);
         
         if(ranked){
-            playerData.getProfile().getStats(kit).increaseElo(0, getOtherTeam(playerData).getAverageElo(kit));
-            playerData.getProfile().getStats(kit).incrementRankedLosses();
+            playerData.getProfile().getKitProfile(kit).increaseElo(0, getOtherTeam(playerData).getAverageElo(kit));
+            playerData.getProfile().getKitProfile(kit).incrementRankedLosses();
         }else{
-            playerData.getProfile().getStats(kit).incrementUnrankedLosses();
+            playerData.getProfile().getKitProfile(kit).incrementUnrankedLosses();
         }
         
         players.forEach(playerData1 -> {

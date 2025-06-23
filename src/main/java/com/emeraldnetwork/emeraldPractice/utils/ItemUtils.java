@@ -152,4 +152,16 @@ public final class ItemUtils{
     public static ItemStack createFillerItem(){
         return createItem(Material.STAINED_GLASS_PANE, 1, (short) 7, " ");
     }
+    
+    public static boolean isInventoryValid(ItemStack[] contents){
+        if(contents == null)
+            return false;
+        
+        for(ItemStack itemStack : contents){
+            if(itemStack == null)
+                return false;
+        }
+        
+        return true;
+    }
 }

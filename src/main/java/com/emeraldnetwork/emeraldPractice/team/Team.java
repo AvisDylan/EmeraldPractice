@@ -82,7 +82,7 @@ public class Team{
         List<Double> elos = new ArrayList<>();
         
         for(PlayerData playerData : players){
-            elos.add(playerData.getProfile().getStats(kit).getElo());
+            elos.add(playerData.getProfile().getKitProfile(kit).getElo());
         }
         
         return MathUtils.getMean(elos.stream().mapToDouble(Double::doubleValue).toArray());

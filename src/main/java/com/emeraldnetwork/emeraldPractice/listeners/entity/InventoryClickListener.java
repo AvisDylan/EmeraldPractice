@@ -275,7 +275,7 @@ public class InventoryClickListener implements Listener{
                         inventory.setItem(i, kit.getEditorItems()[i]);
                     }
                     
-                    event.getWhoClicked().getInventory().setContents(playerData.getProfile().getStats(kit).getKitLayoutItems() == null ? kit.getItems() : playerData.getProfile().getStats(kit).getKitLayoutItems());
+                    event.getWhoClicked().getInventory().setContents(playerData.getProfile().getKitProfile(kit).getKitLayoutItems() == null ? kit.getItems() : playerData.getProfile().getKitProfile(kit).getKitLayoutItems());
                     event.getWhoClicked().openInventory(inventory);
                 }
                 

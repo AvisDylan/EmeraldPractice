@@ -60,3 +60,7 @@ commands:
     aliases:
       - lb
       - leaderboard
+  stats:
+    description: check a player's stats
+    aliases:
+      - stat

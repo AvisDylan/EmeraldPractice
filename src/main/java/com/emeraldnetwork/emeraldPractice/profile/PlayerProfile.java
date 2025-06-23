@@ -150,14 +150,14 @@ public class PlayerProfile{
         this.deathEffect = deathEffect;
     }
     
-    public PlayerKitProfile getStats(Kit kit){
+    public PlayerKitProfile getKitProfile(Kit kit){
         return kitDataList.get(kit.getName());
     }
     
     public int getTotalUnrankedWins(){
         AtomicInteger totalWins = new AtomicInteger();
         
-        KitManager.KITS.forEach(kit -> totalWins.addAndGet(getStats(kit).getUnrankedWins()));
+        KitManager.KITS.forEach(kit -> totalWins.addAndGet(getKitProfile(kit).getUnrankedWins()));
         
         return totalWins.get();
     }
@@ -165,7 +165,7 @@ public class PlayerProfile{
     public int getTotalRankedWins(){
         AtomicInteger totalWins = new AtomicInteger();
         
-        KitManager.KITS.forEach(kit -> totalWins.addAndGet(getStats(kit).getRankedWins()));
+        KitManager.KITS.forEach(kit -> totalWins.addAndGet(getKitProfile(kit).getRankedWins()));
         
         return totalWins.get();
     }
@@ -174,7 +174,7 @@ public class PlayerProfile{
         double[] kds = new double[KitManager.KITS.size()];
         
         for(int i = 0; i < KitManager.KITS.size(); i++){
-            kds[i] = getStats(KitManager.KITS.get(i)).getKd();
+            kds[i] = getKitProfile(KitManager.KITS.get(i)).getKd();
         }
         
         return MathUtils.getMean(kds);
