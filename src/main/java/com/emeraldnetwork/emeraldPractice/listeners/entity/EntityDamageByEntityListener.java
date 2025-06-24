@@ -5,6 +5,7 @@ import com.emeraldnetwork.emeraldPractice.match.MatchManager;
 import com.emeraldnetwork.emeraldPractice.match.MatchState;
 import com.emeraldnetwork.emeraldPractice.player.PlayerData;
 import com.emeraldnetwork.emeraldPractice.player.PlayerManager;
+import com.emeraldnetwork.emeraldPractice.utils.DeathEffectUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -50,7 +51,7 @@ public class EntityDamageByEntityListener implements Listener{
                     }
                     
                     if(player.getHealth() <= 0 || player.isDead() || (player.getHealth() - event.getFinalDamage()) <= 0)
-                        match.onDeath(playerData, attackerData);
+                        DeathEffectUtils.playDeathEffect(attackerData, playerData);
                 }
             }
         }

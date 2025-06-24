@@ -70,17 +70,21 @@ public class StatsCommand implements CommandExecutor{
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Wins: " + ChatColor.DARK_GREEN + playerKitProfile.getUnrankedWins());
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Losses: " + ChatColor.DARK_GREEN + playerKitProfile.getUnrankedLosses());
             lore.add(ChatColor.RESET + "");
-            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GREEN + ChatColor.BOLD + "Ranked");
-            lore.add(ChatColor.RESET + "");
-            lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Elo: " + ChatColor.DARK_GREEN + playerKitProfile.getElo());
-            lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Wins: " + ChatColor.DARK_GREEN + playerKitProfile.getRankedWins());
-            lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Losses: " + ChatColor.DARK_GREEN + playerKitProfile.getRankedLosses());
-            lore.add(ChatColor.RESET + "");
+            if(kit.isRanked()){
+                lore.add(ChatColor.RESET + "" + ChatColor.DARK_GREEN + ChatColor.BOLD + "Ranked");
+                lore.add(ChatColor.RESET + "");
+                lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Elo: " + ChatColor.DARK_GREEN + Math.round(playerKitProfile.getElo()));
+                lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Wins: " + ChatColor.DARK_GREEN + playerKitProfile.getRankedWins());
+                lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Losses: " + ChatColor.DARK_GREEN + playerKitProfile.getRankedLosses());
+                lore.add(ChatColor.RESET + "");
+            }
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GREEN + ChatColor.BOLD + "General");
             lore.add(ChatColor.RESET + "");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Winstreak: " + ChatColor.DARK_GREEN + playerKitProfile.getWinstreak());
-            lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Kills: " + ChatColor.DARK_GREEN + playerKitProfile.getKills());
-            lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Deaths: " + ChatColor.DARK_GREEN + playerKitProfile.getDeaths());
+            if(!kit.isBoxing()){
+                lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Kills: " + ChatColor.DARK_GREEN + playerKitProfile.getKills());
+                lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Deaths: " + ChatColor.DARK_GREEN + playerKitProfile.getDeaths());
+            }
             
             itemMeta.setLore(lore);
             itemStack.setItemMeta(itemMeta);

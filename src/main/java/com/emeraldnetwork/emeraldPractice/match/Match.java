@@ -288,29 +288,25 @@ public class Match implements Listener{
         }, 100L);
     }
     
-    public void onDeath(PlayerData playerData, PlayerData killData){
+    public void onDeath(PlayerData playerData){
         Player player = Bukkit.getPlayer(playerData.getUuid());
-        Player killer = Bukkit.getPlayer(killData.getUuid());
-        
-        DeathEffectUtils.playDeathEffect(killData, playerData);
-        
-        if(teamOne.getPlayers().contains(playerData))
-            player.teleport(new Location(activeMap.getWorld(), activeMap.getMap().getPlayerOneX(), activeMap.getMap().getPlayerOneY(), activeMap.getMap().getPlayerOneZ(), activeMap.getMap().getPlayerOneYaw(), activeMap.getMap().getPlayerOnePitch()));
-        else if(teamTwo.getPlayers().contains(playerData))
-            player.teleport(new Location(activeMap.getWorld(), activeMap.getMap().getPlayerTwoX(), activeMap.getMap().getPlayerTwoY(), activeMap.getMap().getPlayerTwoZ(), activeMap.getMap().getPlayerTwoYaw(), activeMap.getMap().getPlayerTwoPitch()));
-        
-        
-        playerData.getProfile().getKitProfile(kit).incrementDeaths();
-        killData.getProfile().getKitProfile(kit).incrementKills();
         
         getTeam(playerData).getAlivePlayers().remove(playerData);
         getTeam(playerData).getDeadPlayers().add(playerData);
         
-        players.forEach(playerData1 -> {
-            Player player1 = Bukkit.getPlayer(playerData1.getUuid());
-            
-            player1.sendMessage(ChatColor.DARK_GREEN + player.getName() + ChatColor.GRAY + " has been killed by " + ChatColor.DARK_GREEN + killer.getName() + ChatColor.GRAY + "!");
-        });
+        if(player.getKiller() != null){
+            players.forEach(playerData1 -> {
+                Player player1 = Bukkit.getPlayer(playerData1.getUuid());
+                
+                player1.sendMessage(ChatColor.DARK_GREEN + player.getName() + ChatColor.GRAY + " has been killed by " + ChatColor.DARK_GREEN + player.getKiller().getName() + ChatColor.GRAY + "!");
+            });
+        }else{
+            players.forEach(playerData1 -> {
+                Player player1 = Bukkit.getPlayer(playerData1.getUuid());
+                
+                player1.sendMessage(ChatColor.DARK_GREEN + player.getName() + ChatColor.GRAY + " has died!");
+            });
+        }
     }
     
     public void onForfeit(PlayerData playerData){
