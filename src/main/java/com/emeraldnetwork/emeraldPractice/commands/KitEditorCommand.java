@@ -38,7 +38,7 @@ public class KitEditorCommand implements CommandExecutor{
             if(!kit.isEnabled() || !kit.isEditable())
                 continue;
             
-            inventory.addItem(ItemUtils.createItem(kit.getIcon().getType(), 1, ChatColor.DARK_GREEN + kit.getDisplayName()));
+            inventory.addItem(ItemUtils.createItem(kit.getIcon().getType(), 1, kit.getIcon().getDurability(), ChatColor.DARK_GREEN + kit.getDisplayName()));
         }
         
         player.openInventory(inventory);

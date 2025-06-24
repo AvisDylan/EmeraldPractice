@@ -51,7 +51,7 @@ public class QueueCommand implements CommandExecutor{
                         if(!kit.isEnabled() || !kit.isRanked() && ranked)
                             continue;
                         
-                        inventory.addItem(ItemUtils.createItem(kit.getIcon().getType(), 1, ChatColor.DARK_GREEN + kit.getDisplayName(), ChatColor.GRAY + "In Game: " + ChatColor.DARK_GREEN + MatchManager.getPlayersInMatchKit(kit, ranked), ChatColor.GRAY + "In Queue: " + ChatColor.DARK_GREEN + QueueManager.getPlayersInKitQueue(kit, ranked), "", ChatColor.DARK_GREEN + "Click to Play!"));
+                        inventory.addItem(ItemUtils.createItem(kit.getIcon().getType(), 1, kit.getIcon().getDurability(), ChatColor.DARK_GREEN + kit.getDisplayName(), ChatColor.GRAY + "In Game: " + ChatColor.DARK_GREEN + MatchManager.getPlayersInMatchKit(kit, ranked), ChatColor.GRAY + "In Queue: " + ChatColor.DARK_GREEN + QueueManager.getPlayersInKitQueue(kit, ranked), "", ChatColor.DARK_GREEN + "Click to Play!"));
                     }
                     
                     player.openInventory(inventory);

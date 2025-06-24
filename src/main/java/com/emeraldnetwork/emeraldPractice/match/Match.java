@@ -22,6 +22,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.potion.PotionEffect;
+import xyz.krypton.spigot.knockback.KnockbackAPI;
 
 import java.util.*;
 import java.util.List;
@@ -61,8 +62,8 @@ public class Match implements Listener{
             player.sendMessage(ChatColor.RESET + "");
             kit.applyKit(player);
             
-            if(kit.isNoHitDelay())
-                player.setMaximumNoDamageTicks(4);
+            /*if(kit.isNoHitDelay())
+                player.setMaximumNoDamageTicks(4);*/
             
             player.setSaturation(20.0f);
         });
@@ -255,7 +256,7 @@ public class Match implements Listener{
             player.setFireTicks(0);
             player.setFoodLevel(20);
             player.setHealth(player.getMaxHealth());
-            player.setMaximumNoDamageTicks(20);
+            //player.setMaximumNoDamageTicks(20);
         });
         
         Bukkit.getScheduler().runTaskLater(EmeraldPractice.getPlugin(), () -> {
