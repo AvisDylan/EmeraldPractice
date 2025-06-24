@@ -4,8 +4,10 @@ import com.emeraldnetwork.emeraldPractice.file.FileManager;
 import com.emeraldnetwork.emeraldPractice.player.PlayerData;
 import com.emeraldnetwork.emeraldPractice.player.PlayerManager;
 import com.emeraldnetwork.emeraldPractice.profile.PlayerProfile;
+import com.emeraldnetwork.emeraldPractice.utils.StatResetUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -17,21 +19,22 @@ public class ResetStatsCommand implements CommandExecutor{
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings){
         if(commandSender.hasPermission("emerald.practice")){
             if(strings[0].equalsIgnoreCase("*"))
-                PlayerManager.PLAYERS.values().forEach(PlayerData::resetProfile);
+                for(OfflinePlayer player : Bukkit.getOfflinePlayers()){
+                    if(player.isOnline())
+                        StatResetUtils.resetStats((Player) player);
+                    else
+                        StatResetUtils.resetOfflinePlayer(player.getUniqueId());
+                }
             else{
-                Player player = Bukkit.getPlayer(strings[0]);
+                OfflinePlayer player = Bukkit.getOfflinePlayer(strings[0]);
                 
                 if(player != null){
-                    PlayerData playerData = PlayerManager.getPlayerData(player.getUniqueId());
-                    
-                    commandSender.sendMessage(ChatColor.GREEN + "Reset " + player.getName() + "'s stats!");
-                    FileManager.saveProfile(playerData.getProfile());
-                    playerData.resetProfile();
-                    player.kickPlayer("stat reset");
-                    return true;
-                }
-                
-                commandSender.sendMessage(ChatColor.RED + strings[0] + " is not a valid player!");
+                    if(player.isOnline())
+                        StatResetUtils.resetStats((Player) player);
+                    else
+                        StatResetUtils.resetOfflinePlayer(player.getUniqueId());
+                }else
+                    commandSender.sendMessage(ChatColor.RED + strings[0] + " is not a valid player!");
             }
         }else
             commandSender.sendMessage(ChatColor.RED + "You don't have permission to run this command!");

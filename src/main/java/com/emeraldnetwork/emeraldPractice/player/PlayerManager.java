@@ -3,6 +3,7 @@ package com.emeraldnetwork.emeraldPractice.player;
 import com.emeraldnetwork.emeraldPractice.database.DatabaseManager;
 import com.emeraldnetwork.emeraldPractice.party.PartyManager;
 import com.emeraldnetwork.emeraldPractice.utils.ItemUtils;
+import com.emeraldnetwork.emeraldPractice.utils.StatResetUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -21,6 +22,9 @@ public final class PlayerManager{
         playerData.setPlayerState(PlayerState.SPAWN);
         player.setPlayerWeather(playerData.getProfile().getPlayerWeather());
         player.setPlayerTime(playerData.getProfile().getPlayerTime(), false);
+        
+        if(StatResetUtils.PLAYERS_TO_RESET.contains(player.getUniqueId()))
+            StatResetUtils.resetStats(player);
     }
     
     public static void removePlayer(UUID uuid){
