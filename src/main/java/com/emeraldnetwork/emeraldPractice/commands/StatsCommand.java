@@ -45,8 +45,6 @@ public class StatsCommand implements CommandExecutor{
         }
         
         PlayerProfile targetProfile = target.isOnline() ? PlayerManager.getPlayerData(target.getUniqueId()).getProfile() : DatabaseManager.loadPlayerProfile(target.getUniqueId());
-        PlayerData playerData = PlayerManager.getPlayerData(player.getUniqueId());
-        
         Inventory inventory = GuiUtils.createInventoryWithBorder(player, 45, ChatColor.DARK_GREEN + target.getName() + ChatColor.GRAY + "'s Stats");
         
         for(Kit kit : KitManager.KITS){
@@ -62,6 +60,7 @@ public class StatsCommand implements CommandExecutor{
             ItemMeta itemMeta = itemStack.getItemMeta();
             List<String> lore = new ArrayList<>();
             
+            lore.add(ChatColor.RESET + "");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GREEN + ChatColor.BOLD + "Global");
             lore.add(ChatColor.RESET + "");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Winstreak: " + ChatColor.DARK_GREEN + targetProfile.getWinstreak());
@@ -82,7 +81,6 @@ public class StatsCommand implements CommandExecutor{
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Winstreak: " + ChatColor.DARK_GREEN + playerKitProfile.getWinstreak());
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Kills: " + ChatColor.DARK_GREEN + playerKitProfile.getKills());
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Deaths: " + ChatColor.DARK_GREEN + playerKitProfile.getDeaths());
-            lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "K/D: " + ChatColor.DARK_GREEN + playerKitProfile.getKd());
             
             itemMeta.setLore(lore);
             itemStack.setItemMeta(itemMeta);

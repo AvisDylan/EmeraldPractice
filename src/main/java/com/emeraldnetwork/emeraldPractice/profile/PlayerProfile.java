@@ -170,16 +170,6 @@ public class PlayerProfile{
         return totalWins.get();
     }
     
-    public double getAverageKd(){
-        double[] kds = new double[KitManager.KITS.size()];
-        
-        for(int i = 0; i < KitManager.KITS.size(); i++){
-            kds[i] = getKitProfile(KitManager.KITS.get(i)).getKd();
-        }
-        
-        return MathUtils.getMean(kds);
-    }
-    
     public void incrementWinStreak(){
         winstreak++;
     }

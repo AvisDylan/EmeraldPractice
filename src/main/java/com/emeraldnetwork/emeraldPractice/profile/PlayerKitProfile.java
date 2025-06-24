@@ -56,10 +56,6 @@ public class PlayerKitProfile{
         winstreak = 0;
     }
     
-    public int getKd(){
-        return kills / deaths;
-    }
-    
     public double getElo(){
         return elo;
     }
