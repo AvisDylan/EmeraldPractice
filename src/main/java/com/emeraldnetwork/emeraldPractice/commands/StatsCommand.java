@@ -81,10 +81,6 @@ public class StatsCommand implements CommandExecutor{
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GREEN + ChatColor.BOLD + "General");
             lore.add(ChatColor.RESET + "");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Winstreak: " + ChatColor.DARK_GREEN + playerKitProfile.getWinstreak());
-            if(!kit.isBoxing()){
-                lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Kills: " + ChatColor.DARK_GREEN + playerKitProfile.getKills());
-                lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Deaths: " + ChatColor.DARK_GREEN + playerKitProfile.getDeaths());
-            }
             
             itemMeta.setLore(lore);
             itemStack.setItemMeta(itemMeta);

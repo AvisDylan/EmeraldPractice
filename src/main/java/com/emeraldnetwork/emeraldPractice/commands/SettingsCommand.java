@@ -54,7 +54,7 @@ public class SettingsCommand implements CommandExecutor{
                 "",
                 (playerData.getProfile().isDuelSounds() ? ChatColor.DARK_GREEN + "Enabled" : ChatColor.GRAY + "Enabled"),
                 (!playerData.getProfile().isDuelSounds() ? ChatColor.DARK_GREEN + "Disabled" : ChatColor.GRAY + "Disabled"));
-        ItemStack allowSpectators = ItemUtils.createItem(Material.ARMOR_STAND, 1, ChatColor.RESET + "" + ChatColor.DARK_GREEN + ChatColor.BOLD + "Allow Spectators",
+        ItemStack allowSpectators = ItemUtils.createItem(Material.EYE_OF_ENDER, 1, ChatColor.RESET + "" + ChatColor.DARK_GREEN + ChatColor.BOLD + "Allow Spectators",
                 ChatColor.GRAY + "Allow people to spectate your matches",
                 "",
                 (playerData.getProfile().isAllowSpectators() ? ChatColor.DARK_GREEN + "Enabled" : ChatColor.GRAY + "Enabled"),

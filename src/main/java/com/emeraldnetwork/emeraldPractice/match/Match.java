@@ -312,7 +312,6 @@ public class Match implements Listener{
     public void onForfeit(PlayerData playerData){
         Player player = Bukkit.getPlayer(playerData.getUuid());
         
-        playerData.getProfile().getKitProfile(kit).incrementDeaths();
         playerData.getProfile().getKitProfile(kit).resetWinStreak();
         playerData.getProfile().resetWinStreak();
         
@@ -354,7 +353,6 @@ public class Match implements Listener{
     public void onLeave(PlayerData playerData){
         Player player = Bukkit.getPlayer(playerData.getUuid());
         
-        playerData.getProfile().getKitProfile(kit).incrementDeaths();
         playerData.getProfile().getKitProfile(kit).resetWinStreak();
         playerData.getProfile().resetWinStreak();
         

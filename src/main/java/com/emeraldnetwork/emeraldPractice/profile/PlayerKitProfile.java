@@ -14,9 +14,7 @@ public class PlayerKitProfile{
                 rankedLosses = 0,
                 unrankedWins = 0,
                 unrankedLosses = 0,
-                winstreak = 0,
-                deaths = 0,
-                kills = 0;
+                winstreak = 0;
     
     public void increaseElo(double score, double opponentElo){
         double expectedElo = 1 / (1 + Math.pow(10, (opponentElo - elo) / 400));
@@ -44,14 +42,6 @@ public class PlayerKitProfile{
         winstreak++;
     }
     
-    public void incrementDeaths(){
-        deaths++;
-    }
-    
-    public void incrementKills(){
-        kills++;
-    }
-    
     public void resetWinStreak(){
         winstreak = 0;
     }
@@ -74,14 +64,6 @@ public class PlayerKitProfile{
     
     public int getUnrankedLosses(){
         return unrankedLosses;
-    }
-    
-    public int getDeaths(){
-        return deaths;
-    }
-    
-    public int getKills(){
-        return kills;
     }
     
     public int getWinstreak(){
@@ -118,13 +100,5 @@ public class PlayerKitProfile{
     
     public void setWinstreak(int winstreak){
         this.winstreak = winstreak;
-    }
-    
-    public void setDeaths(int deaths){
-        this.deaths = deaths;
-    }
-    
-    public void setKills(int kills){
-        this.kills = kills;
     }
 }
