@@ -61,6 +61,7 @@ public class Match implements Listener{
             player.sendMessage(ChatColor.GRAY + "Ranked: " + ChatColor.DARK_GREEN + (ranked ? "Yes" : "No"));
             player.sendMessage(ChatColor.RESET + "");
             kit.applyKit(player);
+            KnockbackAPI.setPlayerProfile(playerData.getUuid(), kit.getKbProfile());
             
             /*if(kit.isNoHitDelay())
                 player.setMaximumNoDamageTicks(4);*/

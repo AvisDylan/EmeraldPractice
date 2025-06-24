@@ -7,6 +7,7 @@ import com.emeraldnetwork.emeraldPractice.utils.MathUtils;
 import org.bukkit.WeatherType;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -168,6 +169,36 @@ public class PlayerProfile{
         KitManager.KITS.forEach(kit -> totalWins.addAndGet(getKitProfile(kit).getRankedWins()));
         
         return totalWins.get();
+    }
+    
+    public int getTotalUnrankedLosses(){
+        AtomicInteger totalLosses = new AtomicInteger();
+        
+        KitManager.KITS.forEach(kit -> totalLosses.addAndGet(getKitProfile(kit).getUnrankedLosses()));
+        
+        return totalLosses.get();
+    }
+    
+    public int getTotalRankedLosses(){
+        AtomicInteger totalLosses = new AtomicInteger();
+        
+        KitManager.KITS.forEach(kit -> totalLosses.addAndGet(getKitProfile(kit).getRankedLosses()));
+        
+        return totalLosses.get();
+    }
+    
+    public double getAverageElo(){
+        double[] elos = new double[kitDataList.size()];
+        Iterator<PlayerKitProfile> iterator = kitDataList.values().iterator();
+        int index = 0;
+        
+        while(iterator.hasNext()){
+            PlayerKitProfile kitProfile = iterator.next();
+            elos[index] = kitProfile.getElo();
+            index++;
+        }
+        
+        return MathUtils.getMean(elos);
     }
     
     public void incrementWinStreak(){

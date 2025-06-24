@@ -15,6 +15,7 @@ import com.emeraldnetwork.emeraldPractice.utils.GuiUtils;
 import com.emeraldnetwork.emeraldPractice.utils.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -45,7 +46,26 @@ public class StatsCommand implements CommandExecutor{
         }
         
         PlayerProfile targetProfile = target.isOnline() ? PlayerManager.getPlayerData(target.getUniqueId()).getProfile() : DatabaseManager.loadPlayerProfile(target.getUniqueId());
+        
+        if(targetProfile == null){
+            commandSender.sendMessage(ChatColor.RED + target.getName() + " does not have a profile!");
+            return false;
+        }
+        
         Inventory inventory = GuiUtils.createInventoryWithBorder(player, 45, ChatColor.DARK_GREEN + target.getName() + ChatColor.GRAY + "'s Stats");
+        ItemStack overAll = ItemUtils.createItem(Material.NETHER_STAR, 1, ChatColor.RESET + "" + ChatColor.DARK_GREEN + ChatColor.BOLD + "Global");
+        ItemMeta overAllMeta = overAll.getItemMeta();
+        List<String> overAllLore = new ArrayList<>();
+        
+        overAllLore.add(ChatColor.RESET + "");
+        overAllLore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Winstreak: " + ChatColor.DARK_GREEN + targetProfile.getWinstreak());
+        overAllLore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Wins: " + ChatColor.DARK_GREEN + (targetProfile.getTotalUnrankedWins() + targetProfile.getTotalRankedWins()));
+        overAllLore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Losses: " + ChatColor.DARK_GREEN + (targetProfile.getTotalUnrankedLosses() + targetProfile.getTotalRankedLosses()));
+        overAllLore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Elo: " + ChatColor.DARK_GREEN + Math.round(targetProfile.getAverageElo()));
+        
+        overAllMeta.setLore(overAllLore);
+        overAll.setItemMeta(overAllMeta);
+        inventory.setItem(4, overAll);
         
         for(Kit kit : KitManager.KITS){
             if(!kit.isEnabled())
@@ -60,10 +80,6 @@ public class StatsCommand implements CommandExecutor{
             ItemMeta itemMeta = itemStack.getItemMeta();
             List<String> lore = new ArrayList<>();
             
-            lore.add(ChatColor.RESET + "");
-            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GREEN + ChatColor.BOLD + "Global");
-            lore.add(ChatColor.RESET + "");
-            lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Winstreak: " + ChatColor.DARK_GREEN + targetProfile.getWinstreak());
             lore.add(ChatColor.RESET + "");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GREEN + ChatColor.BOLD + "Unranked");
             lore.add(ChatColor.RESET + "");

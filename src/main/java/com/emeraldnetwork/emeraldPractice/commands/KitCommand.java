@@ -162,6 +162,10 @@ public class KitCommand implements CommandExecutor{
                                     kit1.setMinBuildHeight(Integer.parseInt(strings[3]));
                                     commandSender.sendMessage("§aSet " + strings[1] + "'s min height to" + strings[3] + "! For no rounds put 0!");
                                 }
+                                case "kbprofile", "kb", "knockback", "knockbackprofile" -> {
+                                    kit1.setKbProfile(strings[3]);
+                                    commandSender.sendMessage("§aSet " + strings[1] + "'s kb profile to" + strings[3] + "!");
+                                }
                                 default -> commandSender.sendMessage("§c" + strings[0] + " is not a valid option!");
                             }
                             return false;
