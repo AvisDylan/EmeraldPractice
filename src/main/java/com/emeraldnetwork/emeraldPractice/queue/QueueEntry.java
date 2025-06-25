@@ -101,8 +101,6 @@ public class QueueEntry{
     }
     
     public boolean isWithinPingRange(PlayerData playerData){
-        Bukkit.getLogger().info(maxPing + " " + minPing);
-        
         if(playerData.getProfile().getPingRange() <= 0)
             return true;
         

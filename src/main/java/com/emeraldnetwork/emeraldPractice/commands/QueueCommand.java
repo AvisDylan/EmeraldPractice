@@ -105,7 +105,7 @@ public class QueueCommand implements CommandExecutor{
                         }
                         
                         QueueManager.joinQueue(player, selectedKit, true, 1);
-                        commandSender.sendMessage(ChatColor.GRAY + "You have joined the unranked queue for " + ChatColor.DARK_GREEN + selectedKit.getDisplayName() + ChatColor.GRAY + "!");
+                        commandSender.sendMessage(ChatColor.GRAY + "You have joined the ranked queue for " + ChatColor.DARK_GREEN + selectedKit.getDisplayName() + ChatColor.GRAY + "!");
                     }
                     default -> commandSender.sendMessage("§c" + strings[1] + " is not a valid option!");
                 }
