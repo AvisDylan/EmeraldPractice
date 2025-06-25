@@ -19,7 +19,7 @@ public final class MessageUtils{
             Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', message));
         }
         
-        if(index < messages.length)
+        if(index < messages.length - 1)
             index++;
         else
             index = 0;

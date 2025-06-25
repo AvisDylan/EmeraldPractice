@@ -28,7 +28,7 @@ public class FileManager{
     
     private static final File KITS_FILE = new File(EmeraldPractice.getPlugin().getDataFolder().getAbsoluteFile() + "/kits.json");
     private static final File SPAWN_POINT_FILE = new File(EmeraldPractice.getPlugin().getDataFolder().getAbsoluteFile() + "/spawnpoint.json");
-    private static final File PLAYERS_TO_WIPE_FILE = new File(EmeraldPractice.getPlugin().getDataFolder().getAbsoluteFile() + "profiles/playerstowipe.json");
+    private static final File PLAYERS_TO_WIPE_FILE = new File(EmeraldPractice.getPlugin().getDataFolder().getAbsoluteFile() + "/profiles/playerstowipe.json");
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting()
                                                         .excludeFieldsWithoutExposeAnnotation()
                                                         .registerTypeAdapter(Location.class, new LocationAdapter())

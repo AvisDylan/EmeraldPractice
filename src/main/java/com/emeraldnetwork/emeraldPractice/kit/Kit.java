@@ -37,8 +37,8 @@ public class Kit{
     private final Set<String> startCommand = new HashSet<>();
     @Expose
     private final Set<Map> maps = new HashSet<>();
-    private transient final List<String> topUnrankedPlayers = new CopyOnWriteArrayList<>();
-    private transient final List<String> topRankedPlayers = new CopyOnWriteArrayList<>();
+    private final List<String> topUnrankedPlayers = new CopyOnWriteArrayList<>();
+    private final List<String> topRankedPlayers = new CopyOnWriteArrayList<>();
     
     public Kit(String name, String displayName, PotionEffect[] potionEffects, ItemStack[] editorItems, ItemStack[] items, ItemStack[] armourItems, ItemStack icon, BoundingBox buildableArea, boolean ranked, boolean enabled, boolean editable, boolean bedwars, boolean boxing, boolean noHitDelay, boolean blocks, int rounds, int maxBuildHeight, int minBuildHeight, long maxDurationInSeconds, boolean ffa, boolean hunger, boolean deathDrops, boolean drop, boolean fallDamage, boolean voidInstaKill, String kbProfile){
         this.name = name;
