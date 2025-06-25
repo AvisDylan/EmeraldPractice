@@ -44,8 +44,6 @@ public final class PlayerManager{
     public static void giveSpawnItems(Player player){
         PlayerData playerData = getPlayerData(player.getUniqueId());
         
-        Bukkit.getLogger().info(PartyManager.getPlayerParty(playerData) + " ");
-        
         player.getInventory().clear();
         player.getInventory().setArmorContents(null);
         player.getInventory().setContents(PartyManager.getPlayerParty(playerData) != null ? ItemUtils.PARTY_ITEMS : ItemUtils.SPAWN_ITEMS);

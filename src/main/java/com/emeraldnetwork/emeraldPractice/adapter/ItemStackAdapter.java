@@ -145,7 +145,7 @@ public class ItemStackAdapter implements JsonSerializer<ItemStack>, JsonDeserial
                     int duration = potionObject.get("duration").getAsInt();
                     
                     if(potionEffectType != null)
-                        potionMeta.addCustomEffect(new PotionEffect(potionEffectType, amplifier, duration), true);
+                        potionMeta.addCustomEffect(new PotionEffect(potionEffectType, duration, amplifier), true);
                 });
             }
             itemStack.setItemMeta(itemMeta);

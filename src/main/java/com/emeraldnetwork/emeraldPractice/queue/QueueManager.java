@@ -40,48 +40,39 @@ public class QueueManager{
     }
     
     public static void handleQueue(Kit kit){
-        //TODO FIX PING RANGE
         List<QueueEntry> unrankedEntries = QUEUE.stream()
                 .filter(entry -> entry.getKit().equals(kit) && !entry.isRanked())
-                .filter(entry -> QUEUE.stream()
-                        .filter(entry1 -> entry1.getKit().equals(kit) && !entry1.isRanked())
-                        .anyMatch(entry1 -> (entry.isWithinPingRange(entry1.getPlayerData())
-                                && entry1.isWithinPingRange(entry.getPlayerData()))))
-                .limit(2)
                 .toList();
+        
+        matchPlayers(unrankedEntries, kit, false);
+        
         List<QueueEntry> rankedEntries = QUEUE.stream()
                 .filter(entry -> entry.getKit().equals(kit) && entry.isRanked())
-                .filter(entry -> QUEUE.stream()
-                        .filter(entry1 -> entry1.getKit().equals(kit) && entry1.isRanked())
-                        .anyMatch(entry1 -> entry.isWithinPingRange(entry1.getPlayerData())
-                                && entry1.isWithinPingRange(entry.getPlayerData())))
-                .limit(2)
                 .toList();
         
-        if(unrankedEntries.size() >= 2){
-            PlayerData playerData1 = unrankedEntries.get(0).getPlayerData(),
-                    playerData2 = unrankedEntries.get(1).getPlayerData();
+        matchPlayers(unrankedEntries, kit, true);
+    }
+    
+    public static void matchPlayers(List<QueueEntry> entries, Kit kit, boolean ranked){
+        for(int i = 0; i < entries.size(); i++){
+            QueueEntry entry1 = entries.get(i);
             
-            unrankedEntries.get(0).cancelTask();
-            unrankedEntries.get(1).cancelTask();
-            
-            QUEUE.remove(unrankedEntries.get(0));
-            QUEUE.remove(unrankedEntries.get(1));
-            
-            MatchManager.startMatch(kit, false, playerData1, playerData2);
-        }
-        
-        if(rankedEntries.size() >= 2){
-            PlayerData playerData1 = rankedEntries.get(0).getPlayerData(),
-                    playerData2 = rankedEntries.get(1).getPlayerData();
-            
-            rankedEntries.get(0).cancelTask();
-            rankedEntries.get(1).cancelTask();
-            
-            QUEUE.remove(rankedEntries.get(0));
-            QUEUE.remove(rankedEntries.get(1));
-            
-            MatchManager.startMatch(kit, true, playerData1, playerData2);
+            for(int j = i + 1; j < entries.size(); j++){
+                QueueEntry entry2 = entries.get(j);
+                PlayerData playerData1 = entry1.getPlayerData();
+                PlayerData playerData2 = entry2.getPlayerData();
+                
+                if(entry1.isWithinPingRange(playerData2) && entry2.isWithinPingRange(playerData1)){
+                    entry1.cancelTask();
+                    entry2.cancelTask();
+                    
+                    QUEUE.remove(entry1);
+                    QUEUE.remove(entry2);
+                    
+                    MatchManager.startMatch(kit, ranked, playerData1, playerData2);
+                    return;
+                }
+            }
         }
     }
     
