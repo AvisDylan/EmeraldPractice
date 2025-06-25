@@ -9,6 +9,7 @@ import com.emeraldnetwork.emeraldPractice.kit.Kit;
 import com.emeraldnetwork.emeraldPractice.kit.KitManager;
 import com.emeraldnetwork.emeraldPractice.profile.PlayerProfile;
 import com.emeraldnetwork.emeraldPractice.utils.SpawnPointUtils;
+import com.emeraldnetwork.emeraldPractice.utils.StatResetUtils;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -20,17 +21,56 @@ import org.bukkit.potion.PotionEffect;
 import java.io.*;
 import java.lang.reflect.Type;
 import java.util.List;
+import java.util.Queue;
+import java.util.UUID;
 
 public class FileManager{
     
     private static final File KITS_FILE = new File(EmeraldPractice.getPlugin().getDataFolder().getAbsoluteFile() + "/kits.json");
     private static final File SPAWN_POINT_FILE = new File(EmeraldPractice.getPlugin().getDataFolder().getAbsoluteFile() + "/spawnpoint.json");
+    private static final File PLAYERS_TO_WIPE_FILE = new File(EmeraldPractice.getPlugin().getDataFolder().getAbsoluteFile() + "profiles/playerstowipe.json");
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting()
                                                         .excludeFieldsWithoutExposeAnnotation()
                                                         .registerTypeAdapter(Location.class, new LocationAdapter())
                                                         .registerTypeAdapter(ItemStack.class, new ItemStackAdapter())
                                                         .registerTypeAdapter(PotionEffect.class, new PotionEffectAdapter())
                                                         .registerTypeAdapter(File.class, new FileAdapter()).create();
+    
+    public static void loadPlayersToWipe(){
+        try{
+            PLAYERS_TO_WIPE_FILE.getParentFile().mkdir();
+            PLAYERS_TO_WIPE_FILE.createNewFile();
+            
+            Reader reader = new BufferedReader(new FileReader(PLAYERS_TO_WIPE_FILE));
+            Type type = new TypeToken<Queue<UUID>>(){}.getType();
+            
+            StatResetUtils.PLAYERS_TO_RESET.addAll(GSON.fromJson(reader, type));
+            reader.close();
+        }catch(FileNotFoundException fnfe){
+            Bukkit.getLogger().severe("File not found!");
+        }catch(NullPointerException npe){
+            Bukkit.getLogger().severe("Empty file!");
+        }catch(IOException ie){
+            Bukkit.getLogger().severe(ie.getMessage());
+        }
+    }
+    
+    public static void savePlayersToWipe(){
+        try{
+            PLAYERS_TO_WIPE_FILE.getParentFile().mkdir();
+            PLAYERS_TO_WIPE_FILE.createNewFile();
+            
+            Writer writer = new BufferedWriter(new FileWriter(PLAYERS_TO_WIPE_FILE, false));
+            
+            GSON.toJson(StatResetUtils.PLAYERS_TO_RESET, writer);
+            writer.flush();
+            writer.close();
+        }catch(FileNotFoundException fnfe){
+            Bukkit.getLogger().severe("File not found!");
+        }catch(IOException ie){
+            Bukkit.getLogger().severe(ie.getMessage());
+        }
+    }
     
     public static void saveProfile(PlayerProfile playerProfile){
         File file = new File(EmeraldPractice.getPlugin().getDataFolder().getAbsoluteFile() + "/profiles/save_" + playerProfile.getUuid() + "_" + System.currentTimeMillis());

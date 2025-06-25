@@ -8,6 +8,7 @@ import com.emeraldnetwork.emeraldPractice.player.PlayerData;
 import com.emeraldnetwork.emeraldPractice.player.PlayerManager;
 import com.emeraldnetwork.emeraldPractice.queue.QueueManager;
 import com.emeraldnetwork.emeraldPractice.scoreboard.ScoreboardManager;
+import com.emeraldnetwork.emeraldPractice.utils.MessageUtils;
 import com.emeraldnetwork.emeraldPractice.utils.MultithreadedUtils;
 import com.emeraldnetwork.emeraldPractice.utils.SpawnPointUtils;
 import org.bukkit.Bukkit;
@@ -64,17 +65,14 @@ public final class EmeraldPractice extends JavaPlugin{
         KitManager.KITS.forEach(kit -> Bukkit.getScheduler().runTaskTimer(this, () -> QueueManager.handleQueue(kit), 0L, 10L));
         Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> MultithreadedUtils.EXECUTOR_SERVICE.submit(() -> PlayerManager.PLAYERS.values().forEach(ScoreboardManager::updateBoard)), 0L, 10L);
         Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> MultithreadedUtils.EXECUTOR_SERVICE.submit(DatabaseManager::savePlayerProfiles), 12000L, 12000L);
-        Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> {
-            KitManager.KITS.forEach(kit -> {
-                MultithreadedUtils.EXECUTOR_SERVICE.submit(() -> {
-                    kit.getTopRankedPlayers().clear();
-                    kit.getTopUnrankedPlayers().clear();
-                    
-                    kit.getTopUnrankedPlayers().addAll(DatabaseManager.getPlayers(kit, false));
-                    kit.getTopRankedPlayers().addAll(DatabaseManager.getPlayers(kit, true));
-                });
-            });
-        }, 0L, 12000L);
+        Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> KitManager.KITS.forEach(kit -> MultithreadedUtils.EXECUTOR_SERVICE.submit(() -> {
+            kit.getTopRankedPlayers().clear();
+            kit.getTopUnrankedPlayers().clear();
+            
+            kit.getTopUnrankedPlayers().addAll(DatabaseManager.getPlayers(kit, false));
+            kit.getTopRankedPlayers().addAll(DatabaseManager.getPlayers(kit, true));
+        })), 0L, 12000L);
+        Bukkit.getScheduler().runTaskTimer(this, MessageUtils::sendMessage, 0L, 6000L);
     }
     
     @Override

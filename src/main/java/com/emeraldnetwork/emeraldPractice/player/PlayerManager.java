@@ -23,8 +23,10 @@ public final class PlayerManager{
         player.setPlayerWeather(playerData.getProfile().getPlayerWeather());
         player.setPlayerTime(playerData.getProfile().getPlayerTime(), false);
         
-        if(StatResetUtils.PLAYERS_TO_RESET.contains(player.getUniqueId()))
+        if(StatResetUtils.PLAYERS_TO_RESET.contains(player.getUniqueId())){
             StatResetUtils.resetStats(player);
+            StatResetUtils.PLAYERS_TO_RESET.remove(player.getUniqueId());
+        }
     }
     
     public static void removePlayer(UUID uuid){
