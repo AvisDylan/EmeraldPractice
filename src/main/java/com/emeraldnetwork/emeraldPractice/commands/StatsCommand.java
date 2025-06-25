@@ -40,7 +40,7 @@ public class StatsCommand implements CommandExecutor{
         OfflinePlayer target = Bukkit.getOfflinePlayer(strings[0]);
         Player player = (Player) commandSender;
         
-        if(target == null){
+        if(target == null || !target.hasPlayedBefore()){
             commandSender.sendMessage(ChatColor.RED + strings[0] + " is not a valid player!");
             return false;
         }
