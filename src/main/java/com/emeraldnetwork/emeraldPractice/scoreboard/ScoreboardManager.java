@@ -35,7 +35,7 @@ public class ScoreboardManager{
                                 ChatColor.RESET + " " + ChatColor.DARK_GREEN + "Duration" + ChatColor.GRAY + ": " + ChatColor.WHITE + FormatUtils.formateTime(System.currentTimeMillis() - queueEntry.getStartTime()),
                                 ChatColor.RESET + " " + ChatColor.DARK_GREEN + "Kit" + ChatColor.GRAY + ": " + ChatColor.WHITE + queueEntry.getKit().getDisplayName(),
                                 "",
-                                ChatColor.RESET + " " + ChatColor.DARK_GREEN + "Ping Range" + ChatColor.GRAY + ": " + ChatColor.WHITE + queueEntry.getMinPing() + " - " + queueEntry.getMaxPing(),
+                                ChatColor.RESET + " " + ChatColor.DARK_GREEN + "Ping Range" + ChatColor.GRAY + ": " + ChatColor.WHITE + (queueEntry.getPlayerData().getProfile().getPingRange() <= 0 ? "Off" : queueEntry.getMinPing() + " - " + queueEntry.getMaxPing()),
                                 ChatColor.RESET + " " + ChatColor.DARK_GREEN + "Place in Queue" + ChatColor.GRAY + ": " + ChatColor.WHITE + FormatUtils.formatOrdinalNumbers(QueueManager.getPlaceInQueue(queueEntry)),
                                 "",
                                 ChatColor.RESET + " " + ChatColor.GRAY + ChatColor.ITALIC + "emerald-network.com",
