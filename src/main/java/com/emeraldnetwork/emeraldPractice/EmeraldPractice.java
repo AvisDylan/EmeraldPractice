@@ -29,6 +29,7 @@ public final class EmeraldPractice extends JavaPlugin{
         String packageName = getClass().getPackage().getName();
         
         DatabaseManager.init();
+        FileManager.loadPlayersToWipe();
         FileManager.loadKits();
         FileManager.loadSpawnPoint();
         
@@ -77,6 +78,8 @@ public final class EmeraldPractice extends JavaPlugin{
     
     @Override
     public void onDisable(){
+        FileManager.savePlayersToWipe();
+        
         if(!KitManager.KITS.isEmpty())
             FileManager.saveKits();
         
