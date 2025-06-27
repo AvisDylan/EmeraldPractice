@@ -28,12 +28,13 @@ public class QueueEntry{
         schedulerId = Bukkit.getScheduler().runTaskTimer(EmeraldPractice.getPlugin(), () -> {
             Player player = Bukkit.getPlayer(playerData.getUuid());
             
-            int ping = this.playerData.getPing();
+            minPing = Math.max(playerData.getPing() - (playerData.getProfile().getPingRange() / 2) - pingIncrement, 0);
+            maxPing = playerData.getPing() + (playerData.getProfile().getPingRange() / 2) + pingIncrement;
             pingIncrement += 5;
             
             player.sendMessage(ChatColor.RESET + "");
             player.sendMessage(ChatColor.RESET + "" + ChatColor.DARK_GREEN + ChatColor.BOLD + kit.getDisplayName());
-            player.sendMessage(ChatColor.GRAY + "Ping range: " + (playerData.getProfile().getPingRange() <= 0 ? ChatColor.DARK_GREEN + "Off" : ChatColor.RESET + "" + ChatColor.DARK_GREEN + Math.max(ping - (this.playerData.getProfile().getPingRange() / 2) - pingIncrement, 0) + ChatColor.GRAY + " - " + ChatColor.DARK_GREEN + ping + (this.playerData.getProfile().getPingRange() / 2) + pingIncrement));
+            player.sendMessage(ChatColor.GRAY + "Ping range: " + (playerData.getProfile().getPingRange() <= 0 ? ChatColor.DARK_GREEN + "Off" : ChatColor.RESET + "" + ChatColor.DARK_GREEN + minPing + ChatColor.GRAY + " - " + ChatColor.DARK_GREEN + maxPing));
             player.sendMessage(ChatColor.GRAY + "Searching for players...");
             player.sendMessage(ChatColor.RESET + "");
         }, 0L, 200L).getTaskId();
@@ -103,13 +104,7 @@ public class QueueEntry{
         if(playerData.getProfile().getPingRange() <= 0)
             return true;
         
-        int ping = this.playerData.getPing();
-        int otherPing = playerData.getPing();
-        
-        minPing = Math.max(ping - (this.playerData.getProfile().getPingRange() / 2) - pingIncrement, 0);
-        maxPing = ping + (this.playerData.getProfile().getPingRange() / 2) + pingIncrement;
-        
-        return otherPing >= minPing && otherPing <= maxPing;
+        return playerData.getPing() >= minPing && playerData.getPing() <= maxPing;
     }
     
     @Override

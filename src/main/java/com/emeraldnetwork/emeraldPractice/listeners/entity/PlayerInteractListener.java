@@ -41,13 +41,13 @@ public class PlayerInteractListener implements Listener{
                     switch(event.getItem().getItemMeta().getDisplayName()){
                         case "§7Unranked Queue (right click)" -> event.getPlayer().chat("/queue gui unranked");
                         case "§2Ranked Queue §7(right click)" -> event.getPlayer().chat("/queue gui ranked");
-                        case "§7FFA (right click)" -> event.getPlayer().chat("/ffagui");
+                        case "§7FFA (right click)" -> event.getPlayer().chat("/ffa gui");
                         case "§7Bot Queue (right click)" -> event.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', "&7Feature coming soon!")); //event.getPlayer().chat("/queuegui bot")
                         case "§7Create a Party (right click)" -> event.getPlayer().chat("/party create");
                         case "§7Kit Editor (right click)" -> event.getPlayer().chat("/kiteditor");
                         case "§7Tournament (right click)" -> event.getPlayer().sendMessage(ChatColor.GRAY + "Feature coming soon!"); //event.getPlayer().chat("/tournamentgui")
                         case "§7Leaderboards (right click)" -> event.getPlayer().chat("/leaderboards");
-                        case "§7Settings (right click)" -> event.getPlayer().chat("/settings");
+                        case "§7Settings (right click)" -> event.getPlayer().chat("/emeraldpractice:settings");
                         case "§cLeave Party §7(right click)" -> event.getPlayer().chat("/party leave");
                         case "§7Party List (right click)" -> event.getPlayer().chat("/party list");
                         case "§Start a Party Fight (right click)" -> event.getPlayer().chat("/party fight");
