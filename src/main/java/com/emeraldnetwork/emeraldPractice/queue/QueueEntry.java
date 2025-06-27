@@ -34,7 +34,7 @@ public class QueueEntry{
             
             player.sendMessage(ChatColor.RESET + "");
             player.sendMessage(ChatColor.RESET + "" + ChatColor.DARK_GREEN + ChatColor.BOLD + kit.getDisplayName());
-            player.sendMessage(ChatColor.GRAY + "Ping range: " + (playerData.getProfile().getPingRange() <= 0 ? ChatColor.DARK_GRAY + "Off" : ChatColor.RESET + "" + ChatColor.DARK_GREEN + minPing + ChatColor.GRAY + " - " + ChatColor.DARK_GREEN + maxPing));
+            player.sendMessage(ChatColor.GRAY + "Ping range: " + (playerData.getProfile().getPingRange() <= 0 ? ChatColor.DARK_GREEN + "Off" : ChatColor.RESET + "" + ChatColor.DARK_GREEN + minPing + ChatColor.GRAY + " - " + ChatColor.DARK_GREEN + maxPing));
             player.sendMessage(ChatColor.GRAY + "Searching for players...");
             player.sendMessage(ChatColor.RESET + "");
         }, 0L, 200L).getTaskId();

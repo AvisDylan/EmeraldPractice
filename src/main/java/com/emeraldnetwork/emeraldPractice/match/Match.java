@@ -222,7 +222,7 @@ public class Match implements Listener{
             
             MatchManager.INVENTORY_MAP.put(playerData.getUuid(), ArrayUtils.reverseArrayVertically(player.getInventory().getContents()));
             
-            if(getTeamSize() == 1)
+            if(getTeamSize() == 1 && kit.isBoxing())
                 DeathEffectUtils.playDeathEffect(playerData, getOtherTeam(playerData).getPlayerAtIndex(0));
             
             player.sendMessage(ChatColor.RESET + "");
