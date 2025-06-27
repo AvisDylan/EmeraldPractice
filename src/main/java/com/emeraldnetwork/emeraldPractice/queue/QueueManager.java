@@ -50,7 +50,7 @@ public class QueueManager{
                 .filter(entry -> entry.getKit().equals(kit) && entry.isRanked())
                 .toList();
         
-        matchPlayers(unrankedEntries, kit, true);
+        matchPlayers(rankedEntries, kit, true);
     }
     
     public static void matchPlayers(List<QueueEntry> entries, Kit kit, boolean ranked){
