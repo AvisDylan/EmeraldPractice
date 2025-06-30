@@ -166,6 +166,10 @@ public class KitCommand implements CommandExecutor{
                                     kit1.setKbProfile(strings[3]);
                                     commandSender.sendMessage("§aSet " + strings[1] + "'s kb profile to" + strings[3] + "!");
                                 }
+                                case "regen", "regeneration" -> {
+                                    kit1.setHealthRegen(!kit1.isHealthRegen());
+                                    commandSender.sendMessage(kit1.isFallDamage() ? "§aEnabled regen on " + strings[1] + "!" : "§aDisabled regen on " + strings[1] + "!");
+                                }
                                 default -> commandSender.sendMessage("§c" + strings[0] + " is not a valid option!");
                             }
                             return false;

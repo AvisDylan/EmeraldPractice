@@ -28,7 +28,7 @@ public class Kit{
     @Expose
     private BoundingBox buildableArea;
     @Expose
-    private boolean ranked, enabled, editable, bedwars, boxing, noHitDelay, blocks, ffa, hunger, deathDrops, drop, fallDamage, voidInstaKill;
+    private boolean ranked, enabled, editable, bedwars, boxing, noHitDelay, blocks, ffa, hunger, deathDrops, drop, fallDamage, voidInstaKill, healthRegen;
     @Expose
     private int rounds, maxBuildHeight, minBuildHeight;
     @Expose
@@ -40,7 +40,7 @@ public class Kit{
     private final List<String> topUnrankedPlayers = new CopyOnWriteArrayList<>();
     private final List<String> topRankedPlayers = new CopyOnWriteArrayList<>();
     
-    public Kit(String name, String displayName, PotionEffect[] potionEffects, ItemStack[] editorItems, ItemStack[] items, ItemStack[] armourItems, ItemStack icon, BoundingBox buildableArea, boolean ranked, boolean enabled, boolean editable, boolean bedwars, boolean boxing, boolean noHitDelay, boolean blocks, int rounds, int maxBuildHeight, int minBuildHeight, long maxDurationInSeconds, boolean ffa, boolean hunger, boolean deathDrops, boolean drop, boolean fallDamage, boolean voidInstaKill, String kbProfile){
+    public Kit(String name, String displayName, PotionEffect[] potionEffects, ItemStack[] editorItems, ItemStack[] items, ItemStack[] armourItems, ItemStack icon, BoundingBox buildableArea, boolean ranked, boolean enabled, boolean editable, boolean bedwars, boolean boxing, boolean noHitDelay, boolean blocks, int rounds, int maxBuildHeight, int minBuildHeight, long maxDurationInSeconds, boolean ffa, boolean hunger, boolean deathDrops, boolean drop, boolean fallDamage, boolean voidInstaKill, String kbProfile, boolean healthRegen){
         this.name = name;
         this.displayName = displayName;
         this.editorItems = editorItems;
@@ -67,6 +67,7 @@ public class Kit{
         this.potionEffects = potionEffects;
         this.voidInstaKill = voidInstaKill;
         this.kbProfile = kbProfile;
+        this.healthRegen = healthRegen;
     }
     
     public Kit(String name){
@@ -95,6 +96,7 @@ public class Kit{
         deathDrops = false;
         fallDamage = false;
         voidInstaKill = true;
+        healthRegen = true;
         kbProfile = "default";
     }
     
@@ -334,6 +336,14 @@ public class Kit{
     
     public void setKbProfile(String kbProfile){
         this.kbProfile = kbProfile;
+    }
+    
+    public boolean isHealthRegen(){
+        return healthRegen;
+    }
+    
+    public void setHealthRegen(boolean healthRegen){
+        this.healthRegen = healthRegen;
     }
     
     public List<String> getTopUnrankedPlayers(){
