@@ -4,6 +4,10 @@
 
 package com.emeraldnetwork.emeraldPractice.utils;
 
+import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.ProtocolManager;
+import com.comphenix.protocol.events.PacketContainer;
 import com.emeraldnetwork.emeraldPractice.misc.DeathEffect;
 import com.emeraldnetwork.emeraldPractice.player.PlayerData;
 import org.bukkit.Bukkit;
@@ -12,7 +16,11 @@ import org.bukkit.entity.Player;
 import xyz.xenondevs.particle.ParticleBuilder;
 import xyz.xenondevs.particle.ParticleEffect;
 
+import java.lang.reflect.InvocationTargetException;
+
 public final class DeathEffectUtils{
+    
+    private static final ProtocolManager MANAGER = ProtocolLibrary.getProtocolManager();
     
     public static void playDeathEffect(PlayerData killerData, PlayerData victimData){
         if(killerData.getProfile().getDeathEffect() == DeathEffect.NONE)
@@ -29,7 +37,18 @@ public final class DeathEffectUtils{
     }
     
     private static void playExplosion(Player killer, Player victim){
-        killer.getWorld().createExplosion(victim.getLocation().getX(), victim.getLocation().getY(), victim.getLocation().getZ(), 5.0f, false, false);
+        PacketContainer packet = MANAGER.createPacket(PacketType.Play.Server.EXPLOSION);
+        
+        packet.getDoubles().write(0, victim.getLocation().getX());
+        packet.getDoubles().write(1, victim.getLocation().getY());
+        packet.getDoubles().write(2, victim.getLocation().getZ());
+        packet.getFloat().write(0, 5.0f);
+        
+        try{
+            MANAGER.sendServerPacket(killer, packet);
+        }catch(InvocationTargetException ite){
+            Bukkit.getLogger().severe(ite.getMessage());
+        }
     }
     
     private static void playLightning(Player killer, Player victim){

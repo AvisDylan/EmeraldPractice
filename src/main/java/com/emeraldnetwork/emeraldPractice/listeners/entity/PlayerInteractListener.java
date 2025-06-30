@@ -20,6 +20,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -90,30 +91,43 @@ public class PlayerInteractListener implements Listener{
                     return;
                 }
                 
-                if(event.getPlayer().getItemInHand().getType() == Material.ENDER_PEARL && (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)){
-                    if(playerPearlCooldowns.containsKey(playerData)){
-                        long secondsSinceLastPearlThrow = (System.currentTimeMillis() - playerPearlCooldowns.get(playerData).getLastPearl()) / 1000;
-                        
-                        if(secondsSinceLastPearlThrow < 10){
-                            event.setCancelled(true);
-                            event.getPlayer().sendMessage(ChatColor.RED + "You can pearl again in " + (10 - secondsSinceLastPearlThrow) + " seconds!");
-                            return;
+                if(event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK){
+                    if(event.getItem().getType() == Material.ENDER_PEARL){
+                        if(playerPearlCooldowns.containsKey(playerData)){
+                            long secondsSinceLastPearlThrow = (System.currentTimeMillis() - playerPearlCooldowns.get(playerData).getLastPearl()) / 1000;
+                            
+                            if(secondsSinceLastPearlThrow < 10){
+                                event.setCancelled(true);
+                                event.getPlayer().sendMessage(ChatColor.RED + "You can pearl again in " + (10 - secondsSinceLastPearlThrow) + " seconds!");
+                                return;
+                            }
+                            
+                            Bukkit.getScheduler().cancelTask(playerPearlCooldowns.get(playerData).getSchedulerId());
                         }
                         
-                        Bukkit.getScheduler().cancelTask(playerPearlCooldowns.get(playerData).getSchedulerId());
+                        int schedulerId = Bukkit.getScheduler().runTaskTimerAsynchronously(EmeraldPractice.getPlugin(), () -> {
+                            MultithreadedUtils.EXECUTOR_SERVICE.submit(() -> {
+                                Player player = Bukkit.getPlayer(playerData.getUuid());
+                                int countdown = Math.round(Math.max(0, 10 - (System.currentTimeMillis() - playerPearlCooldowns.get(playerData).getLastPearl()) / 1000));
+                                
+                                player.setLevel(countdown);
+                                player.setExp(countdown / 10.0f);
+                            });
+                        }, 0L, 10L).getTaskId();
+                        
+                        playerPearlCooldowns.put(playerData, new PearlCooldown(System.currentTimeMillis(), schedulerId));
+                    }else if(event.getPlayer().getItemInHand().getType() == Material.MUSHROOM_SOUP){
+                        if(event.getPlayer().getHealth() >= event.getPlayer().getMaxHealth())
+                            return;
+                        
+                        ItemStack bowl = new ItemStack(Material.BOWL, 1);
+                        ItemMeta bowlMeta = bowl.getItemMeta();
+                        
+                        event.getPlayer().setHealth(Math.min(event.getPlayer().getHealth() + 9, event.getPlayer().getMaxHealth()));
+                        event.getPlayer().getItemInHand().setType(Material.BOWL);
+                        event.getPlayer().getItemInHand().setItemMeta(bowlMeta);
+                        event.getPlayer().updateInventory();
                     }
-                    
-                    int schedulerId = Bukkit.getScheduler().runTaskTimerAsynchronously(EmeraldPractice.getPlugin(), () -> {
-                        MultithreadedUtils.EXECUTOR_SERVICE.submit(() -> {
-                            Player player = Bukkit.getPlayer(playerData.getUuid());
-                            int countdown = Math.round(Math.max(0, 10 - (System.currentTimeMillis() - playerPearlCooldowns.get(playerData).getLastPearl()) / 1000));
-                            
-                            player.setLevel(countdown);
-                            player.setExp(countdown / 10.0f);
-                        });
-                    }, 0L, 10L).getTaskId();
-                    
-                    playerPearlCooldowns.put(playerData, new PearlCooldown(System.currentTimeMillis(), schedulerId));
                 }
             }
         }

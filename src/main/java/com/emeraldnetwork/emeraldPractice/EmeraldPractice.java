@@ -8,6 +8,7 @@ import com.emeraldnetwork.emeraldPractice.player.PlayerData;
 import com.emeraldnetwork.emeraldPractice.player.PlayerManager;
 import com.emeraldnetwork.emeraldPractice.queue.QueueManager;
 import com.emeraldnetwork.emeraldPractice.scoreboard.ScoreboardManager;
+import com.emeraldnetwork.emeraldPractice.utils.DeathEffectUtils;
 import com.emeraldnetwork.emeraldPractice.utils.MessageUtils;
 import com.emeraldnetwork.emeraldPractice.utils.MultithreadedUtils;
 import com.emeraldnetwork.emeraldPractice.utils.SpawnPointUtils;
@@ -29,6 +30,7 @@ public final class EmeraldPractice extends JavaPlugin{
         String packageName = getClass().getPackage().getName();
         
         DatabaseManager.init();
+        DeathEffectUtils.init();
         FileManager.loadPlayersToWipe();
         FileManager.loadKits();
         FileManager.loadSpawnPoint();

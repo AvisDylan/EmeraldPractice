@@ -30,7 +30,7 @@ public class PartyInviteRequest{
         if(receiver.getProfile().isPartySounds())
             receiverPlayer.playSound(receiverPlayer.getLocation(), Sound.NOTE_PLING, 1.0f, 1.0f);
         
-        TextComponent base = new TextComponent(ChatColor.RESET + "" + ChatColor.DARK_GREEN + receiverPlayer.getName() + ChatColor.GRAY + " has invited you to their party! ");
+        TextComponent base = new TextComponent(ChatColor.RESET + "" + ChatColor.DARK_GREEN + senderPlayer.getName() + ChatColor.GRAY + " has invited you to their party! ");
         TextComponent acceptComponent = new TextComponent(ChatColor.RESET + "" + ChatColor.DARK_GREEN + ChatColor.BOLD + "(Accept)");
         
         acceptComponent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/party accept " + senderPlayer.getName()));
