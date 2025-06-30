@@ -30,7 +30,6 @@ public final class EmeraldPractice extends JavaPlugin{
         String packageName = getClass().getPackage().getName();
         
         DatabaseManager.init();
-        DeathEffectUtils.init();
         FileManager.loadPlayersToWipe();
         FileManager.loadKits();
         FileManager.loadSpawnPoint();
