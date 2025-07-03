@@ -2,8 +2,10 @@ package com.emeraldnetwork.emeraldPractice.commands;
 
 import com.emeraldnetwork.emeraldPractice.kit.Kit;
 import com.emeraldnetwork.emeraldPractice.kit.KitManager;
+import com.emeraldnetwork.emeraldPractice.utils.MathUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -169,6 +171,10 @@ public class KitCommand implements CommandExecutor{
                                 case "regen", "regeneration" -> {
                                     kit1.setHealthRegen(!kit1.isHealthRegen());
                                     commandSender.sendMessage(kit1.isFallDamage() ? "§aEnabled regen on " + strings[1] + "!" : "§aDisabled regen on " + strings[1] + "!");
+                                }
+                                case "ffalocation" -> {
+                                    kit1.setFfaLocation(new Location(player.getWorld(), player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ(), MathUtils.roundYaw(player.getLocation().getYaw()), MathUtils.roundPitch(player.getLocation().getPitch())));
+                                    commandSender.sendMessage("§aSet ffa location on " + strings[1] + " to your position!");
                                 }
                                 default -> commandSender.sendMessage("§c" + strings[0] + " is not a valid option!");
                             }

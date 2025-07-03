@@ -64,3 +64,5 @@ commands:
     description: check a player's stats
     aliases:
       - stat
+  ffa:
+    description: join an ffa

@@ -1,6 +1,9 @@
 package com.emeraldnetwork.emeraldPractice.commands;
 
 import com.emeraldnetwork.emeraldPractice.match.MatchManager;
+import com.emeraldnetwork.emeraldPractice.player.PlayerData;
+import com.emeraldnetwork.emeraldPractice.player.PlayerManager;
+import com.emeraldnetwork.emeraldPractice.player.PlayerState;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -25,6 +28,12 @@ public class InventoryCommand implements CommandExecutor{
         
         if(MatchManager.INVENTORY_MAP.containsKey(inventoryUuid)){
             Player player = (Player) commandSender;
+            
+            if(PlayerManager.getPlayerData(player.getUniqueId()).getPlayerState() != PlayerState.SPAWN){
+                commandSender.sendMessage(ChatColor.RED + "You cannot run this command in your state!");
+                return false;
+            }
+            
             ItemStack[] sourceInventory = MatchManager.INVENTORY_MAP.get(inventoryUuid);
             Inventory inventory = Bukkit.createInventory(player, sourceInventory.length, Bukkit.getPlayer(inventoryUuid).getName() + "'s inventory");
             

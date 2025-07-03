@@ -7,6 +7,7 @@ import com.emeraldnetwork.emeraldPractice.player.PlayerManager;
 import com.emeraldnetwork.emeraldPractice.profile.PlayerKitProfile;
 import com.google.gson.annotations.Expose;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -37,10 +38,13 @@ public class Kit{
     private final Set<String> startCommand = new HashSet<>();
     @Expose
     private final Set<Map> maps = new HashSet<>();
+    @Expose
+    private Location ffaLocation;
+    private final List<PlayerData> ffaPlayers = new CopyOnWriteArrayList<>();
     private final List<String> topUnrankedPlayers = new CopyOnWriteArrayList<>();
     private final List<String> topRankedPlayers = new CopyOnWriteArrayList<>();
     
-    public Kit(String name, String displayName, PotionEffect[] potionEffects, ItemStack[] editorItems, ItemStack[] items, ItemStack[] armourItems, ItemStack icon, BoundingBox buildableArea, boolean ranked, boolean enabled, boolean editable, boolean bedwars, boolean boxing, boolean noHitDelay, boolean blocks, int rounds, int maxBuildHeight, int minBuildHeight, long maxDurationInSeconds, boolean ffa, boolean hunger, boolean deathDrops, boolean drop, boolean fallDamage, boolean voidInstaKill, String kbProfile, boolean healthRegen){
+    public Kit(String name, String displayName, PotionEffect[] potionEffects, ItemStack[] editorItems, ItemStack[] items, ItemStack[] armourItems, ItemStack icon, BoundingBox buildableArea, boolean ranked, boolean enabled, boolean editable, boolean bedwars, boolean boxing, boolean noHitDelay, boolean blocks, int rounds, int maxBuildHeight, int minBuildHeight, long maxDurationInSeconds, boolean ffa, boolean hunger, boolean deathDrops, boolean drop, boolean fallDamage, boolean voidInstaKill, String kbProfile, boolean healthRegen, Location ffaLocation){
         this.name = name;
         this.displayName = displayName;
         this.editorItems = editorItems;
@@ -68,6 +72,7 @@ public class Kit{
         this.voidInstaKill = voidInstaKill;
         this.kbProfile = kbProfile;
         this.healthRegen = healthRegen;
+        this.ffaLocation = ffaLocation;
     }
     
     public Kit(String name){
@@ -98,6 +103,7 @@ public class Kit{
         voidInstaKill = true;
         healthRegen = true;
         kbProfile = "default";
+        ffaLocation = new Location(Bukkit.getWorld("world"), 0, 0, 0);
     }
     
     public void applyKit(Player player){
@@ -342,6 +348,18 @@ public class Kit{
         return healthRegen;
     }
     
+    public Location getFfaLocation(){
+        return ffaLocation;
+    }
+    
+    public List<PlayerData> getFfaPlayers(){
+        return ffaPlayers;
+    }
+    
+    public void setFfaLocation(Location ffaLocation){
+        this.ffaLocation = ffaLocation;
+    }
+    
     public void setHealthRegen(boolean healthRegen){
         this.healthRegen = healthRegen;
     }
@@ -369,23 +387,25 @@ public class Kit{
     @Override
     public boolean equals(Object o){
         if(!(o instanceof Kit kit)) return false;
-        return isRanked() == kit.isRanked() && isEnabled() == kit.isEnabled() && isEditable() == kit.isEditable() && isBedwars() == kit.isBedwars() && isBoxing() == kit.isBoxing() && isNoHitDelay() == kit.isNoHitDelay() && isBlocks() == kit.isBlocks() && isFfa() == kit.isFfa() && isHunger() == kit.isHunger() && isDeathDrops() == kit.isDeathDrops() && isDrop() == kit.isDrop() && isFallDamage() == kit.isFallDamage() && isVoidInstaKill() == kit.isVoidInstaKill() && getRounds() == kit.getRounds() && getMaxBuildHeight() == kit.getMaxBuildHeight() && getMinBuildHeight() == kit.getMinBuildHeight() && getMaxDurationInSeconds() == kit.getMaxDurationInSeconds() && Objects.equals(getName(), kit.getName()) && Objects.equals(getDisplayName(), kit.getDisplayName()) && Objects.equals(getKbProfile(), kit.getKbProfile()) && Objects.deepEquals(getEditorItems(), kit.getEditorItems()) && Objects.deepEquals(getItems(), kit.getItems()) && Objects.deepEquals(getArmourItems(), kit.getArmourItems()) && Objects.deepEquals(getPotionEffects(), kit.getPotionEffects()) && Objects.equals(getIcon(), kit.getIcon()) && Objects.equals(getBuildableArea(), kit.getBuildableArea()) && Objects.equals(getStartCommand(), kit.getStartCommand()) && Objects.equals(getMaps(), kit.getMaps());
+        return isRanked() == kit.isRanked() && isEnabled() == kit.isEnabled() && isEditable() == kit.isEditable() && isBedwars() == kit.isBedwars() && isBoxing() == kit.isBoxing() && isNoHitDelay() == kit.isNoHitDelay() && isBlocks() == kit.isBlocks() && isFfa() == kit.isFfa() && isHunger() == kit.isHunger() && isDeathDrops() == kit.isDeathDrops() && isDrop() == kit.isDrop() && isFallDamage() == kit.isFallDamage() && isVoidInstaKill() == kit.isVoidInstaKill() && isHealthRegen() == kit.isHealthRegen() && getRounds() == kit.getRounds() && getMaxBuildHeight() == kit.getMaxBuildHeight() && getMinBuildHeight() == kit.getMinBuildHeight() && getMaxDurationInSeconds() == kit.getMaxDurationInSeconds() && Objects.equals(getName(), kit.getName()) && Objects.equals(getDisplayName(), kit.getDisplayName()) && Objects.equals(getKbProfile(), kit.getKbProfile()) && Objects.deepEquals(getEditorItems(), kit.getEditorItems()) && Objects.deepEquals(getItems(), kit.getItems()) && Objects.deepEquals(getArmourItems(), kit.getArmourItems()) && Objects.deepEquals(getPotionEffects(), kit.getPotionEffects()) && Objects.equals(getIcon(), kit.getIcon()) && Objects.equals(getBuildableArea(), kit.getBuildableArea()) && Objects.equals(getStartCommand(), kit.getStartCommand()) && Objects.equals(getMaps(), kit.getMaps()) && Objects.equals(getFfaLocation(), kit.getFfaLocation());
     }
     
     @Override
     public int hashCode(){
-        return Objects.hash(getName(), getDisplayName(), getKbProfile(), Arrays.hashCode(getEditorItems()), Arrays.hashCode(getItems()), Arrays.hashCode(getArmourItems()), Arrays.hashCode(getPotionEffects()), getIcon(), getBuildableArea(), isRanked(), isEnabled(), isEditable(), isBedwars(), isBoxing(), isNoHitDelay(), isBlocks(), isFfa(), isHunger(), isDeathDrops(), isDrop(), isFallDamage(), isVoidInstaKill(), getRounds(), getMaxBuildHeight(), getMinBuildHeight(), getMaxDurationInSeconds(), getStartCommand(), getMaps());
+        return Objects.hash(getName(), getDisplayName(), getKbProfile(), Arrays.hashCode(getEditorItems()), Arrays.hashCode(getItems()), Arrays.hashCode(getArmourItems()), Arrays.hashCode(getPotionEffects()), getIcon(), getBuildableArea(), isRanked(), isEnabled(), isEditable(), isBedwars(), isBoxing(), isNoHitDelay(), isBlocks(), isFfa(), isHunger(), isDeathDrops(), isDrop(), isFallDamage(), isVoidInstaKill(), isHealthRegen(), getRounds(), getMaxBuildHeight(), getMinBuildHeight(), getMaxDurationInSeconds(), getStartCommand(), getMaps(), getFfaLocation());
     }
     
     @Override
     public String toString(){
         return "Kit{" +
-                "maps=" + maps +
+                "ffaLocation=" + ffaLocation +
+                ", maps=" + maps +
                 ", startCommand=" + startCommand +
                 ", maxDurationInSeconds=" + maxDurationInSeconds +
                 ", minBuildHeight=" + minBuildHeight +
                 ", maxBuildHeight=" + maxBuildHeight +
                 ", rounds=" + rounds +
+                ", healthRegen=" + healthRegen +
                 ", voidInstaKill=" + voidInstaKill +
                 ", fallDamage=" + fallDamage +
                 ", drop=" + drop +

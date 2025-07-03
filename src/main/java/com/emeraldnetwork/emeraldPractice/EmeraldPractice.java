@@ -2,6 +2,7 @@ package com.emeraldnetwork.emeraldPractice;
 
 import com.emeraldnetwork.emeraldPractice.commands.*;
 import com.emeraldnetwork.emeraldPractice.database.DatabaseManager;
+import com.emeraldnetwork.emeraldPractice.ffa.FfaManager;
 import com.emeraldnetwork.emeraldPractice.file.FileManager;
 import com.emeraldnetwork.emeraldPractice.kit.KitManager;
 import com.emeraldnetwork.emeraldPractice.player.PlayerData;
@@ -33,6 +34,7 @@ public final class EmeraldPractice extends JavaPlugin{
         FileManager.loadPlayersToWipe();
         FileManager.loadKits();
         FileManager.loadSpawnPoint();
+        FfaManager.init();
         
         for(Class<?> clazz : new Reflections(packageName + ".listeners").getSubTypesOf(Listener.class)){
             try{
@@ -63,6 +65,7 @@ public final class EmeraldPractice extends JavaPlugin{
         getCommand("goldenhead").setExecutor(new GoldenHeadCommand());
         getCommand("leaderboards").setExecutor(new LeaderboardCommand());
         getCommand("stats").setExecutor(new StatsCommand());
+        getCommand("ffa").setExecutor(new FfaCommand());
         
         KitManager.KITS.forEach(kit -> Bukkit.getScheduler().runTaskTimer(this, () -> QueueManager.handleQueue(kit), 0L, 10L));
         Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> MultithreadedUtils.EXECUTOR_SERVICE.submit(() -> PlayerManager.PLAYERS.values().forEach(ScoreboardManager::updateBoard)), 0L, 10L);
