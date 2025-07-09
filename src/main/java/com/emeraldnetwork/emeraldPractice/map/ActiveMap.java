@@ -21,6 +21,11 @@ public class ActiveMap{
     public boolean load(){
         FileUtils.copy(map.getWorldFolder(), activeWorldFolder);
         
+        File uuidFile = new File(activeWorldFolder, "uid.dat");
+        
+        if(uuidFile.exists())
+            uuidFile.delete();
+        
         WorldCreator creator = new WorldCreator(activeWorldFolder.getName());
         
         creator.generator(new ChunkGenerator());
