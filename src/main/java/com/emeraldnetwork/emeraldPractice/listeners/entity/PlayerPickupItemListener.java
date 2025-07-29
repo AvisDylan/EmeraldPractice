@@ -17,7 +17,9 @@ public class PlayerPickupItemListener implements Listener{
     public void onPlayerPickupItem(PlayerPickupItemEvent event){
         PlayerData playerData = PlayerManager.getPlayerData(event.getPlayer().getUniqueId());
         
-        if(playerData.getPlayerState() != PlayerState.DUEL || playerData.getPlayerState() != PlayerState.FFA)
-            event.setCancelled(true);
+        if(playerData.getPlayerState() == PlayerState.DUEL || playerData.getPlayerState() == PlayerState.FFA)
+            return;
+            
+        event.setCancelled(true);
     }
 }
