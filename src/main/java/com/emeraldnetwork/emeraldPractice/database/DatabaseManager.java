@@ -61,7 +61,7 @@ public class DatabaseManager{
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?::weather_type, ?, ?, ?, ?, ?, ?::death_effect, ?::jsonb) " +
                 "ON CONFLICT (player_uuid) DO UPDATE SET " +
                 "receive_messages = EXCLUDED.receive_messages, " +
-                "message_sounds = EXCLUDED.friend_requests, " +
+                "friend_requests = EXCLUDED.friend_requests, " +
                 "duel_requests = EXCLUDED.duel_requests, " +
                 "duel_sounds = EXCLUDED.duel_sounds, " +
                 "allow_spectators = EXCLUDED.allow_spectators, " +
