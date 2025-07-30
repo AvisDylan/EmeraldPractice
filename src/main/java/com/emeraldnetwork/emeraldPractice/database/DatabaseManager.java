@@ -44,7 +44,7 @@ public class DatabaseManager{
         String code = "INSERT INTO player_data (" +
                 "player_uuid, " +
                 "receive_messages, " +
-                "message_sounds, " +
+                "friend_requests, " +
                 "duel_requests, " +
                 "duel_sounds, " +
                 "allow_spectators, " +
@@ -61,7 +61,7 @@ public class DatabaseManager{
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?::weather_type, ?, ?, ?, ?, ?, ?::death_effect, ?::jsonb) " +
                 "ON CONFLICT (player_uuid) DO UPDATE SET " +
                 "receive_messages = EXCLUDED.receive_messages, " +
-                "message_sounds = EXCLUDED.message_sounds, " +
+                "message_sounds = EXCLUDED.friend_requests, " +
                 "duel_requests = EXCLUDED.duel_requests, " +
                 "duel_sounds = EXCLUDED.duel_sounds, " +
                 "allow_spectators = EXCLUDED.allow_spectators, " +
@@ -82,7 +82,7 @@ public class DatabaseManager{
             
             statement.setString(1, playerProfile.getUuid().toString());
             statement.setBoolean(2, playerProfile.isReceiveMessages());
-            statement.setBoolean(3, playerProfile.isMessageSounds());
+            statement.setBoolean(3, playerProfile.isReceiveFriendRequests());
             statement.setBoolean(4, playerProfile.isDuelRequests());
             statement.setBoolean(5, playerProfile.isDuelSounds());
             statement.setBoolean(6, playerProfile.isAllowSpectators());
@@ -118,7 +118,7 @@ public class DatabaseManager{
                 PlayerProfile playerProfile = new PlayerProfile(playerUuid);
                 
                 playerProfile.setReceiveMessages(resultSet.getBoolean("receive_messages"));
-                playerProfile.setMessageSounds(resultSet.getBoolean("message_sounds"));
+                playerProfile.setReceiveFriendRequests(resultSet.getBoolean("friend_requests"));
                 playerProfile.setDuelRequests(resultSet.getBoolean("duel_requests"));
                 playerProfile.setDuelSounds(resultSet.getBoolean("duel_sounds"));
                 playerProfile.setAllowSpectators(resultSet.getBoolean("allow_spectators"));

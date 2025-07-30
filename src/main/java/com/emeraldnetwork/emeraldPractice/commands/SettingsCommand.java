@@ -39,11 +39,11 @@ public class SettingsCommand implements CommandExecutor{
                 "",
                 (playerData.getProfile().isReceiveMessages() ? ChatColor.DARK_GREEN + "Enabled" : ChatColor.GRAY + "Enabled"),
                 (!playerData.getProfile().isReceiveMessages() ? ChatColor.DARK_GREEN + "Disabled" : ChatColor.GRAY + "Disabled"));
-        ItemStack messageSounds = ItemUtils.createItem(Material.NOTE_BLOCK, 1, ChatColor.RESET + "" + ChatColor.DARK_GREEN + ChatColor.BOLD + "Messages Sounds",
-                ChatColor.GRAY + "Play a sound when somebody messages you",
+        ItemStack messageSounds = ItemUtils.createItem(Material.NOTE_BLOCK, 1, ChatColor.RESET + "" + ChatColor.DARK_GREEN + ChatColor.BOLD + "Receive Friend Requests",
+                ChatColor.GRAY + "Allow people to add you as a friend",
                 "",
-                (playerData.getProfile().isMessageSounds() ? ChatColor.DARK_GREEN + "Enabled" : ChatColor.GRAY + "Enabled"),
-                (!playerData.getProfile().isMessageSounds() ? ChatColor.DARK_GREEN + "Disabled" : ChatColor.GRAY + "Disabled"));
+                (playerData.getProfile().isReceiveFriendRequests() ? ChatColor.DARK_GREEN + "Enabled" : ChatColor.GRAY + "Enabled"),
+                (!playerData.getProfile().isReceiveFriendRequests() ? ChatColor.DARK_GREEN + "Disabled" : ChatColor.GRAY + "Disabled"));
         ItemStack duelRequests = ItemUtils.createItem(Material.STONE_SWORD, 1, ChatColor.RESET + "" + ChatColor.DARK_GREEN + ChatColor.BOLD + "Duel Requests",
                 ChatColor.GRAY + "Allow people to send private duel requests",
                 "",

@@ -22,7 +22,7 @@ public class API{
         if(playerProfile == null)
             return false;
         
-        return playerProfile.isMessageSounds();
+        return playerProfile.isReceiveFriendRequests();
     }
     
     public boolean isGlobalChat(UUID uuid){

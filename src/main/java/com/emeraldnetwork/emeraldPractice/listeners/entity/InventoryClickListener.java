@@ -9,6 +9,7 @@ import com.emeraldnetwork.emeraldPractice.player.PlayerData;
 import com.emeraldnetwork.emeraldPractice.player.PlayerManager;
 import com.emeraldnetwork.emeraldPractice.utils.GuiUtils;
 import com.emeraldnetwork.emeraldPractice.utils.ItemUtils;
+import me.zowpy.core.api.CoreAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.WeatherType;
@@ -100,16 +101,18 @@ public class InventoryClickListener implements Listener{
                                 (playerData.getProfile().isReceiveMessages() ? ChatColor.DARK_GREEN + "Enabled" : ChatColor.GRAY + "Enabled"),
                                 (!playerData.getProfile().isReceiveMessages() ? ChatColor.DARK_GREEN + "Disabled" : ChatColor.GRAY + "Disabled"));
                         
+                        CoreAPI.getInstance().getProfileManager().getByUUID(event.getWhoClicked().getUniqueId()).getSettings().setReceivePrivateMessages(playerData.getProfile().isReceiveMessages());
                         itemMeta.setLore(lore);
                         item.setItemMeta(itemMeta);
-                    }else if(itemName.equalsIgnoreCase(ChatColor.RESET + "" + ChatColor.DARK_GREEN + ChatColor.BOLD + "Messages Sounds")){
-                        playerData.getProfile().setMessageSounds(!playerData.getProfile().isMessageSounds());
+                    }else if(itemName.equalsIgnoreCase(ChatColor.RESET + "" + ChatColor.DARK_GREEN + ChatColor.BOLD + "Receive Friend Requests")){
+                        playerData.getProfile().setReceiveFriendRequests(!playerData.getProfile().isReceiveFriendRequests());
                         
-                        List<String> lore = List.of(ChatColor.GRAY + "Play a sound when somebody messages you",
+                        List<String> lore = List.of(ChatColor.GRAY + "Allow people to add you as a friend",
                                 "",
-                                (playerData.getProfile().isMessageSounds() ? ChatColor.DARK_GREEN + "Enabled" : ChatColor.GRAY + "Enabled"),
-                                (!playerData.getProfile().isMessageSounds() ? ChatColor.DARK_GREEN + "Disabled" : ChatColor.GRAY + "Disabled"));
+                                (playerData.getProfile().isReceiveFriendRequests() ? ChatColor.DARK_GREEN + "Enabled" : ChatColor.GRAY + "Enabled"),
+                                (!playerData.getProfile().isReceiveFriendRequests() ? ChatColor.DARK_GREEN + "Disabled" : ChatColor.GRAY + "Disabled"));
                         
+                        CoreAPI.getInstance().getProfileManager().getByUUID(event.getWhoClicked().getUniqueId()).getSettings().setFriendRequests(playerData.getProfile().isReceiveFriendRequests());
                         itemMeta.setLore(lore);
                         item.setItemMeta(itemMeta);
                     }else if(itemName.equalsIgnoreCase(ChatColor.RESET + "" + ChatColor.DARK_GREEN + ChatColor.BOLD + "Duel Requests")){
@@ -160,6 +163,7 @@ public class InventoryClickListener implements Listener{
                                 (playerData.getProfile().isGlobalChat() ? ChatColor.DARK_GREEN + "Enabled" : ChatColor.GRAY + "Enabled"),
                                 (!playerData.getProfile().isGlobalChat() ? ChatColor.DARK_GREEN + "Disabled" : ChatColor.GRAY + "Disabled"));
                         
+                        CoreAPI.getInstance().getProfileManager().getByUUID(event.getWhoClicked().getUniqueId()).getSettings().setGlobalChat(playerData.getProfile().isGlobalChat());
                         itemMeta.setLore(lore);
                         item.setItemMeta(itemMeta);
                     }else if(itemName.equalsIgnoreCase(ChatColor.RESET + "" + ChatColor.DARK_GREEN + ChatColor.BOLD + "Party Requests")){

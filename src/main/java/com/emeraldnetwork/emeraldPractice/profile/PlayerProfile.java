@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class PlayerProfile{
     
     private final UUID uuid;
-    private boolean receiveMessages = true, messageSounds = true, duelRequests = true, duelSounds = true, allowSpectators = true, scoreBoard = true, globalChat = true, partyInvites = true, partySounds = true, editMode = false;
+    private boolean receiveMessages = true, receiveFriendRequests = true, duelRequests = true, duelSounds = true, allowSpectators = true, scoreBoard = true, globalChat = true, partyInvites = true, partySounds = true, editMode = false;
     private WeatherType playerWeather = WeatherType.CLEAR;
     private int pingRange = 200;
     private int playerTime = 0;
@@ -39,12 +39,12 @@ public class PlayerProfile{
         this.receiveMessages = receiveMessages;
     }
     
-    public boolean isMessageSounds(){
-        return messageSounds;
+    public boolean isReceiveFriendRequests(){
+        return receiveFriendRequests;
     }
     
-    public void setMessageSounds(boolean messageSounds){
-        this.messageSounds = messageSounds;
+    public void setReceiveFriendRequests(boolean receiveFriendRequests){
+        this.receiveFriendRequests = receiveFriendRequests;
     }
     
     public boolean isDuelRequests(){

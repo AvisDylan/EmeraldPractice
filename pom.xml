@@ -129,13 +129,13 @@
             <systemPath>${project.basedir}/lib/satirespigot-api-1.8.8-R0.1-SNAPSHOT.jar</systemPath>
         </dependency>
 
-        <!--<dependency>
-            <groupId></groupId>
-            <artifactId></artifactId>
-            <version></version>
+        <dependency>
+            <groupId>me.zowpy</groupId>
+            <artifactId>core</artifactId>
+            <version>1.0.0</version>
             <scope>system</scope>
             <systemPath>${project.basedir}/lib/api-1.0-SNAPSHOT.jar</systemPath>
-        </dependency>-->
+        </dependency>
 
         <dependency>
             <groupId>net.md-5</groupId>
@@ -156,7 +156,7 @@
         <dependency>
             <groupId>org.reflections</groupId>
             <artifactId>reflections</artifactId>
-            <version>0.10.2</version>
+            <version>0.9.12</version>
         </dependency>
 
         <dependency>
