@@ -98,7 +98,6 @@ public class ItemStackAdapter implements JsonSerializer<ItemStack>, JsonDeserial
         
         if(object.has("meta")){
             JsonObject metaObject = object.getAsJsonObject("meta");
-            Bukkit.getLogger().info(material.name());
             ItemMeta itemMeta = Bukkit.getItemFactory().getItemMeta(material);
             
             if(metaObject.has("display-name"))
