@@ -3,11 +3,13 @@ package com.emeraldnetwork.emeraldPractice.commands;
 import com.emeraldnetwork.emeraldPractice.duel.DuelRequest;
 import com.emeraldnetwork.emeraldPractice.kit.Kit;
 import com.emeraldnetwork.emeraldPractice.kit.KitManager;
+import com.emeraldnetwork.emeraldPractice.party.PartyManager;
 import com.emeraldnetwork.emeraldPractice.player.PlayerData;
 import com.emeraldnetwork.emeraldPractice.player.PlayerManager;
 import com.emeraldnetwork.emeraldPractice.player.PlayerState;
 import com.emeraldnetwork.emeraldPractice.utils.GuiUtils;
 import com.emeraldnetwork.emeraldPractice.utils.ItemUtils;
+import me.zowpy.core.api.CoreAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -15,7 +17,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 
 public class DuelCommand implements CommandExecutor{
     
@@ -38,6 +39,16 @@ public class DuelCommand implements CommandExecutor{
                 return false;
             }
             
+            if(PartyManager.getPlayerParty(senderData) != null){
+                commandSender.sendMessage(ChatColor.RED + "You cannot duel " + receiver.getName() + " as you are in a party!");
+                return false;
+            }
+            
+            if(PartyManager.getPlayerParty(receiverData) != null){
+                commandSender.sendMessage(ChatColor.RED + "You cannot duel " + receiver.getName() + " as they are in a party!");
+                return false;
+            }
+            
             if(senderData.getDuelRequest(receiverData) != null){
                 sender.chat("/accept " + receiver.getName());
                 return false;
@@ -53,7 +64,7 @@ public class DuelCommand implements CommandExecutor{
                 return false;
             }
             
-            if(!receiverData.getProfile().isDuelRequests()){
+            if(!receiverData.getProfile().isDuelRequests() || CoreAPI.getInstance().getProfileManager().getByUUID(receiver.getUniqueId()).getIgnoreList().contains(sender.getUniqueId())){
                 commandSender.sendMessage(ChatColor.RED + receiver.getName() + " is not accepting duel requests at the moment!");
                 return false;
             }
