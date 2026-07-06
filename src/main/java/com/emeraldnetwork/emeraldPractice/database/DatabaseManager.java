@@ -23,9 +23,9 @@ public class DatabaseManager{
     
     private static Connection playerDatabase;
     private static final Gson GSON = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().registerTypeAdapter(ItemStack.class, new ItemStackAdapter()).create();
-    private static final String PLAYERDATA_URL = "jdbc:postgresql://209.112.91.51:5432/player_datas",
-            PLAYERDATA_USERNAME = "postgres",
-            PLAYERDATA_PASSWORD = "!aosikop\"sdW2sd$";
+    private static final String PLAYERDATA_URL = "jdbc:postgresql://<your_database_url>/<your_database_name>",
+            PLAYERDATA_USERNAME = "<your_database_username>",
+            PLAYERDATA_PASSWORD = "<your_database_password>";
     
     public static void init() {
         try{
